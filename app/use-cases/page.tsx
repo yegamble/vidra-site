@@ -1,4 +1,10 @@
 import type { Metadata } from "next";
+import {
+  BookOpenIcon,
+  RadioIcon,
+  UsersIcon,
+  VideoIcon,
+} from "@/components/icons";
 import { Eyebrow, Head, Section, Standfirst } from "@/components/Section";
 
 export const metadata: Metadata = {
@@ -9,6 +15,7 @@ export const metadata: Metadata = {
 
 type UseCase = {
   id: string;
+  icon: React.ComponentType<{ className?: string }>;
   eyebrow: string;
   title: string;
   scenario: [string, string];
@@ -19,6 +26,7 @@ type UseCase = {
 const CASES: UseCase[] = [
   {
     id: "creator",
+    icon: VideoIcon,
     eyebrow: "One person, one channel",
     title: "An independent creator",
     scenario: [
@@ -47,6 +55,7 @@ const CASES: UseCase[] = [
   },
   {
     id: "community",
+    icon: UsersIcon,
     eyebrow: "Many uploaders, one owner",
     title: "A community or club",
     scenario: [
@@ -76,6 +85,7 @@ const CASES: UseCase[] = [
   },
   {
     id: "newsroom",
+    icon: RadioIcon,
     eyebrow: "Several channels, live and archived",
     title: "A newsroom or podcast network",
     scenario: [
@@ -104,6 +114,7 @@ const CASES: UseCase[] = [
   },
   {
     id: "archive",
+    icon: BookOpenIcon,
     eyebrow: "Hundreds of talks, kept legible",
     title: "A course or conference archive",
     scenario: [
@@ -158,8 +169,15 @@ export default function UseCasesPage() {
               id={item.id}
               className="rounded-card border border-paper-hairline bg-white p-6 scroll-mt-18"
             >
-              <p className="text-micro uppercase text-label">{item.eyebrow}</p>
-              <h2 className="text-head mt-2">{item.title}</h2>
+              <div className="flex items-start gap-4">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-mist text-action">
+                  <item.icon className="h-5 w-5" />
+                </span>
+                <div>
+                  <p className="text-micro uppercase text-label">{item.eyebrow}</p>
+                  <h2 className="text-head mt-2">{item.title}</h2>
+                </div>
+              </div>
               <div className="mt-5 grid gap-6 md:grid-cols-2">
                 <div className="text-body flex flex-col gap-4 text-onpaper-2">
                   {item.scenario.map((p) => (

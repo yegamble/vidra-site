@@ -1,4 +1,10 @@
 import { ArchitectureExplorer } from "@/components/ArchitectureExplorer";
+import {
+  BookOpenIcon,
+  RadioIcon,
+  UsersIcon,
+  VideoIcon,
+} from "@/components/icons";
 import { Button, TextLink } from "@/components/Button";
 import { FederationFigure } from "@/components/FederationFigure";
 import { InstallTabs } from "@/components/InstallTabs";
@@ -17,21 +23,25 @@ const STATS = [
 
 const AUDIENCES = [
   {
+    icon: VideoIcon,
     title: "An independent creator",
     body: "One 4 vCPU box, a CDN in front of it, and a channel people can follow over ActivityPub from wherever they already read.",
     leans: "Embeds · the bespoke player · resumable uploads",
   },
   {
+    icon: UsersIcon,
     title: "A community or club",
     body: "A few dozen upload, a few hundred watch, and you answer for what appears. The moderation surface is in the box, not in a plugin.",
     leans: "Registration approval · reports · per-user quotas",
   },
   {
+    icon: RadioIcon,
     title: "A newsroom or podcast network",
     body: "Live coverage that becomes an archive the moment it ends, and embargoed material that never turns into a public URL by accident.",
     leans: "RTMP to VOD · scoped playback tokens · auto-sync",
   },
   {
+    icon: BookOpenIcon,
     title: "A course or conference archive",
     body: "Four years of talks that have to stay findable, with an accessibility obligation you cannot hand-wave away.",
     leans: "Whisper captions · chapters · hybrid search",
@@ -186,6 +196,11 @@ export default function HomePage() {
               key={item.title}
               className="rounded-card border border-paper-hairline bg-white p-5"
             >
+              {/* A drawn glyph in a Mist tile: the icon-tile idiom, Action
+                  Cyan on the quiet tint, decorative beside the real heading. */}
+              <span className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-mist text-action">
+                <item.icon className="h-5 w-5" />
+              </span>
               <h3 className="text-card">{item.title}</h3>
               <p className="text-body mt-3 text-onpaper-2">{item.body}</p>
               <p className="text-small mt-4 text-link">{item.leans}</p>

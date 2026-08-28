@@ -1,6 +1,17 @@
 "use client";
 
+import type { ComponentType } from "react";
 import { useState } from "react";
+import {
+  CpuIcon,
+  DatabaseIcon,
+  GlobeIcon,
+  HardDriveIcon,
+  MonitorIcon,
+  SearchIcon,
+  Share2Icon,
+  ZapIcon,
+} from "@/components/icons";
 
 /**
  * The eight containers in the shipped compose file, as buttons rather than as
@@ -25,11 +36,13 @@ type Node = {
   role: string;
   body: string;
   facts: string[];
+  icon: ComponentType<{ className?: string }>;
 };
 
 const NODES: Node[] = [
   {
     id: "caddy",
+    icon: GlobeIcon,
     name: "Caddy",
     sub: "Edge",
     role: "Edge",
@@ -38,6 +51,7 @@ const NODES: Node[] = [
   },
   {
     id: "user",
+    icon: MonitorIcon,
     name: "vidra-user",
     sub: "Frontend",
     role: "Frontend",
@@ -46,6 +60,7 @@ const NODES: Node[] = [
   },
   {
     id: "core",
+    icon: CpuIcon,
     name: "vidra-core",
     sub: "API",
     role: "API",
@@ -57,6 +72,7 @@ const NODES: Node[] = [
   },
   {
     id: "search",
+    icon: SearchIcon,
     name: "vidra-search",
     sub: "Internal service",
     role: "Internal service",
@@ -65,6 +81,7 @@ const NODES: Node[] = [
   },
   {
     id: "postgres",
+    icon: DatabaseIcon,
     name: "postgres",
     sub: "Shared state",
     role: "Shared state",
@@ -73,6 +90,7 @@ const NODES: Node[] = [
   },
   {
     id: "redis",
+    icon: ZapIcon,
     name: "redis",
     sub: "Shared state",
     role: "Shared state",
@@ -81,6 +99,7 @@ const NODES: Node[] = [
   },
   {
     id: "minio",
+    icon: HardDriveIcon,
     name: "minio",
     sub: "S3 storage",
     role: "Object storage",
@@ -89,6 +108,7 @@ const NODES: Node[] = [
   },
   {
     id: "ipfs",
+    icon: Share2Icon,
     name: "IPFS",
     sub: "Offload tier",
     role: "Offload tier",
@@ -119,21 +139,28 @@ export function ArchitectureExplorer() {
                 type="button"
                 aria-pressed={on}
                 onClick={() => setSelected(n.id)}
-                className={`min-h-16 rounded-xl px-4 py-3 text-left ring-inset transition-colors ${
+                className={`flex min-h-16 items-start gap-3 rounded-xl px-4 py-3 text-left ring-inset transition-colors ${
                   on
                     ? "bg-vidra-tint ring-2 ring-vidra"
                     : "bg-ink-surface ring-1 ring-ink-hairline hover:bg-slate/40"
                 }`}
               >
-                <span className="text-small block font-bold text-onink">
-                  {n.name}
-                </span>
-                <span
-                  className={`text-small mt-1 block ${
+                <n.icon
+                  className={`mt-0.5 h-5 w-5 shrink-0 ${
                     on ? "text-vidra" : "text-onink-2"
                   }`}
-                >
-                  {n.sub}
+                />
+                <span className="min-w-0">
+                  <span className="text-small block font-bold text-onink">
+                    {n.name}
+                  </span>
+                  <span
+                    className={`text-small mt-1 block ${
+                      on ? "text-vidra" : "text-onink-2"
+                    }`}
+                  >
+                    {n.sub}
+                  </span>
                 </span>
               </button>
             );
@@ -147,7 +174,10 @@ export function ArchitectureExplorer() {
         className="rounded-card bg-ink-surface p-5 ring-1 ring-inset ring-ink-hairline"
       >
         <p className="text-micro uppercase text-vidra">{node.role}</p>
-        <h3 className="text-card mt-2 text-onink">{node.name}</h3>
+        <div className="mt-2 flex items-center gap-2.5">
+          <node.icon className="h-5 w-5 shrink-0 text-vidra" />
+          <h3 className="text-card text-onink">{node.name}</h3>
+        </div>
         {/* 4.6em reserves the tallest body, so the fact chips below hold still
             as you move between nodes. A reserved line count, not a magic pixel. */}
         <p className="text-body mt-3 min-h-[4.6em] max-w-[60ch] text-onink-2">

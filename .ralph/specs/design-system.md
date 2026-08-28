@@ -185,6 +185,21 @@ to get a button.
 - **No gradients** beyond the two documented atmospheres on the home hero — the
   tri-protocol ribbon is a *product* asset and does not belong here.
 
+### Icons
+
+- **Drawn glyphs only, from `components/icons.tsx`** — the single source of
+  truth, matching the product's contract: feather-style paths vendored
+  verbatim (MIT, © Cole Bemis), 24×24 viewBox, `currentColor` stroke at
+  1.8px, round caps and joins. No emoji, no ad-hoc inline icon `<svg>`s in
+  pages, and **never a vendor's logo** (PostgreSQL's elephant, Redis's mark)
+  on a brand surface — the glyph names the *job*, not the brand.
+- Icons are decorative by default (`aria-hidden`) and sit beside real text;
+  pass `label` only when an icon must stand alone, which on this site it
+  should not.
+- The tile idiom for cards: a 40px `bg-mist` rounded-lg tile with the glyph
+  at 20px in Action Cyan. On Ink, glyphs ride the text colour of their row
+  (`text-onink-2`, `text-vidra` when selected) with no tile.
+
 ### Interactive widgets
 
 The redesign added four. The rules they share, all of them gated:
