@@ -117,42 +117,81 @@ test.describe("hero", () => {
 });
 
 test.describe("architecture diagram", () => {
-  const container = "Deployment topology diagram";
+  // Mobile-first: a portrait variant renders below `md`, the wide one at
+  // `md` and up. Exactly one of the two is in the accessibility tree at a
+  // time, and neither ever needs to scroll — the earlier scroll-container
+  // approach is overturned (it hid half the topology off a phone screen).
 
-  test(`scrolls and is reachable by keyboard at ${PHONE.name}`, async ({
+  test(`portrait variant, fully on screen at ${PHONE.name}`, async ({
     page,
   }) => {
     await page.setViewportSize({ width: PHONE.width, height: PHONE.height });
     await page.goto("/");
 
-    const scroller = page.getByRole("group", { name: new RegExp(container) });
-    await expect(scroller).toBeVisible();
+    const portrait = page.getByTestId("arch-mobile");
+    const wide = page.getByTestId("arch-wide");
+    await expect(portrait).toBeVisible();
+    await expect(wide).toBeHidden();
 
-    // A scrollable region has to be operable without a mouse (WCAG 2.1.1).
-    await expect(scroller).toHaveAttribute("tabindex", "0");
-    const name = await scroller.getAttribute("aria-label");
-    expect(name?.trim().length ?? 0).toBeGreaterThan(0);
-
-    const size = await scroller.evaluate((el) => ({
-      scrollWidth: el.scrollWidth,
-      clientWidth: el.clientWidth,
-    }));
-    expect(
-      size.scrollWidth,
-      "the diagram must stay at its drawn width and scroll, not squash",
-    ).toBeGreaterThan(size.clientWidth);
+    // Nothing cut off: the drawn diagram fits inside the viewport width.
+    const box = await portrait.boundingBox();
+    expect(box, "portrait diagram must render").not.toBeNull();
+    expect(box!.x).toBeGreaterThanOrEqual(0);
+    expect(box!.x + box!.width).toBeLessThanOrEqual(PHONE.width + 1);
   });
 
-  test(`fits without scrolling at ${LAPTOP.name}`, async ({ page }) => {
+  test(`wide variant at ${LAPTOP.name}, no scrolling needed`, async ({
+    page,
+  }) => {
     await page.setViewportSize({ width: LAPTOP.width, height: LAPTOP.height });
     await page.goto("/");
 
-    const scroller = page.getByRole("group", { name: new RegExp(container) });
-    const size = await scroller.evaluate((el) => ({
+    const portrait = page.getByTestId("arch-mobile");
+    const wide = page.getByTestId("arch-wide");
+    await expect(wide).toBeVisible();
+    await expect(portrait).toBeHidden();
+
+    const box = await wide.boundingBox();
+    expect(box).not.toBeNull();
+    expect(box!.x + box!.width).toBeLessThanOrEqual(LAPTOP.width + 1);
+  });
+});
+
+test.describe("install command block", () => {
+  // One line tall, always: the command scrolls sideways and the copy button
+  // stays pinned on the right (never wraps underneath).
+  test(`single row with the copy button on the right at ${PHONE.name}`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: PHONE.width, height: PHONE.height });
+    await page.goto("/");
+
+    const pre = page.getByRole("group", { name: /Install command/ }).first();
+    const button = page
+      .getByRole("button", { name: /Copy install command/ })
+      .first();
+    await expect(pre).toBeVisible();
+    await expect(button).toBeVisible();
+
+    // The command overflows a phone and scrolls; keyboard-operable (WCAG 2.1.1).
+    await expect(pre).toHaveAttribute("tabindex", "0");
+    const size = await pre.evaluate((el) => ({
       scrollWidth: el.scrollWidth,
       clientWidth: el.clientWidth,
     }));
-    expect(size.scrollWidth).toBeLessThanOrEqual(size.clientWidth);
+    expect(size.scrollWidth).toBeGreaterThan(size.clientWidth);
+
+    // Same row: the button's vertical span overlaps the command's, and it
+    // sits to the right of it.
+    const preBox = (await pre.boundingBox())!;
+    const btnBox = (await button.boundingBox())!;
+    expect(btnBox.x).toBeGreaterThan(preBox.x + preBox.width - 1);
+    const overlap =
+      Math.min(preBox.y + preBox.height, btnBox.y + btnBox.height) -
+      Math.max(preBox.y, btnBox.y);
+    expect(overlap, "copy button must share the command's row").toBeGreaterThan(
+      0,
+    );
   });
 });
 

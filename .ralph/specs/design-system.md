@@ -233,9 +233,10 @@ with the product, which enforces 2.2 in its own CI.)
   `role="group"` and an `aria-label` that says what it is and that it scrolls —
   otherwise a keyboard user cannot reach the content past the fold (WCAG 2.1.1;
   axe `scrollable-region-focusable`, which is **serious**). The canonical
-  implementation is **`ArchitectureDiagram.tsx`**; `CommandBlock.tsx`'s `<pre>`
-  and `RequirementsTable.tsx`'s wrapper were retrofitted to match it after this
-  gate first ran and found them.
+  implementation is **`CommandBlock.tsx`**'s `<pre>`; `RequirementsTable.tsx`'s
+  wrapper matches it. Scrolling is for *rows of data and commands* — a whole
+  diagram must not rely on it (see the overturned rule in Known failure
+  classes).
 - **Skip link** to `#main` on every page.
 - **`rem` sizing** so the reader's own font-size setting scales the site
   (os-hcl's "Dynamic Type equivalence").
@@ -279,12 +280,16 @@ The only sanctioned departures. Anything else is a defect.
   count sweep greps the whole repo, not the pages you remember. The same applies
   to the 228-path OpenAPI contract and the 121 migrations — if you change one,
   check the source, do not copy the neighbouring prose.
-- **The diagram was unreadable at 390px.** A `viewBox` that fits 960px of boxes
-  scaled to a 342px phone column renders 12px labels at ~4px. The fix is a
-  minimum drawn width (`min-w-[820px]`) inside an `overflow-x-auto` container
-  that is `tabIndex={0}` and named — keep the drawing at a legible size and let
-  it scroll, rather than squashing it. (`e2e/responsive.spec.ts` asserts it
-  scrolls at 390 and does not need to at 1440.)
+- **The diagram was unreadable at 390px — twice.** A `viewBox` that fits 960px
+  of boxes scaled to a 342px phone column renders 12px labels at ~4px. The
+  first fix (a `min-w-[820px]` drawing in a focusable `overflow-x-auto`
+  container) is **overturned**: it kept the labels legible but pushed half the
+  topology off the screen with no visible cue that it scrolls. The rule now:
+  **complex diagrams get a portrait variant below `md`** — a top-to-bottom
+  redraw of the same data, `hidden`/`md:hidden` paired so exactly one variant
+  is in the accessibility tree, nothing scrolling, nothing cut off (the
+  comparison table's contract). (`e2e/responsive.spec.ts` asserts the portrait
+  variant is visible and fully on screen at 390, the wide one at 1440.)
 - **Hit targets that are comfortable with a mouse and a miss with a thumb.**
   The header home link wrapped a 36px lockup with no height of its own; the
   `CommandBlock` copy button was 69×39. Both passed every visual review and

@@ -16,7 +16,7 @@ export function SiteHeader() {
         >
           {/* Reversed logotype on Ink. The mark's own nine fills are untouched. */}
           {/* rem-sized so it follows the reader's font-size setting; larger on phones */}
-          <Lockup wordmark="#F5F5F7" className="h-9 w-auto md:h-8" />
+          <Lockup wordmark="#F5F5F7" className="h-10 w-auto md:h-8" />
         </Link>
 
         <nav aria-label="Main" className="hidden md:block">
