@@ -17,10 +17,9 @@ One command, and it is the whole gate: `lint` → `check:brand`
 (Playwright: `routes`, `responsive`, `a11y`, `touch-targets`).
 `.github/workflows/ci.yml` runs exactly this after installing Chromium, so a
 green check means what it means. First run on a new machine needs
-`npx playwright install --with-deps chromium`. Details: `.ralph/specs/testing.md`.
-
-Never weaken or delete a spec to make a change fit. Never claim a suite passed
-that you did not run — name what you could not run.
+`npx playwright install --with-deps chromium`. Details:
+**`.ralph/specs/testing.md`**. Never weaken a spec to make a change fit, and
+never claim a suite passed that you did not run.
 
 ## Hard rules
 
@@ -57,22 +56,22 @@ that you did not run — name what you could not run.
 3. **Never force-push `main`.** Delete merged branches locally and remotely,
    then `git fetch --prune`.
 
-## Known failure classes (real precedents)
+## Known failure classes (real precedents; the full account is in the design spec)
 
-- **The lockup SVG switches on the OS colour scheme.** Its internal
-  `prefers-color-scheme` rule renders Ink-on-Ink on a fixed light tile. A tile
-  with a fixed ground flips the asset with it, or inlines it and drives the
-  colour explicitly (`Lockup.tsx`).
-- **Counts drift.** See hard rule 5.
+- **The lockup SVG switches on the OS colour scheme** and renders Ink-on-Ink on
+  a fixed light tile. A fixed-ground tile flips the asset with it, or inlines it
+  and drives the colour explicitly (`Lockup.tsx`).
+- **Counts drift** (hard rule 5) — and a count sweep greps the whole repo, not
+  the pages you remember.
 - **The diagram was unreadable at 390px** until it got a minimum drawn width
   inside a focusable, named `overflow-x-auto` container. Keep drawings legible
   and let them scroll; do not squash them.
 
 ## PR conventions
 
-- Title: `site: <summary>`. Body opens with a one-line WHY, then the tail of
-  `npm run ci`.
-- List anything found but not fixed under "Also found (not fixed here)".
+Title `site: <summary>`. Body opens with a one-line WHY, then the tail of
+`npm run ci`. List anything found but not fixed under "Also found (not fixed
+here)".
 
 <!-- BEGIN:nextjs-agent-rules -->
 
