@@ -61,7 +61,7 @@ const CAPABILITIES = [
   },
   {
     title: "Operating it",
-    body: "109 instance settings you can change at runtime, 13 durable queues, Prometheus metrics and OpenTelemetry traces.",
+    body: "More than a hundred instance settings you can change at runtime, durable job queues, Prometheus metrics and OpenTelemetry traces.",
   },
 ];
 

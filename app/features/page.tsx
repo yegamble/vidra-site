@@ -189,7 +189,7 @@ const GROUPS: Group[] = [
       {
         feature: "Admin console",
         detail:
-          "109 instance settings, changeable at runtime rather than through a redeploy.",
+          "More than a hundred instance settings, changeable at runtime rather than through a redeploy.",
       },
     ],
   },
@@ -204,7 +204,7 @@ const GROUPS: Group[] = [
       },
       {
         feature: "vidra doctor",
-        detail: "18 checks against a running instance, with the failure named.",
+        detail: "26 checks against a running instance, with the failure named.",
       },
       {
         feature: "Probes",

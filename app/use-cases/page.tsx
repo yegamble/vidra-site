@@ -98,7 +98,7 @@ const CASES: UseCase[] = [
         why: "Keep a mirrored channel current without a manual re-upload.",
       },
       {
-        feature: "109 runtime instance settings",
+        feature: "Runtime-editable instance settings",
         why: "Change instance behaviour during an event without a redeploy.",
       },
     ],
