@@ -37,3 +37,40 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 7
+
+  # Auto-deploy to Cloudflare Workers once the gate is green on main.
+  # Uses exactly the local command (`npm run deploy`). Requires the
+  # CLOUDFLARE_API_TOKEN repo secret (Cloudflare dashboard → My Profile →
+  # API Tokens → "Edit Cloudflare Workers" template, scoped to this account).
+  # Until that secret exists the deploy step skips with a notice instead of
+  # failing, so a green check still means what it means.
+  deploy:
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    env:
+      HAS_CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
+    steps:
+      - uses: actions/checkout@v4
+        if: env.HAS_CF_TOKEN == 'true'
+
+      - uses: actions/setup-node@v4
+        if: env.HAS_CF_TOKEN == 'true'
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        if: env.HAS_CF_TOKEN == 'true'
+        run: npm ci
+
+      - name: Deploy to Cloudflare Workers
+        if: env.HAS_CF_TOKEN == 'true'
+        run: npm run deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: 4d5acc1cdbc53403861c91ed80a6917d
+
+      - name: Deploy skipped — secret missing
+        if: env.HAS_CF_TOKEN != 'true'
+        run: echo "CLOUDFLARE_API_TOKEN secret is not set; deploy skipped. Add the secret to enable auto-deploy."

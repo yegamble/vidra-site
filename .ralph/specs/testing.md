@@ -51,3 +51,11 @@ The Playwright `webServer` starts `npm run start`, which serves the **build**
   say so in the diff and fix the assertion; if the site is wrong, fix the site.
 - **Record anything not run.** Naming what you skipped is cheap; claiming a
   green suite you did not run is not.
+
+## Deployment
+
+A `deploy` job in the same workflow runs after `test` succeeds on a `main` push
+and executes exactly the local command (`npm run deploy` → OpenNext build +
+`wrangler deploy` to the vidra.yosef.app custom domain). It needs the
+`CLOUDFLARE_API_TOKEN` repo secret; while the secret is absent it skips with a
+notice rather than failing. Manual deploys remain `npm run deploy` locally.
