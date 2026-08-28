@@ -136,7 +136,10 @@ export default function GetStartedPage() {
               <code className="text-mono text-onpaper">0.0.0.0</code> — your
               database on the public internet, with no error to tell you. After
               that,{" "}
-              <code className="text-mono text-onpaper">vidra doctor</code> runs 18
+              {/* 26 is the length of the `checks` slice in
+                  vidra-core/internal/doctor/doctor.go. The meta-repo README
+                  still says 18; the code is the source, not the README. */}
+              <code className="text-mono text-onpaper">vidra doctor</code> runs 26
               checks against the running instance, and{" "}
               <code className="text-mono text-onpaper">vidra deploy</code>,{" "}
               <code className="text-mono text-onpaper">rollback</code>,{" "}

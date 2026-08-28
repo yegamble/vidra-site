@@ -5,18 +5,22 @@
 
 export default function Lockup({
   wordmark = "#0C2136",
-  height = 32,
+  height,
   className,
 }: {
   wordmark?: string;
   height?: number;
   className?: string;
 }) {
+  // Prefer className (rem-based, follows the reader's font-size setting).
+  // Fixed pixel height stays available for contexts that need it.
+  const size = height
+    ? { height, width: (height * 232) / 96 }
+    : { style: { aspectRatio: "232 / 96" } };
   return (
     <svg
       viewBox="0 0 232 96"
-      height={height}
-      width={(height * 232) / 96}
+      {...size}
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       role="img"

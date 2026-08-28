@@ -20,37 +20,20 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Lint
-        run: npm run lint
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
 
-      - name: Brand gate
-        run: node scripts/brand-check.mjs
+      # CI parity: one command, and it is exactly the local gate. `npm run ci`
+      # chains lint, the brand gate, the build (which type-checks) and the
+      # Playwright suite — responsive, a11y, hit targets and route smoke,
+      # including the 404. Nothing runs here that does not run on a laptop.
+      - name: Gate
+        run: npm run ci
 
-      - name: Build (includes type check)
-        run: npm run build
-
-      - name: Smoke test routes
-        run: |
-          npm run start &
-          SERVER_PID=$!
-          for i in $(seq 1 30); do
-            curl -sf -o /dev/null http://localhost:3000/ && break
-            sleep 1
-          done
-          for route in / /features /use-cases /get-started /demo; do
-            code=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:3000${route}")
-            if [ "$code" != "200" ]; then
-              echo "route ${route} returned ${code}" >&2
-              kill $SERVER_PID
-              exit 1
-            fi
-            echo "ok ${route}"
-          done
-          code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/nonexistent)
-          if [ "$code" != "404" ]; then
-            echo "expected 404 for unknown route, got ${code}" >&2
-            kill $SERVER_PID
-            exit 1
-          fi
-          echo "ok 404"
-          kill $SERVER_PID
+      - name: Upload Playwright report on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7

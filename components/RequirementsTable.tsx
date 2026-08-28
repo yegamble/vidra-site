@@ -3,7 +3,15 @@ import { REQUIREMENTS } from "@/lib/site";
 /** Sizing from deploy/README. The numbers are the numbers. */
 export function RequirementsTable({ compact = false }: { compact?: boolean }) {
   return (
-    <div className="overflow-x-auto rounded-card border border-paper-hairline bg-white">
+    // Five columns do not fit a phone, so the table keeps its width and
+    // scrolls. A scrollable region must be reachable without a mouse
+    // (WCAG 2.1.1) — the ArchitectureDiagram pattern: tabbable and named.
+    <div
+      className="overflow-x-auto rounded-card border border-paper-hairline bg-white"
+      tabIndex={0}
+      role="group"
+      aria-label="Server sizing table. Scrolls horizontally on narrow screens."
+    >
       <table className="w-full min-w-[640px] border-collapse text-left">
         <caption className="sr-only">
           Server sizing profiles for a Vidra instance, with monthly droplet cost

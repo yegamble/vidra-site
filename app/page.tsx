@@ -124,10 +124,9 @@ export default function HomePage() {
             Run your own video platform.
           </h1>
           <p className="text-standfirst mt-6 max-w-[72ch] text-pretty text-onink-2">
-            The self-hosted alternative to YouTube: your domain, your storage,
-            your rules, no ads. It installs in minutes, the way you would install
-            WordPress, and a Go backend transcodes, serves and federates from one
-            4 vCPU, 8 GB box.
+            The self-hosted alternative to YouTube. Your videos on your domain,
+            under your rules, with no ads — installed in minutes on a small
+            server you own.
           </p>
           <div className="mt-9 flex flex-wrap gap-3">
             <Button href="/get-started" variant="vidra">

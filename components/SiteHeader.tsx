@@ -7,9 +7,16 @@ export function SiteHeader() {
   return (
     <header className="on-ink sticky top-0 z-50 bg-ink">
       <div className="measure-media relative flex h-16 items-center justify-between gap-6">
-        <Link href="/" aria-label="Vidra, home" className="flex items-center">
+        {/* h-11 is the 44px hit-target floor, not decoration: the lockup itself
+            is 36px tall, which is a comfortable read and an uncomfortable tap. */}
+        <Link
+          href="/"
+          aria-label="Vidra, home"
+          className="flex h-11 items-center"
+        >
           {/* Reversed logotype on Ink. The mark's own nine fills are untouched. */}
-          <Lockup wordmark="#F5F5F7" height={30} />
+          {/* rem-sized so it follows the reader's font-size setting; larger on phones */}
+          <Lockup wordmark="#F5F5F7" className="h-9 w-auto md:h-8" />
         </Link>
 
         <nav aria-label="Main" className="hidden md:block">

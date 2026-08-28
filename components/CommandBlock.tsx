@@ -46,7 +46,16 @@ export function CommandBlock({
     <div
       className={`on-ink flex flex-col gap-3 rounded-card p-4 sm:flex-row sm:items-center sm:gap-4 sm:p-5 ${shell}`}
     >
-      <pre className="min-w-0 flex-1 overflow-x-auto text-mono text-onink">
+      {/* The command is longer than a phone is wide, so this scrolls — and a
+          scrollable region has to be operable from the keyboard (WCAG 2.1.1;
+          axe scrollable-region-focusable). Same contract as
+          ArchitectureDiagram: tabbable, named, no mouse required. */}
+      <pre
+        className="min-w-0 flex-1 overflow-x-auto text-mono text-onink"
+        tabIndex={0}
+        role="group"
+        aria-label={`${label}. Scrolls horizontally on narrow screens.`}
+      >
         <code>
           <span aria-hidden="true" className="pr-2 text-onink-2 select-none">
             $
@@ -58,7 +67,7 @@ export function CommandBlock({
         type="button"
         onClick={copy}
         aria-label={`Copy ${label.toLowerCase()} to clipboard`}
-        className="shrink-0 self-start rounded-button px-4 py-2 text-small font-semibold text-ice ring-1 ring-inset ring-ice/60 transition-colors hover:bg-ice/10 sm:self-auto"
+        className="inline-flex min-h-11 shrink-0 items-center justify-center self-start rounded-button px-4 text-small font-semibold text-ice ring-1 ring-inset ring-ice/60 transition-colors hover:bg-ice/10 sm:self-auto"
       >
         {copied ? "Copied" : "Copy"}
       </button>

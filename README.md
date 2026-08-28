@@ -12,7 +12,13 @@ npm run dev      # http://localhost:3000
 npm run build
 npm run start
 npm run lint
+npm run ci       # the canonical gate: lint, brand check, build, Playwright
 ```
+
+`npm run ci` is what GitHub Actions runs, and it is the only thing it runs. The
+Playwright suite needs a browser once: `npx playwright install --with-deps
+chromium`. What each layer covers is in `.ralph/specs/testing.md`; the design
+rules the e2e specs enforce are in `.ralph/specs/design-system.md`.
 
 ## The docs are not in this repo
 
