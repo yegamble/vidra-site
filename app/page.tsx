@@ -163,8 +163,8 @@ export default function HomePage() {
         <Eyebrow ground="ink">Architecture</Eyebrow>
         <Head className="mt-3">Eight containers. Tap one.</Head>
         <Standfirst ground="ink" className="mt-4">
-          This is the shipped compose file, not an architecture sketch. Every
-          port is the port the container actually listens on.
+          This is the shipped compose file, not an architecture sketch. Each
+          container does one job; tap it to see which.
         </Standfirst>
         <div className="mt-7">
           <ArchitectureExplorer />

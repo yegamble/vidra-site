@@ -21,7 +21,7 @@ import { useState } from "react";
 type Node = {
   id: string;
   name: string;
-  port: string;
+  sub: string;
   role: string;
   body: string;
   facts: string[];
@@ -31,58 +31,58 @@ const NODES: Node[] = [
   {
     id: "caddy",
     name: "Caddy",
-    port: ":443",
+    sub: "Edge",
     role: "Edge",
     body: "Everything a viewer touches arrives here. Caddy terminates TLS and routes to the frontend and the API.",
-    facts: [":443", "TLS", "reverse proxy"],
+    facts: ["TLS", "reverse proxy"],
   },
   {
     id: "user",
     name: "vidra-user",
-    port: ":3000",
+    sub: "Frontend",
     role: "Frontend",
     body: "The Next.js 16 application: channels, the video page and the bespoke player with keyboard shortcuts, picture-in-picture and theatre mode.",
-    facts: [":3000", "Next.js 16"],
+    facts: ["Next.js 16"],
   },
   {
     id: "core",
     name: "vidra-core",
-    port: ":8080",
+    sub: "API",
     role: "API",
     // The queue count is deliberately unpinned. An earlier draft said "13
     // durable queues"; that number is not checkable against the tree, and a
     // count on this site cites code or stays unpinned.
     body: "The Go backend. 228 OpenAPI paths, durable queues, the transcode pipeline, federation and the admin console behind it.",
-    facts: [":8080", "Go 1.26", "Echo", "/healthz"],
+    facts: ["Go 1.26", "Echo", "/healthz"],
   },
   {
     id: "search",
     name: "vidra-search",
-    port: ":8081",
+    sub: "Internal service",
     role: "Internal service",
     body: "Hybrid full-text and trigram search with typo-tolerant autosuggest. Internal only — it is never exposed at the edge.",
-    facts: [":8081", "internal", "LightGBM shadow"],
+    facts: ["internal", "LightGBM shadow"],
   },
   {
     id: "postgres",
     name: "postgres",
-    port: ":5432",
+    sub: "Shared state",
     role: "Shared state",
     body: "PostgreSQL 18 behind 121 versioned SQL migrations. Both vidra-core and vidra-search read from it.",
-    facts: [":5432", "PostgreSQL 18", "121 migrations"],
+    facts: ["PostgreSQL 18", "121 migrations"],
   },
   {
     id: "redis",
     name: "redis",
-    port: ":6379",
+    sub: "Shared state",
     role: "Shared state",
-    body: "Redis 8 carries queues and cache. Below Compose 2.24 this port silently publishes on 0.0.0.0 — check your version.",
-    facts: [":6379", "Redis 8"],
+    body: "Redis 8 carries queues and cache. Below Compose 2.24 it silently publishes on 0.0.0.0 — check your version.",
+    facts: ["Redis 8", "queues + cache"],
   },
   {
     id: "minio",
     name: "minio",
-    port: "S3 storage",
+    sub: "S3 storage",
     role: "Object storage",
     body: "S3-compatible storage for media. Local disk or an external S3 bucket instead, chosen per instance.",
     facts: ["S3 API", "local or remote"],
@@ -90,7 +90,7 @@ const NODES: Node[] = [
   {
     id: "ipfs",
     name: "IPFS",
-    port: "public + private",
+    sub: "Offload tier",
     role: "Offload tier",
     body: "Public media is fetched from gateways rather than from your box, which is where your egress bill stops tracking your viewer count. A private tier stays keyed to your own swarm.",
     facts: ["gateway tier", "swarm-keyed tier"],
@@ -129,11 +129,11 @@ export function ArchitectureExplorer() {
                   {n.name}
                 </span>
                 <span
-                  className={`text-mono mt-1 block ${
+                  className={`text-small mt-1 block ${
                     on ? "text-vidra" : "text-onink-2"
                   }`}
                 >
-                  {n.port}
+                  {n.sub}
                 </span>
               </button>
             );
