@@ -1,26 +1,177 @@
 @import "tailwindcss";
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@import "./brand.css";
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Grounds */
+  --color-ink: var(--brand-ink);
+  --color-paper: var(--brand-paper);
+  --color-mist: var(--brand-mist);
+  --color-ice: var(--brand-ice);
+
+  /* Cyans */
+  --color-vidra: var(--brand-vidra-cyan);
+  --color-deep: var(--brand-deep-cyan);
+  --color-action: var(--brand-action-cyan);
+
+  /* Structure and secondary */
+  --color-slate: var(--brand-slate);
+  --color-muted: var(--brand-muted);
+
+  /* Safe text pairs */
+  --color-onpaper: var(--brand-on-paper);
+  --color-onpaper-2: var(--brand-on-paper-secondary);
+  --color-label: var(--brand-on-paper-label);
+  --color-link: var(--brand-on-paper-link);
+  --color-onink: var(--brand-on-ink);
+  --color-onink-2: var(--brand-on-ink-secondary);
+
+  /* Depth */
+  --color-ink-surface: var(--brand-ink-surface);
+  --color-ink-hairline: var(--brand-ink-hairline);
+  --color-paper-hairline: var(--brand-paper-hairline);
+
+  /* Type */
+  --font-sans: var(--brand-font-sans);
+  --font-mono: var(--brand-font-mono);
+
+  /* Scale. Bold and tight as it gets bigger; clamped down on small screens. */
+  --text-hero: clamp(2.375rem, 7.4vw, 4rem);
+  --text-hero--line-height: 1;
+  --text-hero--letter-spacing: -0.05em;
+  --text-hero--font-weight: 700;
+
+  --text-head: clamp(1.875rem, 4.6vw, 2.75rem);
+  --text-head--line-height: 1.09;
+  --text-head--letter-spacing: -0.04em;
+  --text-head--font-weight: 700;
+
+  --text-sub: clamp(1.25rem, 2.4vw, 1.5rem);
+  --text-sub--line-height: 1.25;
+  --text-sub--letter-spacing: -0.025em;
+  --text-sub--font-weight: 700;
+
+  --text-card: 1.25rem;
+  --text-card--line-height: 1.4;
+  --text-card--letter-spacing: -0.02em;
+  --text-card--font-weight: 700;
+
+  --text-standfirst: clamp(1.125rem, 2.1vw, 1.375rem);
+  --text-standfirst--line-height: 1.41;
+
+  --text-body: 1.0625rem;
+  --text-body--line-height: 1.53;
+
+  --text-small: 0.9375rem;
+  --text-small--line-height: 1.5;
+
+  --text-mono: 0.875rem;
+  --text-mono--line-height: 1.7;
+
+  /* All caps is reserved for 11px micro-labels. */
+  --text-micro: 0.6875rem;
+  --text-micro--line-height: 1.4;
+  --text-micro--letter-spacing: 0.14em;
+  --text-micro--font-weight: 700;
+
+  --radius-card: var(--brand-radius-card);
+  --radius-button: var(--brand-radius-button);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--brand-paper);
+    color: var(--brand-on-paper);
+    font-family: var(--brand-font-sans);
+    font-size: 1.0625rem;
+    line-height: 1.53;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  code,
+  kbd,
+  pre,
+  samp {
+    font-family: var(--brand-font-mono);
+  }
+
+  /* Visible focus everywhere: Action Cyan on Paper, Ice on Ink. */
+  :focus-visible {
+    outline: 2px solid var(--brand-action-cyan);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  .on-ink :focus-visible,
+  .on-ink:focus-visible {
+    outline-color: var(--brand-ice);
+  }
+
+  ::selection {
+    background-color: var(--brand-ice);
+    color: var(--brand-ink);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@utility measure-text {
+  max-width: var(--brand-measure-text);
+  margin-inline: auto;
+  padding-inline: 24px;
+}
+
+@utility measure-media {
+  max-width: var(--brand-measure-media);
+  margin-inline: auto;
+  padding-inline: 24px;
+}
+
+/* Section padding: 96px desktop, 48px mobile. */
+@utility section-y {
+  padding-block: 48px;
+
+  @media (width >= 768px) {
+    padding-block: var(--brand-section-y);
+  }
+}
+
+/* Hatched slot for a screenshot that does not exist yet. Ink-tinted crosshatch,
+   no gradient — a template placeholder, clearly labelled as one. */
+@utility hatch-paper {
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgb(12 33 54 / 0.06) 0,
+    rgb(12 33 54 / 0.06) 1px,
+    transparent 1px,
+    transparent 9px
+  );
+}
+
+@utility hatch-ink {
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgb(203 242 244 / 0.07) 0,
+    rgb(203 242 244 / 0.07) 1px,
+    transparent 1px,
+    transparent 9px
+  );
 }
