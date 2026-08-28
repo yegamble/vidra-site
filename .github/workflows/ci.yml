@@ -1,0 +1,56 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Brand gate
+        run: node scripts/brand-check.mjs
+
+      - name: Build (includes type check)
+        run: npm run build
+
+      - name: Smoke test routes
+        run: |
+          npm run start &
+          SERVER_PID=$!
+          for i in $(seq 1 30); do
+            curl -sf -o /dev/null http://localhost:3000/ && break
+            sleep 1
+          done
+          for route in / /features /use-cases /get-started /demo; do
+            code=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:3000${route}")
+            if [ "$code" != "200" ]; then
+              echo "route ${route} returned ${code}" >&2
+              kill $SERVER_PID
+              exit 1
+            fi
+            echo "ok ${route}"
+          done
+          code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/nonexistent)
+          if [ "$code" != "404" ]; then
+            echo "expected 404 for unknown route, got ${code}" >&2
+            kill $SERVER_PID
+            exit 1
+          fi
+          echo "ok 404"
+          kill $SERVER_PID
