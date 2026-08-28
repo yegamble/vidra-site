@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArchitectureDiagram } from "@/components/ArchitectureDiagram";
 import { Button, TextLink } from "@/components/Button";
+import { Comparison } from "@/components/Comparison";
 import { CommandBlock } from "@/components/CommandBlock";
 import { NotYet } from "@/components/NotYet";
 import {
@@ -123,9 +124,10 @@ export default function HomePage() {
             Run your own video platform.
           </h1>
           <p className="text-standfirst mt-6 max-w-[72ch] text-pretty text-onink-2">
-            A federated video platform you install yourself, the way you would
-            install WordPress. ActivityPub and ATProto federation, with media on
-            IPFS if you want it.
+            The self-hosted alternative to YouTube: your domain, your storage,
+            your rules, no ads. It installs in minutes, the way you would install
+            WordPress, and a Go backend transcodes, serves and federates from one
+            4 vCPU, 8 GB box.
           </p>
           <div className="mt-9 flex flex-wrap gap-3">
             <Button href="/get-started" variant="vidra">
@@ -136,7 +138,7 @@ export default function HomePage() {
             </Button>
           </div>
           <p className="text-mono mt-7 text-onink-2">
-            {LICENCE} · one command to install · {VERSION}
+            {LICENCE} · Go backend · one command to install · {VERSION}
           </p>
         </div>
       </section>
@@ -299,7 +301,35 @@ export default function HomePage() {
         </p>
       </Section>
 
-      {/* 7 — Requirements. Mist, the quiet tint. */}
+      {/* 7 — How it compares. Ink.
+          This is the only slot on the page where an Ink section fits: it sits
+          between two light grounds (Paper above, Mist below), so the
+          never-two-Ink-in-a-row rhythm holds. */}
+      <Section ground="ink" media>
+        <div className="max-w-[1080px]">
+          <Eyebrow ground="ink">How it compares</Eyebrow>
+          <Head className="mt-3">Where Vidra differs, and where it does not.</Head>
+          <Standfirst ground="ink" className="mt-6">
+            Two of these columns agree more often than they differ — self-hosting
+            is the thing they share. Where Vidra parts company is federation,
+            runtime, and what you can do about egress.
+          </Standfirst>
+        </div>
+        <div className="mt-12">
+          <Comparison />
+        </div>
+        <p className="text-small mt-8 max-w-[72ch] text-onink-2">
+          Vidra is a clean-room implementation rather than a fork of anything,
+          and it is not PeerTube-API-compatible. Moving an existing PeerTube
+          instance across is supported and documented —{" "}
+          <TextLink href={DOCS.migration} external ground="ink">
+            read the migration overview
+          </TextLink>
+          .
+        </p>
+      </Section>
+
+      {/* 8 — Requirements. Mist, the quiet tint. */}
       <Section ground="mist" id="requirements">
         <Eyebrow>Requirements</Eyebrow>
         <Head className="mt-3">What it costs to run.</Head>
@@ -314,7 +344,7 @@ export default function HomePage() {
         <RequirementsTruths />
       </Section>
 
-      {/* 8 — Project. Ink. */}
+      {/* 9 — Project. Ink. */}
       <Section ground="ink">
         <Eyebrow ground="ink">The project</Eyebrow>
         <Head className="mt-3">Free software, and nothing behind it.</Head>
@@ -362,7 +392,7 @@ export default function HomePage() {
         </div>
       </Section>
 
-      {/* 9 — Final CTA. Paper. */}
+      {/* 10 — Final CTA. Paper. */}
       <Section ground="paper">
         <Head>Start with one command.</Head>
         <div className="mt-8">

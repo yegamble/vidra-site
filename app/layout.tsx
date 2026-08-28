@@ -3,13 +3,16 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import "./globals.css";
 
-/** The brand paragraph, unedited. It is the description everywhere. */
+/**
+ * The brand paragraph, opened with the phrase people actually search for.
+ * "Self-hosted alternative to YouTube" is the query; everything after it is the
+ * brand paragraph doing its usual job.
+ */
 const DESCRIPTION =
-  "Vidra is a federated video platform you install yourself, the way you would " +
-  "install WordPress. One low-cost server serves thousands or millions of viewers " +
-  "because egress is distributed rather than paid for. It federates over " +
-  "ActivityPub and ATProto, stores media on IPFS if you want it to, and it is " +
-  "free software under AGPL v3.";
+  "Vidra is a self-hosted, federated alternative to YouTube, written in Go. You " +
+  "install it yourself, the way you would install WordPress: your domain, your " +
+  "storage, your rules, no ads. It federates over ActivityPub and ATProto, " +
+  "stores media on IPFS if you want it to, and it is free software under AGPL v3.";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://vidra.yosef.app"),
