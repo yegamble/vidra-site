@@ -94,8 +94,8 @@ function Figure({ layer }: { layer: (typeof LAYERS)[number] }) {
       role="img"
       aria-label={`Your instance federating over ${layer.title}`}
     >
-      <Wire on={on("ap")} d="M200,112 H172 Q160,112 160,100 V84 Q160,72 148,72 H102" />
-      <Wire on={on("at")} d="M200,140 H172 Q160,140 160,152 V168 Q160,180 148,180 H102" />
+      <Wire on={on("ap")} d="M200,112 H172 Q160,112 160,100 V84 Q160,72 148,72 H113" />
+      <Wire on={on("at")} d="M200,140 H172 Q160,140 160,152 V168 Q160,180 148,180 H113" />
       <Wire on={on("ipfs")} d="M360,112 H388 Q400,112 400,100 V84 Q400,72 412,72 H450" />
       <Wire on={on("ipfs")} d="M360,140 H388 Q400,140 400,152 V168 Q400,180 412,180 H450" />
 
@@ -125,7 +125,7 @@ function Figure({ layer }: { layer: (typeof LAYERS)[number] }) {
       <circle
         cx={68}
         cy={72}
-        r={34}
+        r={44}
         fill={on("ap") ? "#EEF7FB" : "#F2F3F5"}
         stroke={on("ap") ? LIVE : DIM}
         strokeWidth={on("ap") ? 1.8 : 1.3}
@@ -136,7 +136,7 @@ function Figure({ layer }: { layer: (typeof LAYERS)[number] }) {
       <circle
         cx={68}
         cy={180}
-        r={34}
+        r={44}
         fill={on("at") ? "#EEF7FB" : "#F2F3F5"}
         stroke={on("at") ? LIVE : DIM}
         strokeWidth={on("at") ? 1.8 : 1.3}
