@@ -1,11 +1,11 @@
-/** Every route the site serves. A new page belongs in this list. */
-export const ROUTES = [
-  "/",
-  "/features",
-  "/use-cases",
-  "/get-started",
-  "/demo",
-] as const;
+/**
+ * Every route the site serves. A new page belongs in this list.
+ *
+ * `/get-started` is deliberately absent: it is a permanent redirect to the
+ * homepage's `#get-started` section, and it is asserted as one in
+ * `routes.spec.ts` rather than swept as a page.
+ */
+export const ROUTES = ["/", "/features", "/use-cases", "/demo"] as const;
 
 /**
  * The widths the site has to survive. Phone, tablet portrait, tablet

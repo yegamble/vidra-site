@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
-import { Button, TextLink } from "@/components/Button";
 import { Eyebrow, Head, Section, Standfirst } from "@/components/Section";
-import { DOCS } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Use cases",
@@ -13,7 +11,7 @@ type UseCase = {
   id: string;
   eyebrow: string;
   title: string;
-  scenario: string[];
+  scenario: [string, string];
   matters: { feature: string; why: string }[];
   sizing: string;
 };
@@ -25,7 +23,7 @@ const CASES: UseCase[] = [
     title: "An independent creator",
     scenario: [
       "You publish on a schedule and your back catalogue is the asset. What you do not want is for that catalogue to sit inside a recommendation system you cannot see, on terms that change without notice.",
-      "So you run one 4 vCPU box, put a CDN in front of it, and embed the player on your own pages. Your channel is addressable over ActivityPub, so people can follow it from wherever they already read. When a video is public, the IPFS tier can carry the bytes and your egress stops tracking your audience.",
+      "So you run one 4 vCPU box, put a CDN in front of it, and embed the player on your own pages. Your channel is addressable over ActivityPub, so people can follow it from wherever they already read.",
     ],
     matters: [
       {
@@ -53,7 +51,7 @@ const CASES: UseCase[] = [
     title: "A community or club",
     scenario: [
       "A few dozen members upload and a few hundred watch. The technical part is not the hard part — the hard part is that you are the person who answers for what appears on the instance.",
-      "Registration approval keeps signups behind a human. Reports give members a way to flag something and give you a queue to work through. Per-user quotas stop one enthusiastic uploader from filling the disk, and ClamAV scanning is a flag rather than a project, as long as you have budgeted the extra 2 GB of RAM.",
+      "Registration approval keeps signups behind a human. Per-user quotas stop one enthusiastic uploader from filling the disk, and ClamAV scanning is a flag rather than a project.",
     ],
     matters: [
       {
@@ -81,8 +79,8 @@ const CASES: UseCase[] = [
     eyebrow: "Several channels, live and archived",
     title: "A newsroom or podcast network",
     scenario: [
-      "You run several channels under one instance, and some of what you publish is live. A council meeting, a launch, a recorded interview that is embargoed until Thursday — each has a different audience and a different moment.",
-      "RTMP ingest takes the stream, privacy-gated HLS controls who can watch it while it is running, and the replay becomes a VOD without a second workflow. Embargoed material sits behind a scoped playback token rather than an unlisted URL, so forwarding the link does not publish it. Channel auto-sync mirroring keeps a feed you do not own in step with your own archive.",
+      "You run several channels under one instance, and some of what you publish is live. A council meeting, a launch, a recorded interview embargoed until Thursday — each has a different audience and a different moment.",
+      "RTMP ingest takes the stream, privacy-gated HLS controls who can watch it while it runs, and the replay becomes a VOD without a second workflow. Embargoed material sits behind a scoped playback token rather than an unlisted URL.",
     ],
     matters: [
       {
@@ -90,7 +88,7 @@ const CASES: UseCase[] = [
         why: "The stream and the archive are one pipeline, not two.",
       },
       {
-        feature: "Password-protected videos with scoped playback tokens",
+        feature: "Password-protected videos",
         why: "An embargo that survives somebody pasting the link into a group chat.",
       },
       {
@@ -102,8 +100,7 @@ const CASES: UseCase[] = [
         why: "Change instance behaviour during an event without a redeploy.",
       },
     ],
-    sizing:
-      "Public launch: 8 vCPU, 16 GB, 160 GB — around $168 a month. Live plus concurrent transcodes is the case that needs the larger box.",
+    sizing: "Public launch: 8 vCPU, 16 GB, 160 GB — around $168 a month.",
   },
   {
     id: "archive",
@@ -111,7 +108,7 @@ const CASES: UseCase[] = [
     title: "A course or conference archive",
     scenario: [
       "You have four years of talks and every one of them has to stay findable. Nobody browses an archive; they search it, half-remember the title, and give up if the first result is wrong.",
-      "Hybrid full-text and trigram search with typo-tolerant autosuggest is the difference between finding a 2023 keynote and not. Whisper captions make the spoken content searchable as well as accessible, storyboards and chapters make a 90-minute recording navigable, and WCAG 2.2 AA is enforced by axe as a hard CI gate — which matters when accessibility is an obligation rather than an aspiration.",
+      "Hybrid full-text and trigram search with typo-tolerant autosuggest is the difference between finding a 2023 keynote and not. Whisper captions make the spoken content searchable as well as accessible.",
     ],
     matters: [
       {
@@ -132,115 +129,67 @@ const CASES: UseCase[] = [
       },
     ],
     sizing:
-      "Small, private to start, moving to public launch as the back catalogue and concurrent viewers grow.",
+      "Small, private to start, moving to public launch as the catalogue and concurrent viewers grow.",
   },
 ];
-
-function Case({ item, ground }: { item: UseCase; ground: "ink" | "paper" }) {
-  const ink = ground === "ink";
-
-  return (
-    <div id={item.id} className="scroll-mt-20">
-      <Eyebrow ground={ground}>{item.eyebrow}</Eyebrow>
-      <Head className="mt-3">{item.title}</Head>
-      <div className="mt-8 grid gap-10 md:grid-cols-2 md:gap-12">
-        <div
-          className={`text-body space-y-5 ${ink ? "text-onink" : "text-onpaper-2"}`}
-        >
-          {item.scenario.map((p) => (
-            <p key={p.slice(0, 24)}>{p}</p>
-          ))}
-        </div>
-        <div>
-          <h3
-            className={`text-micro uppercase ${ink ? "text-onink-2" : "text-label"}`}
-          >
-            What matters here
-          </h3>
-          <dl className="mt-4 space-y-5">
-            {item.matters.map((m) => (
-              <div key={m.feature}>
-                <dt
-                  className={`text-body font-bold ${ink ? "text-onink" : "text-onpaper"}`}
-                >
-                  {m.feature}
-                </dt>
-                <dd
-                  className={`text-small mt-1 ${ink ? "text-onink-2" : "text-onpaper-2"}`}
-                >
-                  {m.why}
-                </dd>
-              </div>
-            ))}
-          </dl>
-          <p
-            className={`text-small mt-6 rounded-card p-4 ${
-              ink
-                ? "bg-ink-surface text-onink"
-                : "border border-paper-hairline bg-white text-onpaper"
-            }`}
-          >
-            <span
-              className={`text-micro block uppercase ${ink ? "text-onink-2" : "text-label"}`}
-            >
-              Sizing
-            </span>
-            <span className="mt-2 block">{item.sizing}</span>
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 export default function UseCasesPage() {
   return (
     <>
+      {/* 1 — Hero. Ink. */}
       <section className="on-ink bg-ink text-onink">
-        <div className="measure-text py-16 md:py-24">
+        <div className="measure-text py-12 md:py-24">
           <Eyebrow ground="ink">Use cases</Eyebrow>
           <Head as="h1" className="mt-3">
             Four instances, and what each one needs.
           </Head>
-          <Standfirst ground="ink" className="mt-6">
-            The same software, sized and configured four different ways. No
-            testimonials here — nobody has run it long enough to give one worth
-            printing.
+          <Standfirst ground="ink" className="mt-5">
+            The same software, sized and configured four different ways.
           </Standfirst>
         </div>
       </section>
 
+      {/* 2 — The four, as cards. Paper. */}
       <Section ground="paper">
-        <Case item={CASES[0]} ground="paper" />
-      </Section>
-
-      <Section ground="ink">
-        <Case item={CASES[1]} ground="ink" />
-      </Section>
-
-      <Section ground="paper">
-        <Case item={CASES[2]} ground="paper" />
-      </Section>
-
-      <Section ground="ink">
-        <Case item={CASES[3]} ground="ink" />
-      </Section>
-
-      <Section ground="mist">
-        <Head>Whichever one you are, it is the same install.</Head>
-        <p className="text-body mt-4 max-w-[66ch] text-onpaper-2">
-          The difference between these four is the size of the box and which
-          settings you change afterwards. Start on the small profile; the{" "}
-          <TextLink href="/#requirements">sizing table</TextLink> says when to
-          move up.
-        </p>
-        <div className="mt-8 flex flex-wrap gap-3">
-          <Button href="/get-started" variant="action">
-            Get started
-          </Button>
-          <Button href={DOCS.root} external variant="ink-outline">
-            Read the docs
-          </Button>
+        <div className="flex flex-col gap-11">
+          {CASES.map((item) => (
+            <article
+              key={item.id}
+              id={item.id}
+              className="rounded-card border border-paper-hairline bg-white p-6 scroll-mt-18"
+            >
+              <p className="text-micro uppercase text-label">{item.eyebrow}</p>
+              <h2 className="text-head mt-2">{item.title}</h2>
+              <div className="mt-5 grid gap-6 md:grid-cols-2">
+                <div className="text-body flex flex-col gap-4 text-onpaper-2">
+                  {item.scenario.map((p) => (
+                    <p key={p.slice(0, 24)}>{p}</p>
+                  ))}
+                </div>
+                <div>
+                  <h3 className="text-micro uppercase text-label">
+                    What matters here
+                  </h3>
+                  <dl className="mt-4 flex flex-col gap-4">
+                    {item.matters.map((m) => (
+                      <div key={m.feature}>
+                        <dt className="text-body font-bold">{m.feature}</dt>
+                        <dd className="text-small mt-1 text-onpaper-2">
+                          {m.why}
+                        </dd>
+                      </div>
+                    ))}
+                  </dl>
+                  <p className="text-small mt-5 rounded-xl bg-mist p-4 text-onpaper">
+                    <span className="text-micro block uppercase text-label">
+                      Sizing
+                    </span>
+                    <span className="mt-2 block">{item.sizing}</span>
+                  </p>
+                </div>
+              </div>
+            </article>
+          ))}
         </div>
       </Section>
     </>

@@ -1,7 +1,7 @@
 # Vidra Site — Testing
 
 Status: living document. Tests serve the site; they are not busywork. This is a
-five-route marketing site, so the tests that matter are the ones that catch a
+four-route marketing site, so the tests that matter are the ones that catch a
 page looking wrong on a screen nobody developed on.
 
 ## Layers
@@ -11,8 +11,8 @@ page looking wrong on a screen nobody developed on.
 | Lint | `npm run lint` | ESLint + `eslint-config-next`, type-aware rules |
 | Brand gate | `npm run check:brand` (`scripts/brand-check.mjs`) | banned hype words, emoji/dingbats, indigo hexes in `app/`, `components/`, `lib/` |
 | Build | `npm run build` | compile **and** the TypeScript check — `next build` type-checks everything `tsconfig.json` includes, `e2e/` included |
-| Route smoke | `e2e/routes.spec.ts` | every route 200s and renders an `h1`; an unknown route is a real 404 |
-| Responsive | `e2e/responsive.spec.ts` | horizontal overflow, elements past the right edge, lockup height, hero + CTA, the diagram's scroll container, the comparison's stacked/table swap, the Ink/Paper rhythm |
+| Route smoke | `e2e/routes.spec.ts` | every route 200s and renders an `h1`; `/get-started` is a 308 to `/#get-started`; an unknown route is a real 404 |
+| Responsive | `e2e/responsive.spec.ts` | horizontal overflow, elements past the right edge, lockup height, the glass header's ground, hero headline + CTA, the eight-node architecture explorer, the install tablist, the sizing calculator's profile flip, the mobile install bar and menu overlay, the federation walkthrough, the comparison's stacked/table swap on `/features`, the Ink/Paper/Mist rhythm |
 | Accessibility | `e2e/a11y.spec.ts` | axe serious/critical on every route at 390 and 1440; one `<main>`; every `<nav>` named |
 | Hit targets | `e2e/touch-targets.spec.ts` | every visible `<a>`/`<button>` ≥ 44×44px at 390, incl. the open mobile menu |
 

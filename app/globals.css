@@ -29,6 +29,8 @@
   --color-ink-surface: var(--brand-ink-surface);
   --color-ink-hairline: var(--brand-ink-hairline);
   --color-paper-hairline: var(--brand-paper-hairline);
+  --color-ink-chip: var(--brand-ink-chip);
+  --color-vidra-tint: var(--brand-vidra-tint);
 
   /* Type */
   --font-sans: var(--brand-font-sans);
@@ -117,6 +119,17 @@
     color: var(--brand-ink);
   }
 
+  /* Range sliders. The native control is the right control here — it is
+     keyboard-operable, it announces its value, and it needs no JavaScript to
+     be one. The 44px height is the HIG hit target measured on the track, not
+     on the thumb, so a thumb lands anywhere in the row. */
+  input[type="range"] {
+    accent-color: var(--brand-action-cyan);
+    height: 44px;
+    width: 100%;
+    cursor: pointer;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     html {
       scroll-behavior: auto;
@@ -154,24 +167,104 @@
   }
 }
 
-/* Hatched slot for a screenshot that does not exist yet. Ink-tinted crosshatch,
-   no gradient — a template placeholder, clearly labelled as one. */
-@utility hatch-paper {
-  background-image: repeating-linear-gradient(
-    45deg,
-    rgb(12 33 54 / 0.06) 0,
-    rgb(12 33 54 / 0.06) 1px,
-    transparent 1px,
-    transparent 9px
-  );
+/* The 72px graph-paper mask behind the home hero. Atmosphere on Ink, drawn in
+   Slate at 0.35 alpha and faded out by a radial mask — not a gradient fill on
+   an element. Documented exception in .ralph/specs/design-system.md. */
+@utility hero-grid {
+  background-image:
+    linear-gradient(var(--brand-ink-hairline) 1px, transparent 1px),
+    linear-gradient(90deg, var(--brand-ink-hairline) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: radial-gradient(80% 60% at 70% 0%, #000, transparent 70%);
+  -webkit-mask-image: radial-gradient(80% 60% at 70% 0%, #000, transparent 70%);
 }
 
-@utility hatch-ink {
-  background-image: repeating-linear-gradient(
-    45deg,
-    rgb(203 242 244 / 0.07) 0,
-    rgb(203 242 244 / 0.07) 1px,
-    transparent 1px,
-    transparent 9px
-  );
+/* ---------------------------------------------------------------------------
+   Glass, on the NAVIGATION layer only.
+   The "no glass anywhere" rule was overturned on 2026-08-28 (see
+   .ralph/specs/design-system.md, "Overturned rules"). Apple's HIG puts
+   materials on the navigation layer and nowhere else, and that is exactly the
+   scope here: the sticky header and the sticky mobile install bar. Never a
+   content section.
+
+   Three grounds, in order of precedence:
+     1. solid Ink            — the fallback, and what every unsupported or
+                               reduced-transparency reader gets
+     2. translucent + blur   — only inside @supports, so no browser ever gets
+                               a translucent ground it cannot blur (that is
+                               how text lands on a moving background)
+     3. solid Ink again      — forced back under prefers-reduced-transparency
+                               and prefers-contrast: more
+   These rules sit outside every cascade layer on purpose: the chrome ground is
+   not a utility to be overridden by one.
+   --------------------------------------------------------------------------- */
+.glass-chrome {
+  background-color: var(--brand-ink);
+}
+
+@supports (
+  (backdrop-filter: blur(14px)) or (-webkit-backdrop-filter: blur(14px))
+) {
+  .glass-chrome {
+    background-color: var(--brand-chrome-ink);
+    backdrop-filter: var(--brand-chrome-blur);
+    -webkit-backdrop-filter: var(--brand-chrome-blur);
+  }
+
+  .glass-chrome-bar {
+    background-color: var(--brand-chrome-ink-bar);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+  .glass-chrome,
+  .glass-chrome-bar {
+    background-color: var(--brand-ink);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+/* Motion vocabulary. All three are neutralised by the global
+   prefers-reduced-motion reset above; components never branch on it. */
+@keyframes vd-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* The one infinite animation on the site. It is a documented exception to the
+   300ms cap: on the federation figure it is the thing that says which way the
+   bytes travel, and a 300ms one-shot cannot say that. */
+@keyframes vd-dash {
+  to {
+    stroke-dashoffset: -24;
+  }
+}
+
+@keyframes vd-fade {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@utility animate-pulse-dot {
+  animation: vd-pulse 2.4s ease-in-out infinite;
+}
+
+@utility animate-flow {
+  animation: vd-dash 1.1s linear infinite;
+}
+
+@utility animate-panel-in {
+  animation: vd-fade 200ms ease-out;
 }

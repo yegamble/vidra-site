@@ -3,8 +3,16 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { NAV } from "@/lib/site";
+import { INSTALL_ANCHOR, NAV } from "@/lib/site";
 
+/**
+ * The phone menu is a full-screen Ink overlay under the header, not a dropdown:
+ * five 56px rows separated by hairlines, with the call to action at the end.
+ *
+ * Solid Ink, deliberately — glass is a navigation-layer material and this is a
+ * full-bleed content surface once it is open. Blurring the page behind a sheet
+ * of text is exactly the case the reduced-transparency rule exists for.
+ */
 export function MobileNav() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
@@ -30,6 +38,9 @@ export function MobileNav() {
       document.body.style.overflow = previous;
     };
   }, [open]);
+
+  const row =
+    "flex min-h-14 items-center border-b border-slate/60 text-sub text-onink";
 
   return (
     <div className="md:hidden">
@@ -66,37 +77,27 @@ export function MobileNav() {
       {open ? (
         <div
           id="mobile-nav"
-          className="fixed inset-x-0 top-16 bottom-0 overflow-y-auto border-t border-slate/60 bg-ink"
+          className="animate-panel-in fixed inset-x-0 top-16 bottom-0 z-50 overflow-y-auto bg-ink"
         >
-          <ul className="measure-text flex flex-col py-4">
-            {NAV.map((item) => (
-              <li key={item.href}>
-                {item.external ? (
-                  <a
-                    href={item.href}
-                    className="block py-3 text-body text-onink"
-                  >
-                    {item.label}
-                  </a>
-                ) : (
-                  <Link
-                    href={item.href}
-                    className="block py-3 text-body text-onink"
-                  >
-                    {item.label}
-                  </Link>
-                )}
-              </li>
-            ))}
-            <li>
-              <Link
-                href="/get-started"
-                className="mt-2 mb-3 inline-flex rounded-button bg-vidra px-5 py-3 text-small font-semibold text-ink"
-              >
-                Get started
-              </Link>
-            </li>
-          </ul>
+          <nav aria-label="Mobile" className="measure-text flex flex-col py-3">
+            {NAV.map((item) =>
+              item.external ? (
+                <a key={item.href} href={item.href} className={row}>
+                  {item.label}
+                </a>
+              ) : (
+                <Link key={item.href} href={item.href} className={row}>
+                  {item.label}
+                </Link>
+              ),
+            )}
+            <Link
+              href={INSTALL_ANCHOR}
+              className="mt-6 inline-flex min-h-13 items-center justify-center rounded-button bg-vidra px-5 text-body font-semibold text-ink"
+            >
+              Get started
+            </Link>
+          </nav>
         </div>
       ) : null}
     </div>

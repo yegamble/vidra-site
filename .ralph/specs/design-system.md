@@ -1,8 +1,11 @@
 # Vidra Site — Design System
 
-> Status: **BRAND SURFACE, v1 LANDED 2026-08-28** (palette + type ramp + section
-> rhythm in `app/brand.css`, wired into Tailwind through `@theme inline` in
-> `app/globals.css`; Playwright gates in `e2e/`). Source of truth: the
+> Status: **BRAND SURFACE, v1 LANDED 2026-08-28; REDESIGN LANDED 2026-08-28**
+> (palette + type ramp + section rhythm in `app/brand.css`, wired into Tailwind
+> through `@theme inline` in `app/globals.css`; Playwright gates in `e2e/`. The
+> redesign added the four interactive widgets, glass navigation chrome and the
+> mobile install bar — see "Interactive widgets" and "Overturned rules".)
+> Source of truth: the
 > **vidra-branding** repo — `guidelines/brand-guidelines.md` **v1.1** and
 > `design-system/brand-tokens.css`. `app/brand.css` is a *copy* of that, and
 > copies drift: **where this spec or `app/brand.css` diverges from the branding
@@ -43,7 +46,8 @@ gives the discipline that makes them stick:
 - **Clarity** — type and spacing carry the hierarchy. Never shrink type or
   tighten padding to fit more in.
 - **Depth** — hairlines and one flat translucent surface (`--brand-ink-surface`)
-  convey layering. Never heavy shadows, never glass.
+  convey layering. Never heavy shadows. Glass is confined to the navigation
+  layer (see "Overturned rules"); in content it is still a defect.
 
 The intangibles are binding, not advisory (HCL, "authorial discipline"):
 
@@ -72,7 +76,7 @@ Every value comes from `app/brand.css`, which carries the measured ratios in its
 header comment. **Never write a raw hex in a component** — use the Tailwind
 token (`bg-ink`, `text-onink-2`, `ring-paper-hairline`). The one sanctioned
 exception is drawn artwork whose fills are part of the asset: `Lockup.tsx` and
-`ArchitectureDiagram.tsx` (see "Documented exceptions").
+`FederationFigure.tsx` (see "Documented exceptions").
 
 | Token | Hex | Job | Honest contrast |
 |---|---|---|---|
@@ -100,8 +104,9 @@ Never set cyan type on Paper below 20px (`brand-guidelines.md` §08).
 
 **Section rhythm.** The long scroll alternates Ink and Paper and **never puts
 two Ink sections in a row**; Mist is the quiet third ground and appears once.
+The homepage runs Ink · Paper · Ink · Paper · Ink · Paper · Mist · Ink.
 (`e2e/responsive.spec.ts` asserts the rhythm on `/` by reading the computed
-background of every `main > section`.)
+background of every `main > section`, and asserts Mist appears exactly once.)
 
 **Never colour alone.** A state carries a glyph or a word as well as a colour.
 The comparison table marks its third column with a heading colour *and* a fill
@@ -172,10 +177,42 @@ to get a button.
   (`e2e/a11y.spec.ts` + `:focus-visible`.)
 - **Scrollable regions** must be focusable and named: `tabIndex={0}`,
   `role="group"`, `aria-label` (see Accessibility).
-- **No glass on this site.** No `backdrop-filter`, no translucent chrome. The
-  one permitted non-flat treatment is the single radial atmosphere on the home
-  hero. No gradients otherwise — the tri-protocol ribbon is a *product* asset
-  and does not belong here.
+- ~~**No glass on this site.** No `backdrop-filter`, no translucent chrome.~~
+  **Overturned 2026-08-28 — see "Overturned rules".** Glass is permitted on the
+  **navigation layer only** (`.glass-chrome` in `app/globals.css`: the sticky
+  header and the sticky mobile install bar), always with a solid Ink fallback.
+  **Never in a content section.**
+- **No gradients** beyond the two documented atmospheres on the home hero — the
+  tri-protocol ribbon is a *product* asset and does not belong here.
+
+### Interactive widgets
+
+The redesign added four. The rules they share, all of them gated:
+
+- **Everything clears 44×44px**, including a tab in a tablist and a node button
+  in a grid. `min-h-11` is the floor; `min-h-13` (52px) is the primary action
+  at the top and bottom of a page; node buttons are `min-h-16` because they
+  carry two lines.
+- **Tabs** (`InstallTabs.tsx`) follow the WAI-ARIA tablist pattern with a
+  **roving tabindex**: `role="tablist"` with an `aria-label`, `role="tab"` with
+  `aria-selected` and `aria-controls`, `tabIndex={0}` on the selected tab and
+  `-1` on the rest, Left/Right/Up/Down/Home/End moving focus *and* selection
+  (automatic activation — nothing here loads, so deferring selection would only
+  add a keystroke). The panel is `role="tabpanel"` + `aria-live="polite"`,
+  labelled by its tab.
+- **Toggles** (the calculator's two option pills, the eight node buttons) are
+  `<button aria-pressed>`, never a styled checkbox and never colour alone: the
+  pressed state changes fill *and* is announced.
+- **Result panels** that change without the reader moving focus —
+  `SizingCalculator`'s box, `ArchitectureExplorer`'s detail, the federation
+  body — are `aria-live="polite"`. A number that changes silently is a control
+  a screen-reader user cannot use.
+- **Sliders** are native `<input type="range">`, labelled with `<label for>`,
+  with the live value in the label so it is announced with the name. The 44px
+  track height lives in `app/globals.css`, not on the element.
+- **Panels reserve their tallest state** (`min-h-[4.6em]`, `min-h-[5.2em]`) so
+  the controls under them do not jump between steps. A reserved line count is a
+  measure, like `max-w-[66ch]` — not an arbitrary pixel.
 
 ## Imagery
 
@@ -185,16 +222,23 @@ library, no mockups, and above all **no fabricated screenshots** — a rendered
 
 - Real captures from running instances only, on Ink or Paper, 16px radius, no
   drop shadow, cropped to the region that proves the point.
-- Until a capture exists, the slot is a **labelled placeholder**
-  (`ScreenSlot.tsx`): a hatched, dashed 16:9 box whose caption says out loud
-  that it is empty on purpose.
-- Drawn diagrams are allowed where they are *true*: `ArchitectureDiagram.tsx`
-  is the shipped compose file, and every port on it is the port the container
-  listens on.
+- Until a capture exists, **the slot is nothing.** The hatched placeholder
+  (`ScreenSlot.tsx`) is gone: a labelled empty box is more honest than a
+  mockup, but it is still a hole in the page, and three of them read as an
+  unfinished site rather than a candid one. Where a screenshot would have gone,
+  the page now carries something real — the calculator, the topology explorer,
+  the federation walkthrough. **Show the product, show a true drawing, or say
+  the thing in words.**
+- Drawn diagrams are allowed where they are *true*: `FederationFigure.tsx` is
+  the three federation layers, and nothing in it is a claim that is not made in
+  words beside it.
 
 ## Motion
 
-- **Hard cap 300ms.** 150ms for fills, 200ms for lifts. Nothing longer.
+- **Hard cap 300ms.** 150ms for fills, 200ms for lifts. Nothing longer. Two
+  looping exceptions are documented below; both are ambient, both stop dead
+  under `prefers-reduced-motion`, and a third would need the same argument
+  made in writing before it shipped.
 - **No parallax, no bounce, no scroll-driven reveals.** Motion explains cause
   and effect or it does not ship.
 - **`prefers-reduced-motion` is neutralised globally** in `app/globals.css`
@@ -233,10 +277,9 @@ with the product, which enforces 2.2 in its own CI.)
   `role="group"` and an `aria-label` that says what it is and that it scrolls —
   otherwise a keyboard user cannot reach the content past the fold (WCAG 2.1.1;
   axe `scrollable-region-focusable`, which is **serious**). The canonical
-  implementation is **`CommandBlock.tsx`**'s `<pre>`; `RequirementsTable.tsx`'s
-  wrapper matches it. Scrolling is for *rows of data and commands* — a whole
-  diagram must not rely on it (see the overturned rule in Known failure
-  classes).
+  implementation is **`CommandBlock.tsx`**'s `<pre>`. Scrolling is for *rows of
+  data and commands* — a whole diagram must not rely on it (see the overturned
+  rule in Known failure classes).
 - **Skip link** to `#main` on every page.
 - **`rem` sizing** so the reader's own font-size setting scales the site
   (os-hcl's "Dynamic Type equivalence").
@@ -248,17 +291,46 @@ The only sanctioned departures. Anything else is a defect.
 1. **The `→` (U+2192) in link labels.** "Read what the installer does →" and
    friends. It is a typographic mark, not an emoji and not an icon; the brand
    check allows it explicitly, and the "no emoji" rule is not weakened by it.
-2. **Hatched placeholder slots** (`ScreenSlot.tsx`) — a `repeating-linear-gradient`
-   crosshatch. It is the one background image on the site, and it exists to
-   look unmistakably like a placeholder rather than a design.
-3. **The radial atmosphere on the home Ink hero** — one
-   `radial-gradient(70% 62% at 18% -6%, …)` in Vidra Cyan at 0.20 alpha, inline
-   because it is a one-off. This is the only non-flat treatment on any brand
-   surface here, and there is exactly one of it. A second one is a defect.
+2. **The radial atmosphere on the home Ink hero** — one
+   `radial-gradient(70% 62% at 18% -6%, …)` in Vidra Cyan at 0.22 alpha, inline
+   because it is a one-off. There is exactly one of it, on one section.
+3. **The 72px grid mask on the home Ink hero** (`hero-grid` in
+   `app/globals.css`) — two 1px `linear-gradient` rules in Slate at 0.35 alpha,
+   at a 72px pitch, faded out by a radial `mask-image` before it reaches the
+   type. It sits on the same `aria-hidden` layer as the radial and behind the
+   same `-z-10`. It is atmosphere on Ink, not a fill on an element, and like
+   the radial there is exactly one of it. A second grid, or a grid on any other
+   section, is a defect.
 4. **Raw hex inside drawn artwork.** `Lockup.tsx` (the otter's nine fills, which
-   are never recoloured) and `ArchitectureDiagram.tsx` (SVG `fill`/`stroke`,
-   which cannot read Tailwind tokens). Both are vendored drawings, not styled
-   components; every hex in them is a palette value.
+   are never recoloured) and `FederationFigure.tsx` (SVG `fill`/`stroke`, which
+   cannot read Tailwind tokens). Both are drawings, not styled components;
+   every hex in them is a palette value.
+5. **The pulse on the hero version pill** — `vd-pulse`, a 2.4s opacity loop on
+   a 8px dot. Ambient, `aria-hidden`, and the only thing it says is "this is
+   the current release".
+6. **The travelling dash on the federation figure** — `vd-dash`, a 1.1s linear
+   `stroke-dashoffset` loop on the active wires. This is an **infinite
+   animation and a deliberate exception to the 300ms cap**: the figure's whole
+   job is to say which way bytes travel, and direction of travel is not
+   something a 300ms one-shot can express — a static dashed line says
+   "connection", a moving one says "flow, this way". It is confined to the two
+   or three wires that are live for the current step, it carries no
+   information that is not also in the text beside it, and the global
+   `prefers-reduced-motion` reset neutralises it completely (the dashes
+   remain, they simply stop). If a third infinite animation is ever proposed,
+   it needs this paragraph written for it first.
+7. **The federation figure's in-drawing labels fall below the type ramp on a
+   phone.** The `560 × 250` viewBox scaled into a ~302px phone column renders
+   its 15-unit labels at roughly 8px — under the 11px micro floor. This is
+   accepted, and it is accepted *only* because of what the figure is: at that
+   width it is read as a shape (one instance, three destinations, one live
+   wire) and **every word in it is repeated immediately beneath it** in the
+   step's label, title, body and counter, plus the SVG's own `aria-label`. It
+   is also why the figure is not a candidate for the portrait-variant rule —
+   there is nothing in it to rescue. The labels were already raised from the
+   handoff's 12.5 units to 15. **Do not put a claim in this drawing that is
+   not also in the paragraph under it**, and if the figure ever has to carry
+   something on its own, it stops being an SVG (see Known failure classes).
 
 ## Known failure classes (real precedents from this repo)
 
@@ -280,16 +352,35 @@ The only sanctioned departures. Anything else is a defect.
   count sweep greps the whole repo, not the pages you remember. The same applies
   to the 228-path OpenAPI contract and the 121 migrations — if you change one,
   check the source, do not copy the neighbouring prose.
-- **The diagram was unreadable at 390px — twice.** A `viewBox` that fits 960px
-  of boxes scaled to a 342px phone column renders 12px labels at ~4px. The
-  first fix (a `min-w-[820px]` drawing in a focusable `overflow-x-auto`
-  container) is **overturned**: it kept the labels legible but pushed half the
-  topology off the screen with no visible cue that it scrolls. The rule now:
-  **complex diagrams get a portrait variant below `md`** — a top-to-bottom
-  redraw of the same data, `hidden`/`md:hidden` paired so exactly one variant
-  is in the accessibility tree, nothing scrolling, nothing cut off (the
-  comparison table's contract). (`e2e/responsive.spec.ts` asserts the portrait
-  variant is visible and fully on screen at 390, the wide one at 1440.)
+- **A count came back in through a design file.** The 2026-08 redesign arrived
+  as a finished HTML design whose copy said **"13 durable queues"** — once in
+  the `vidra-core` node body and again in the Operate feature row. That number
+  is not checkable against the tree: the same class of defect as the doctor
+  count, arriving through a door nobody was watching, because *design* copy
+  reads as settled rather than as a claim. The pre-build sweep caught it and
+  both places are unpinned ("durable queues"; "queued work survives a
+  restart"). **Copy from a design handoff is copy, and copy gets the count
+  sweep** — a handoff is not a source. Both sites carry a comment
+  (`components/ArchitectureExplorer.tsx`, `app/features/page.tsx`) so the next
+  person to "restore the design's wording" reads why the number is not there.
+- **The diagram was unreadable at 390px — three times, and then it stopped
+  being a diagram.** A `viewBox` that fits 960px of boxes scaled to a 342px
+  phone column renders 12px labels at ~4px. Fix one (a `min-w-[820px]` drawing
+  in a focusable `overflow-x-auto` container) kept the labels legible and
+  pushed half the topology off the screen with no cue that it scrolled. Fix two
+  (a portrait variant below `md`, `hidden`/`md:hidden` paired) was legible, and
+  cost two copies of the same topology that had to be kept in step by hand.
+  **Fix three deleted the drawing.** `ArchitectureExplorer.tsx` is eight
+  buttons and a detail panel: it reflows instead of being redrawn, every label
+  is live text at the reader's own font size, and it had room for the thing the
+  drawing never had room for — what each container is *for*.
+  **The rule: if a drawing needs a second drawing to survive a phone, the
+  drawing is the wrong component.** Reach for reflowing text and controls
+  first; keep SVG for figures that are genuinely pictorial and whose content is
+  repeated in words (`FederationFigure.tsx`). The portrait-variant rule still
+  stands for anything that *is* inherently drawn — it is the fallback, not the
+  first move. (`e2e/responsive.spec.ts` asserts the eight nodes fit and the
+  panel answers at both 390 and 1440.)
 - **Hit targets that are comfortable with a mouse and a miss with a thumb.**
   The header home link wrapped a 36px lockup with no height of its own; the
   `CommandBlock` copy button was 69×39. Both passed every visual review and
@@ -301,6 +392,65 @@ The only sanctioned departures. Anything else is a defect.
 
 ## Overturned rules
 
-None yet. When a rule here is overturned, **say so in place** — strike the old
-rule, state that it is overturned and why. Silently editing a guardrail loses
-the reason it existed, and the next agent re-introduces the bug it prevented.
+When a rule here is overturned, **say so in place** — strike the old rule,
+state that it is overturned and why. Silently editing a guardrail loses the
+reason it existed, and the next agent re-introduces the bug it prevented.
+
+### 2026-08-28 — "No glass on this site" is overturned for the navigation layer
+
+**The old rule** (Components, and the "never glass" clause under Depth):
+
+> No `backdrop-filter`, no translucent chrome.
+
+**The new rule:** glass — blurred, translucent Ink — is permitted on the
+**navigation layer only**: the sticky header and the sticky mobile install bar.
+It is a defect anywhere else, and specifically in any content section.
+
+**Why it was overturned.** The original rule was written to stop glass being
+used as decoration on content, which is where it fails: text over a blurred,
+moving background is the contrast bug you cannot compute in advance. It was
+written as "never", which was the right shape for a site whose chrome was a
+thin opaque bar. It is the wrong shape now that the header is sticky over eight
+alternating grounds. Apple's HIG puts materials on the navigation layer and
+nowhere else, for exactly this reason: chrome that floats over content should
+read as chrome, and an opaque bar sliding over an Ink section looks like a
+seam. The product's own `.glass-chrome` rule already says the same thing. So
+the rule was too broad, not wrong — it is narrowed to its actual target rather
+than deleted.
+
+**What the permission costs, in full — all of it non-negotiable:**
+
+1. **A solid Ink fallback is the default, not the fallback.**
+   `.glass-chrome` in `app/globals.css` sets `background-color:
+   var(--brand-ink)` unconditionally, and only *then* opts into the
+   translucent ground inside `@supports ((backdrop-filter: blur(14px)) or
+   (-webkit-backdrop-filter: blur(14px)))`. No browser is ever handed a
+   translucent ground it cannot blur — that combination is how nav links land
+   on a moving background.
+2. **`prefers-reduced-transparency: reduce` and `prefers-contrast: more`
+   force the solid ground back** and drop the filter. A reader who has asked
+   the OS for less of this gets none of it.
+3. **Ink at 0.92 (header) / 0.94 (bar), never lower.** Composited over the
+   lightest ground on the site (Paper `#F5F5F7`) that is ~`#1F3245`, on which
+   `#8FB4C9` nav links still clear AA comfortably and `#E6F6FA` clears AAA. The
+   alpha is a contrast floor, not a taste setting: lowering it is a contrast
+   regression, and `e2e/responsive.spec.ts` asserts the header's computed
+   ground is Ink at ≥ 0.90 or solid.
+4. **Navigation layer means navigation layer.** Sticky header, sticky mobile
+   bar. The mobile menu overlay is *solid* Ink despite being nav-adjacent,
+   because once it is open it is a full-bleed surface of text, not chrome.
+5. **Content sections stay flat.** `--brand-ink-surface` is still the only
+   translucent surface in content, and it is flat — no filter behind it.
+
+The tokens live in `app/brand.css` as `--brand-chrome-ink`,
+`--brand-chrome-ink-bar` and `--brand-chrome-blur`, so the values are named
+once rather than being an `rgba()` copied into two components and drifting.
+
+### 2026-08-28 — the home headline
+
+The hero H1 is **"Your videos. Your server. Your rules."** — three claims of
+ownership, which is the thing the reader is actually deciding about.
+**"Run your own video platform." remains the brand positioning line** and is
+unchanged where positioning belongs: the `<title>`/OpenGraph metadata and the
+footer's bottom bar. The two are not competing; one is the page's argument and
+the other is the brand's sentence. Do not "unify" them.

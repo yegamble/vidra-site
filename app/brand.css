@@ -50,6 +50,22 @@
   --brand-ink-hairline: rgb(29 70 106 / 0.6);
   --brand-paper-hairline: rgb(12 33 54 / 0.12);
 
+  /* Ink at high alpha, and a tint of the brand cyan. Named here rather than
+   * repeated inline: the 2026-08 redesign uses each of them in more than one
+   * place, and an rgba() copied ten times is how a palette drifts.
+   *   chrome-ink       — the glass navigation ground (sticky header)
+   *   chrome-ink-bar   — the same, one notch more opaque, for the bottom bar
+   *   chrome-blur      — the backdrop-filter the two chrome layers share
+   *   ink-chip         — a recessed pill on an already-recessed Ink surface
+   *   vidra-tint       — the selected state of a node button, 0.14 alpha
+   * The glass values are the NAVIGATION layer only; see
+   * .ralph/specs/design-system.md, "Overturned rules". */
+  --brand-chrome-ink: rgb(12 33 54 / 0.92);
+  --brand-chrome-ink-bar: rgb(12 33 54 / 0.94);
+  --brand-chrome-blur: saturate(160%) blur(14px);
+  --brand-ink-chip: rgb(12 33 54 / 0.6);
+  --brand-vidra-tint: rgb(34 189 227 / 0.14);
+
   /* Type. System stack only — nothing is licensed, nothing downloads. */
   --brand-font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI",
     "Helvetica Neue", Arial, sans-serif;

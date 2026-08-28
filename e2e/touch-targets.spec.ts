@@ -16,6 +16,11 @@ import { PHONE, ROUTES } from "./routes";
  *    as the skip link before it takes focus) have no visual target to hit.
  *
  * Anything else that fails is a component to fix, not an entry to add here.
+ *
+ * The sweep is `a, button`, so `<input type="range">` is not measured here.
+ * It does not need to be: `app/globals.css` gives every range input a 44px
+ * track height, which is the number this file would have checked. Passing
+ * beats exempting.
  */
 
 const FLOOR = 44;

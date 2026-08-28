@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Lockup from "@/components/Lockup";
-import { DOCS, GITHUB, LICENCE } from "@/lib/site";
+import { DOCS, GITHUB, INSTALL_ANCHOR, LICENCE } from "@/lib/site";
 
 type Item = { label: string; href: string; external: boolean };
 
@@ -10,8 +10,7 @@ const columns: { heading: string; items: Item[] }[] = [
     items: [
       { label: "Features", href: "/features", external: false },
       { label: "Use cases", href: "/use-cases", external: false },
-      { label: "Get started", href: "/get-started", external: false },
-      { label: "Demo", href: "/demo", external: false },
+      { label: "Get started", href: INSTALL_ANCHOR, external: false },
     ],
   },
   {
@@ -20,7 +19,6 @@ const columns: { heading: string; items: Item[] }[] = [
       { label: "Docs", href: DOCS.root, external: true },
       { label: "GitHub", href: GITHUB.meta, external: true },
       { label: `Licence — ${LICENCE}`, href: GITHUB.licence, external: true },
-      { label: "Brand", href: GITHUB.branding, external: true },
     ],
   },
   {

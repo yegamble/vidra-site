@@ -29,7 +29,7 @@ never claim a suite passed that you did not run.
 2. **Tokens only.** Colours come from `app/brand.css` via the Tailwind theme
    (`bg-ink`, `text-onink-2`, `ring-paper-hairline`). A raw hex in a component
    is a review defect, except inside vendored drawings (`Lockup.tsx`,
-   `ArchitectureDiagram.tsx`). **No indigo anywhere** — this is a brand
+   `FederationFigure.tsx`). **No indigo anywhere** — this is a brand
    surface; indigo belongs to the product. No `dark:` variants: the site is
    Ink/Paper by section, not mode-switched.
 3. **No webfonts, no emoji, no UI kit.** System stack only. Components here are
@@ -63,9 +63,13 @@ never claim a suite passed that you did not run.
   and drives the colour explicitly (`Lockup.tsx`).
 - **Counts drift** (hard rule 5) — and a count sweep greps the whole repo, not
   the pages you remember.
-- **The diagram was unreadable at 390px** until it got a minimum drawn width
-  inside a focusable, named `overflow-x-auto` container. Keep drawings legible
-  and let them scroll; do not squash them.
+- **The diagram was unreadable at 390px three times, and then stopped being a
+  diagram.** Scroll container, then a portrait variant, then eight buttons and
+  a detail panel (`ArchitectureExplorer.tsx`). If a drawing needs a second
+  drawing to survive a phone, the drawing is the wrong component — reach for
+  reflowing text and controls first.
+- **A count came back in through a design file** ("13 durable queues", in a
+  finished HTML handoff). Design copy is copy, and copy gets the count sweep.
 
 ## PR conventions
 

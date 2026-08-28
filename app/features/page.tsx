@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import { Button } from "@/components/Button";
+import { Comparison } from "@/components/Comparison";
 import { NotYet } from "@/components/NotYet";
-import { ScreenSlot } from "@/components/ScreenSlot";
+import { TextLink } from "@/components/Button";
 import { Eyebrow, Head, Section, Standfirst } from "@/components/Section";
 import { DOCS, VERSION } from "@/lib/site";
 
@@ -61,10 +61,6 @@ const GROUPS: Group[] = [
         detail: "HEVC and AV1 are behind flags and default to off.",
       },
       {
-        feature: "Hardware transcode flag",
-        detail: "Hand encoding to the host's accelerator where there is one.",
-      },
-      {
         feature: "Live streaming",
         detail:
           "RTMP ingest with privacy-gated HLS output, and a replay that becomes a VOD when the stream ends.",
@@ -113,7 +109,7 @@ const GROUPS: Group[] = [
   },
   {
     name: "Find",
-    intro: "Search and ranking, with the parts that are still on probation labelled.",
+    intro: "Search and ranking, with the parts still on probation labelled.",
     rows: [
       {
         feature: "Hybrid full-text and trigram search",
@@ -203,6 +199,9 @@ const GROUPS: Group[] = [
           "setup, doctor, status, logs, deploy, rollback, backup and restore, all scripted.",
       },
       {
+        // 26 is the length of the `checks` slice in
+        // vidra-core/internal/doctor/doctor.go. The meta-repo README still
+        // says 18; the code is the source, not the README.
         feature: "vidra doctor",
         detail: "26 checks against a running instance, with the failure named.",
       },
@@ -215,16 +214,15 @@ const GROUPS: Group[] = [
         detail: "Prometheus metrics and OpenTelemetry traces, both first-party.",
       },
       {
+        // Deliberately unpinned. A draft of this line said "13 of them"; that
+        // count is not checkable against the tree, and a count on this site
+        // cites code or stays unpinned.
         feature: "Durable queues",
-        detail: "13 of them, so queued work survives a restart.",
+        detail: "Queued work survives a restart.",
       },
       {
         feature: "Schema history",
         detail: "121 SQL migrations, versioned with the code.",
-      },
-      {
-        feature: "Storage",
-        detail: "Local disk or S3, chosen per instance.",
       },
       {
         feature: "API surface",
@@ -242,31 +240,33 @@ const GROUPS: Group[] = [
 export default function FeaturesPage() {
   return (
     <>
+      {/* 1 — Hero. Ink. */}
       <section className="on-ink bg-ink text-onink">
-        <div className="measure-text py-16 md:py-24">
+        <div className="measure-text py-12 md:py-24">
           <Eyebrow ground="ink">Features</Eyebrow>
           <Head as="h1" className="mt-3">
             Everything in {VERSION}, in the order you meet it.
           </Head>
-          <Standfirst ground="ink" className="mt-6">
-            Grouped by lifecycle rather than by marketing category. Each line
+          <Standfirst ground="ink" className="mt-5">
+            Grouped by lifecycle rather than by marketing category. Every line
             carries the detail that makes it checkable against a running
             instance.
           </Standfirst>
         </div>
       </section>
 
+      {/* 2 — The groups. Paper. */}
       <Section ground="paper">
-        <div className="flex flex-col gap-16 md:gap-20">
+        <div className="flex flex-col gap-11">
           {GROUPS.map((group) => (
             <section key={group.name} aria-labelledby={`g-${group.name}`}>
-              <div className="border-t-2 border-ink pt-6">
+              <div className="border-t-2 border-ink pt-5">
                 <h2 id={`g-${group.name}`} className="text-sub">
                   {group.name}
                 </h2>
                 <p className="text-body mt-2 text-onpaper-2">{group.intro}</p>
               </div>
-              <dl className="mt-8 grid gap-x-10 gap-y-7 md:grid-cols-2">
+              <dl className="mt-6 grid gap-x-9 gap-y-6 sm:grid-cols-2">
                 {group.rows.map((row) => (
                   <div key={row.feature}>
                     <dt className="text-body font-bold">{row.feature}</dt>
@@ -280,29 +280,36 @@ export default function FeaturesPage() {
           ))}
         </div>
 
-        <ScreenSlot
-          label="A video page on a running instance"
-          ground="paper"
-        />
+        {/* The three negatives stay on this page: a feature list is exactly
+            where a reader goes looking for what is missing. */}
+        <div className="mt-11">
+          <NotYet />
+        </div>
       </Section>
 
-      <Section ground="mist">
-        <NotYet ground="paper" />
-        <div className="mt-12">
-          <Head>Install it and check.</Head>
-          <p className="text-body mt-4 max-w-[66ch] text-onpaper-2">
-            None of the above is worth much as a list. It takes one command and a
-            4 vCPU box to see whether it is true.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Button href="/get-started" variant="action">
-              Get started
-            </Button>
-            <Button href={DOCS.root} external variant="ink-outline">
-              Read the docs
-            </Button>
-          </div>
+      {/* 3 — How it compares. Ink, the closing band before the footer. */}
+      <Section ground="ink" media>
+        <div className="max-w-[1080px]">
+          <Eyebrow ground="ink">How it compares</Eyebrow>
+          <Head className="mt-3">Where Vidra differs, and where it does not.</Head>
+          <Standfirst ground="ink" className="mt-5">
+            Two of these columns agree more often than they differ — self-hosting
+            is the thing they share. Where Vidra parts company is federation,
+            runtime, and what you can do about egress.
+          </Standfirst>
         </div>
+        <div className="mt-8">
+          <Comparison />
+        </div>
+        <p className="text-small mt-6 max-w-[72ch] text-onink-2">
+          Vidra is a clean-room implementation rather than a fork of anything,
+          and it is not PeerTube-API-compatible. Moving an existing PeerTube
+          instance across is supported and documented —{" "}
+          <TextLink href={DOCS.migration} external ground="ink">
+            read the migration overview
+          </TextLink>
+          .
+        </p>
       </Section>
     </>
   );

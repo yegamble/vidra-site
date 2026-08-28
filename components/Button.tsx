@@ -20,23 +20,35 @@ const variants: Record<Variant, string> = {
 };
 
 const base =
-  "inline-flex items-center justify-center gap-2 rounded-button px-5 py-3 " +
-  "text-small font-semibold transition-colors";
+  "inline-flex items-center justify-center gap-2 rounded-button " +
+  "font-semibold transition-colors";
+
+/**
+ * `default` is the 44px HIG floor. `large` is the 52px primary action used at
+ * the top and the bottom of a page, where the button is the only thing being
+ * asked for and looking like it knows that is the point.
+ */
+const sizes = {
+  default: "min-h-11 px-5 text-small",
+  large: "min-h-13 px-6 text-body",
+} as const;
 
 export function Button({
   href,
   external = false,
   variant,
+  size = "default",
   className = "",
   children,
 }: {
   href: string;
   external?: boolean;
   variant: Variant;
+  size?: keyof typeof sizes;
   className?: string;
   children: ReactNode;
 }) {
-  const cls = `${base} ${variants[variant]} ${className}`;
+  const cls = `${base} ${sizes[size]} ${variants[variant]} ${className}`;
 
   if (external) {
     return (

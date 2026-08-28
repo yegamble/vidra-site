@@ -24,48 +24,45 @@ export const DOCS = {
   migration: "/docs/migration/overview",
 } as const;
 
+/**
+ * Where the install flow lives. It is a section of the homepage rather than a
+ * page of its own: /get-started is a permanent redirect here.
+ */
+export const INSTALL_ANCHOR = "/#get-started";
+
 /** Every destination here exists. Nothing is a placeholder. */
 export const NAV = [
   { label: "Features", href: "/features", external: false },
   { label: "Use cases", href: "/use-cases", external: false },
+  { label: "Install", href: INSTALL_ANCHOR, external: false },
   { label: "Docs", href: DOCS.root, external: true },
-  { label: "Demo", href: "/demo", external: false },
   { label: "GitHub", href: GITHUB.meta, external: true },
 ] as const;
 
-/** From deploy/README. Cost figures are droplet list prices, hence "~". */
-export const REQUIREMENTS = [
-  {
-    profile: "Small, private instance",
-    detail: "A channel or two, a handful of viewers.",
-    vcpu: "4",
-    ram: "8 GB",
-    disk: "160 GB",
-    cost: "~$63/mo",
-  },
-  {
-    profile: "Public launch",
-    detail: "Open signups, concurrent transcodes.",
-    vcpu: "8",
-    ram: "16 GB",
-    disk: "160 GB",
-    cost: "~$168/mo",
-  },
-  {
-    profile: "Add ClamAV scanning",
-    detail: "Optional upload scanning, on top of either profile.",
-    vcpu: "—",
-    ram: "+2 GB",
-    disk: "—",
-    cost: "—",
-  },
-] as const;
+/**
+ * The two sizing profiles from deploy/README, and the droplet list prices they
+ * were measured on. The sizing calculator interpolates between them: it is the
+ * only thing on the site that derives numbers rather than quoting them, so the
+ * two anchors it derives from live here where they can be checked.
+ */
+export const PROFILES = {
+  small: { vcpu: 4, ram: 8, disk: 160, droplet: 63 },
+  launch: { vcpu: 8, ram: 16, disk: 160, droplet: 168 },
+  /** ClamAV costs RAM, not cores. */
+  clamavRamGb: 2,
+  /** Block storage beyond the droplet's included 160 GB. */
+  blockStoragePerGb: 0.1,
+  /** The full HLS ladder, per hour of source. Varies with the source. */
+  gbPerHour: 2,
+  /** Scratch space a concurrent transcode job wants, at a 2 GB upload limit. */
+  scratchGbPerJob: 8,
+} as const;
 
 /** The three things the site must never let itself imply are shipping. */
 export const NOT_YET = [
   {
-    title: "In-player peer-to-peer delivery",
-    body: `On the roadmap. It is not in ${VERSION}, so do not size your bandwidth around it.`,
+    title: "In-player peer-to-peer",
+    body: `On the roadmap, not in ${VERSION}. Do not size your bandwidth around it.`,
   },
   {
     title: "DRM",
@@ -73,6 +70,6 @@ export const NOT_YET = [
   },
   {
     title: "A hosted tier",
-    body: "There is no hosted service and there will not be one. That is a design decision, not a gap in the roadmap.",
+    body: "A design decision, not a gap in the roadmap.",
   },
 ] as const;

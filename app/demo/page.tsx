@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Button, TextLink } from "@/components/Button";
 import { Eyebrow, Head, Section, Standfirst } from "@/components/Section";
-import { DOCS, VERSION } from "@/lib/site";
+import { DOCS, INSTALL_ANCHOR, VERSION } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Demo",
@@ -48,7 +48,7 @@ export default function DemoPage() {
             care about.
           </p>
           <div className="mt-10">
-            <Button href="/get-started" variant="action">
+            <Button href={INSTALL_ANCHOR} variant="action">
               Get started
             </Button>
           </div>

@@ -56,18 +56,29 @@ holds is a copy, and copies drift, so the boundaries are worth stating:
   boundary: cyan outside the product, indigo inside it.
 
 Sections alternate Ink and Paper down the page and never repeat Ink. Mist
-(`#EEF7FB`) is the quiet third ground, used once, for requirements.
+(`#EEF7FB`) is the quiet third ground, used once, for the project section.
+
+Glass — blurred, translucent Ink — is permitted on the navigation layer only
+(the sticky header and the mobile install bar), always with a solid Ink
+fallback. That rule was overturned deliberately and the reasoning is recorded
+in `.ralph/specs/design-system.md`.
 
 ## Imagery
 
 There is none, on purpose. The brand shows the product or shows nothing, and
-there are no screenshots yet. What stands in:
+there are no screenshots yet. What carries the page instead is working
+interface rather than a picture of one:
 
-- `components/ArchitectureDiagram.tsx` — a drawn topology, where every port is
-  the port the container actually listens on.
-- `components/ScreenSlot.tsx` — a hatched, labelled 16:9 slot that says out loud
-  that a real capture goes there. Replace it with a screenshot; do not replace
-  it with a mockup.
+- `components/InstallTabs.tsx` — the four routes in, one panel, real commands.
+- `components/SizingCalculator.tsx` — two sliders and two toggles over the
+  deploy guide's measured profiles. Arithmetic you can check, not a model.
+- `components/FederationFigure.tsx` — the one drawing left, and everything it
+  says is repeated in the text beside it.
+- `components/ArchitectureExplorer.tsx` — the eight containers in the shipped
+  compose file, as buttons. Every port is the port the container listens on.
+
+When a real capture from a running instance exists, it replaces one of these.
+A mockup never does.
 
 ## Copy
 

@@ -3,9 +3,9 @@ import { LAPTOP, PHONE, ROUTES, VIEWPORTS } from "./routes";
 
 /**
  * Layout gates. Everything here failed on a real screen at least once: the
- * diagram was unreadable at 390 until it got a minimum width and a scroll
- * container, and the header lockup shrank to a smudge when it was sized in
- * fixed pixels. A feature is not complete if it only passes at 1440.
+ * topology was unreadable at 390 until it stopped being a drawing, and the
+ * header lockup shrank to a smudge when it was sized in fixed pixels. A
+ * feature is not complete if it only passes at 1440.
  */
 
 test.describe("no horizontal overflow", () => {
@@ -90,6 +90,23 @@ test.describe("header lockup", () => {
   }
 });
 
+test.describe("header chrome", () => {
+  // Glass is permitted on the navigation layer, and only with a ground behind
+  // it. A transparent header would put #8FB4C9 nav links straight onto
+  // whatever happened to scroll underneath.
+  test("the sticky header has an opaque-enough Ink ground", async ({ page }) => {
+    await page.goto("/");
+    const background = await page
+      .locator("header")
+      .evaluate((el) => getComputedStyle(el).backgroundColor);
+
+    // Either the solid Ink fallback or the .92 translucent ground.
+    expect(background).toMatch(
+      /^rgba?\(12, 33, 54(, 0\.9[0-9]*)?\)$/,
+    );
+  });
+});
+
 test.describe("hero", () => {
   for (const vp of VIEWPORTS) {
     test(`headline and primary action exist at ${vp.name}`, async ({ page }) => {
@@ -99,61 +116,96 @@ test.describe("hero", () => {
       const h1 = page.getByRole("heading", { level: 1 });
       await expect(h1).toHaveCount(1);
       await expect(h1).toBeVisible();
+      await expect(h1).toHaveText("Your videos. Your server. Your rules.");
 
       // Above-the-fold is deliberately NOT asserted: the standfirst is allowed
       // to push the buttons below 844px on a phone. What is asserted is that
       // the primary action is real — visible, in the document flow, and
-      // pointing somewhere.
+      // pointing at the install section.
       const cta = page
         .getByRole("main")
-        .getByRole("link", { name: "Get started" })
-        .first();
+        .getByRole("link", { name: "Install it in one command" });
       await expect(cta).toBeVisible();
-      await expect(cta).toHaveAttribute("href", "/get-started");
+      await expect(cta).toHaveAttribute("href", "/#get-started");
       await cta.scrollIntoViewIfNeeded();
       await expect(cta).toBeEnabled();
     });
   }
 });
 
-test.describe("architecture diagram", () => {
-  // Mobile-first: a portrait variant renders below `md`, the wide one at
-  // `md` and up. Exactly one of the two is in the accessibility tree at a
-  // time, and neither ever needs to scroll — the earlier scroll-container
-  // approach is overturned (it hid half the topology off a phone screen).
+test.describe("architecture explorer", () => {
+  // The drawn topology is gone: two SVG variants of the same data could not
+  // both stay legible and stay in step. Eight real buttons reflow instead,
+  // and the detail panel says what each container is for.
 
-  test(`portrait variant, fully on screen at ${PHONE.name}`, async ({
+  for (const vp of [PHONE, LAPTOP]) {
+    test(`the eight nodes fit and answer at ${vp.name}`, async ({ page }) => {
+      await page.setViewportSize({ width: vp.width, height: vp.height });
+      await page.goto("/");
+
+      const nodes = page.getByTestId("arch-nodes");
+      await expect(nodes).toBeVisible();
+      await expect(nodes.getByRole("button")).toHaveCount(8);
+
+      // Nothing cut off, at either width.
+      const box = (await nodes.boundingBox())!;
+      expect(box.x).toBeGreaterThanOrEqual(0);
+      expect(box.x + box.width).toBeLessThanOrEqual(vp.width + 1);
+
+      const panel = page.getByTestId("arch-detail");
+      const heading = panel.getByRole("heading", { level: 3 });
+
+      // vidra-core is the default; tapping redis has to move the panel.
+      await expect(heading).toHaveText("vidra-core");
+      const redis = nodes.getByRole("button", { name: /^redis/ });
+      await expect(redis).toHaveAttribute("aria-pressed", "false");
+      await redis.click();
+      await expect(heading).toHaveText("redis");
+      await expect(redis).toHaveAttribute("aria-pressed", "true");
+      await expect(panel).toContainText("Redis 8");
+    });
+  }
+});
+
+test.describe("install tabs", () => {
+  test(`four tabs, all thumb-sized, at ${PHONE.name}`, async ({ page }) => {
+    await page.setViewportSize({ width: PHONE.width, height: PHONE.height });
+    await page.goto("/");
+
+    const tablist = page.getByRole("tablist", { name: "Install method" });
+    await expect(tablist).toBeVisible();
+
+    const tabs = tablist.getByRole("tab");
+    await expect(tabs).toHaveCount(4);
+    for (const tab of await tabs.all()) {
+      const box = (await tab.boundingBox())!;
+      expect(
+        Math.min(box.width, box.height),
+        `"${(await tab.textContent())?.trim()}" is ${Math.round(
+          box.width,
+        )}x${Math.round(box.height)}`,
+      ).toBeGreaterThanOrEqual(44);
+    }
+  });
+
+  test("the PeerTube route has no command row, and the others do", async ({
     page,
   }) => {
     await page.setViewportSize({ width: PHONE.width, height: PHONE.height });
     await page.goto("/");
 
-    const portrait = page.getByTestId("arch-mobile");
-    const wide = page.getByTestId("arch-wide");
-    await expect(portrait).toBeVisible();
-    await expect(wide).toBeHidden();
+    const command = page.getByRole("group", { name: /Install command/ });
+    await expect(command).toBeVisible();
 
-    // Nothing cut off: the drawn diagram fits inside the viewport width.
-    const box = await portrait.boundingBox();
-    expect(box, "portrait diagram must render").not.toBeNull();
-    expect(box!.x).toBeGreaterThanOrEqual(0);
-    expect(box!.x + box!.width).toBeLessThanOrEqual(PHONE.width + 1);
-  });
+    // A migration is not a command, so that panel does not pretend to have one.
+    await page.getByRole("tab", { name: "From PeerTube" }).click();
+    await expect(command).toBeHidden();
+    await expect(page.getByRole("tabpanel")).toContainText(
+      "not a PeerTube fork",
+    );
 
-  test(`wide variant at ${LAPTOP.name}, no scrolling needed`, async ({
-    page,
-  }) => {
-    await page.setViewportSize({ width: LAPTOP.width, height: LAPTOP.height });
-    await page.goto("/");
-
-    const portrait = page.getByTestId("arch-mobile");
-    const wide = page.getByTestId("arch-wide");
-    await expect(wide).toBeVisible();
-    await expect(portrait).toBeHidden();
-
-    const box = await wide.boundingBox();
-    expect(box).not.toBeNull();
-    expect(box!.x + box!.width).toBeLessThanOrEqual(LAPTOP.width + 1);
+    await page.getByRole("tab", { name: "One-line" }).click();
+    await expect(command).toBeVisible();
   });
 });
 
@@ -195,6 +247,100 @@ test.describe("install command block", () => {
   });
 });
 
+test.describe("sizing calculator", () => {
+  test(`a second concurrent job moves the box up a profile at ${PHONE.name}`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: PHONE.width, height: PHONE.height });
+    await page.goto("/");
+
+    const result = page.getByTestId("calc-result");
+    const cost = page.getByTestId("calc-cost");
+
+    // The result is a live region: a slider that changes a number silently is
+    // a slider a screen-reader user cannot use.
+    await expect(result).toHaveAttribute("aria-live", "polite");
+
+    await expect(result).toContainText("Small, private profile");
+    const before = (await cost.textContent())?.trim();
+
+    // One job fits the 4 vCPU box; two do not.
+    const jobs = page.getByLabel(/Concurrent transcode jobs/);
+    await jobs.fill("2");
+
+    await expect(result).toContainText("Public launch profile");
+    const after = (await cost.textContent())?.trim();
+    expect(after, "the cost must move with the profile").not.toBe(before);
+    // The larger droplet, and the block storage priced on top of it — the
+    // headline figure is $168 plus whatever the disk costs, not a flat $168.
+    await expect(result).toContainText("8 vCPU / 16 GB");
+    await expect(result).toContainText("block storage at $0.10 a GB");
+
+    // With nothing stored, the disk that comes with the droplet is enough and
+    // the figure lands exactly on the deploy guide's public-launch price.
+    await page.getByLabel(/Hours of video stored/).fill("0");
+    await expect(cost).toContainText("$168");
+    await expect(result).toContainText("160 GB is included with the droplet");
+  });
+});
+
+test.describe("mobile install bar", () => {
+  test(`is there at ${PHONE.name} and gone at ${LAPTOP.name}`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: PHONE.width, height: PHONE.height });
+    await page.goto("/");
+
+    const bar = page.getByTestId("mobile-install-bar");
+    await expect(bar).toBeVisible();
+
+    const link = bar.getByRole("link", { name: "Install" });
+    const box = (await link.boundingBox())!;
+    expect(Math.min(box.width, box.height)).toBeGreaterThanOrEqual(44);
+
+    // It is sticky, not fixed: the page scrolls under it, and the bar sits
+    // against the bottom of the viewport rather than over the footer's text.
+    expect(box.y + box.height).toBeLessThanOrEqual(PHONE.height + 1);
+
+    await page.setViewportSize({ width: LAPTOP.width, height: LAPTOP.height });
+    await expect(bar).toBeHidden();
+  });
+});
+
+test.describe("mobile menu", () => {
+  test("opens as a full-screen overlay and closes on navigation", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: PHONE.width, height: PHONE.height });
+    await page.goto("/");
+
+    const panel = page.locator("#mobile-nav");
+    await expect(panel).toBeHidden();
+
+    await page.getByRole("button", { name: "Open menu" }).click();
+    await expect(panel).toBeVisible();
+
+    // Full-bleed under the header, and the page behind it does not scroll.
+    const box = (await panel.boundingBox())!;
+    expect(box.x).toBe(0);
+    expect(box.width).toBe(PHONE.width);
+    await expect(page.locator("body")).toHaveCSS("overflow", "hidden");
+
+    // The rows are the design's 56px, comfortably past the 44px floor.
+    const rows = panel.getByRole("link");
+    for (const row of await rows.all()) {
+      const r = (await row.boundingBox())!;
+      expect(r.height).toBeGreaterThanOrEqual(44);
+    }
+
+    // Navigating closes it, and hands the scroll back.
+    await panel.getByRole("link", { name: "Features" }).click();
+    await expect(page).toHaveURL(/\/features$/);
+    await expect(panel).toBeHidden();
+    await expect(page.locator("body")).not.toHaveCSS("overflow", "hidden");
+  });
+});
+
 test("the long scroll never puts two Ink sections in a row", async ({
   page,
 }) => {
@@ -202,13 +348,18 @@ test("the long scroll never puts two Ink sections in a row", async ({
 
   // Brand rhythm (vidra-branding §07): Ink and Paper alternate, Mist is the
   // quiet third ground. Two Ink bands touching read as one very long band and
-  // the page loses its beat.
+  // the page loses its beat. The redesigned homepage runs
+  // Ink · Paper · Ink · Paper · Ink · Paper · Mist · Ink.
   const grounds = await page.evaluate(() => {
     const ink = "rgb(12, 33, 54)";
-    return [...document.querySelectorAll("main > section")].map((el) => ({
-      ground: getComputedStyle(el).backgroundColor === ink ? "ink" : "light",
-      first: (el.textContent ?? "").trim().slice(0, 40),
-    }));
+    const mist = "rgb(238, 247, 251)";
+    return [...document.querySelectorAll("main > section")].map((el) => {
+      const bg = getComputedStyle(el).backgroundColor;
+      return {
+        ground: bg === ink ? "ink" : bg === mist ? "mist" : "light",
+        first: (el.textContent ?? "").trim().slice(0, 40),
+      };
+    });
   });
 
   expect(grounds.length).toBeGreaterThan(1);
@@ -218,9 +369,16 @@ test("the long scroll never puts two Ink sections in a row", async ({
     .map(([a, b]) => `"${a.first}" then "${b!.first}"`);
 
   expect(adjacent, "two Ink sections in a row").toEqual([]);
+
+  // Mist is the quiet third ground and appears once.
+  expect(grounds.filter((g) => g.ground === "mist")).toHaveLength(1);
 });
 
 test.describe("comparison", () => {
+  // Moved to /features with the redesign: the homepage carries the sizing
+  // calculator and the topology explorer instead, and a comparison table
+  // belongs beside the feature list it draws from.
+  //
   // The table and the stacked list hold the same data. Exactly one of them is
   // in the accessibility tree at any width — two would read the whole
   // comparison twice to a screen reader.
@@ -228,7 +386,7 @@ test.describe("comparison", () => {
 
   test(`stacks at ${PHONE.name}`, async ({ page }) => {
     await page.setViewportSize({ width: PHONE.width, height: PHONE.height });
-    await page.goto("/");
+    await page.goto("/features");
 
     const stacked = page.getByRole("heading", { name: row, exact: true });
     const tabular = page.getByRole("rowheader", { name: row, exact: true });
@@ -252,7 +410,7 @@ test.describe("comparison", () => {
   for (const vp of VIEWPORTS.filter((v) => v.width >= 768)) {
     test(`is a table at ${vp.name}`, async ({ page }) => {
       await page.setViewportSize({ width: vp.width, height: vp.height });
-      await page.goto("/");
+      await page.goto("/features");
 
       await expect(
         page.getByRole("rowheader", { name: row, exact: true }),
@@ -262,4 +420,39 @@ test.describe("comparison", () => {
       ).toBeHidden();
     });
   }
+});
+
+test.describe("federation walkthrough", () => {
+  test("steps through three layers and wraps", async ({ page }) => {
+    await page.goto("/");
+
+    const next = page.getByRole("button", { name: "Next layer" });
+    const figure = page.getByRole("img", { name: /federating over/ });
+
+    await expect(figure).toHaveAttribute(
+      "aria-label",
+      "Your instance federating over ActivityPub",
+    );
+    await next.click();
+    await expect(figure).toHaveAttribute(
+      "aria-label",
+      "Your instance federating over ATProto",
+    );
+    await next.click();
+    await expect(figure).toHaveAttribute(
+      "aria-label",
+      "Your instance federating over IPFS, dual tier",
+    );
+    await next.click();
+    await expect(figure).toHaveAttribute(
+      "aria-label",
+      "Your instance federating over ActivityPub",
+    );
+
+    await page.getByRole("button", { name: "Previous layer" }).click();
+    await expect(figure).toHaveAttribute(
+      "aria-label",
+      "Your instance federating over IPFS, dual tier",
+    );
+  });
 });

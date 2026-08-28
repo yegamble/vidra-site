@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { MobileInstallBar } from "@/components/MobileInstallBar";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import "./globals.css";
@@ -56,6 +57,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           {children}
         </main>
         <SiteFooter />
+        <MobileInstallBar />
       </body>
     </html>
   );

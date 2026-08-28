@@ -1,107 +1,59 @@
-import Link from "next/link";
-import { ArchitectureDiagram } from "@/components/ArchitectureDiagram";
+import { ArchitectureExplorer } from "@/components/ArchitectureExplorer";
 import { Button, TextLink } from "@/components/Button";
-import { Comparison } from "@/components/Comparison";
-import { CommandBlock } from "@/components/CommandBlock";
+import { FederationFigure } from "@/components/FederationFigure";
+import { InstallTabs } from "@/components/InstallTabs";
 import { NotYet } from "@/components/NotYet";
-import {
-  RequirementsTable,
-  RequirementsTruths,
-} from "@/components/RequirementsTable";
-import { ScreenSlot } from "@/components/ScreenSlot";
 import { Eyebrow, Head, Section, Standfirst } from "@/components/Section";
-import { DOCS, GITHUB, INSTALL_COMMAND, LICENCE, VERSION } from "@/lib/site";
+import { SizingCalculator } from "@/components/SizingCalculator";
+import { DOCS, INSTALL_ANCHOR, LICENCE, VERSION } from "@/lib/site";
 
-const FEDERATION = [
-  {
-    name: "ActivityPub",
-    body: "Your channels and videos are addressable from the rest of the fediverse. Follows and replies travel over the protocol, not over an integration someone bolted on afterwards.",
-  },
-  {
-    name: "ATProto",
-    body: "Viewers sign in with Bluesky, or with any ATProto PDS they already have. Cross-posting a public video to Bluesky is optional and stays off until you switch it on.",
-  },
-  {
-    name: "IPFS",
-    body: "Media storage is dual-tier: a public tier that offloads delivery to gateways, and a private tier keyed to your own swarm for anything that should not leave it.",
-  },
-];
-
-const CAPABILITIES = [
-  {
-    title: "Live",
-    body: "RTMP ingest, privacy-gated HLS, and a replay that becomes a VOD the moment the stream ends.",
-  },
-  {
-    title: "Uploads",
-    body: "Resumable, chunked, or fetched from a URL. The URL path is SSRF-guarded, with a sandboxed yt-dlp you can enable.",
-  },
-  {
-    title: "Player and captions",
-    body: "A bespoke player with keyboard shortcuts, picture-in-picture and theatre mode. WebVTT captions you supply, or Whisper generating them.",
-  },
-  {
-    title: "Search",
-    body: "Hybrid full-text and trigram matching with typo-tolerant autosuggest, and a LightGBM ranker evaluated in shadow before it decides anything.",
-  },
-  {
-    title: "Messages",
-    body: "One-to-one direct messages, with optional end-to-end encryption using client-side Olm.",
-  },
-  {
-    title: "API",
-    body: "A 228-path OpenAPI contract, with /healthz, /readyz, /schemaz and /version probes behind it.",
-  },
-  {
-    title: "Accessibility",
-    body: "WCAG 2.2 AA, enforced by axe as a hard gate in CI. A regression fails the build rather than shipping.",
-  },
-  {
-    title: "Storage and data",
-    body: "Local disk or S3, your choice per instance. PostgreSQL 18 and Redis 8 behind 121 SQL migrations.",
-  },
-  {
-    title: "Operating it",
-    body: "More than a hundred instance settings you can change at runtime, durable job queues, Prometheus metrics and OpenTelemetry traces.",
-  },
+/** Four numbers, each of which can be checked against a repository. */
+const STATS = [
+  { figure: "$63", body: "a month runs a small private instance" },
+  { figure: "2", body: "federation protocols: ActivityPub and ATProto" },
+  { figure: "228", body: "API paths under one OpenAPI contract" },
+  { figure: "AA", body: "WCAG 2.2, enforced by axe as a CI gate" },
 ];
 
 const AUDIENCES = [
   {
     title: "An independent creator",
-    body: "You publish on a schedule and you would rather your archive did not live inside someone else's recommendation system. One 4 vCPU box, a CDN in front of it, and your channel is addressable from the fediverse.",
-    matters: [
-      "Embeds, RSS, oEmbed and a sitemap",
-      "The bespoke player, on your own page",
-      "ActivityPub and ATProto, per channel",
-    ],
+    body: "One 4 vCPU box, a CDN in front of it, and a channel people can follow over ActivityPub from wherever they already read.",
+    leans: "Embeds · the bespoke player · resumable uploads",
   },
   {
     title: "A community or club",
-    body: "A few dozen people upload, a few hundred watch, and you are the one who answers for what gets posted. The moderation surface is in the box rather than in a plugin you have to trust.",
-    matters: [
-      "Registration approval and reports",
-      "Per-user storage quotas",
-      "Optional ClamAV scanning on upload",
-    ],
+    body: "A few dozen upload, a few hundred watch, and you answer for what appears. The moderation surface is in the box, not in a plugin.",
+    leans: "Registration approval · reports · per-user quotas",
   },
   {
     title: "A newsroom or podcast network",
-    body: "Several channels under one instance, and live coverage that has to become an archive the moment it ends. One workflow covers both, and embargoed material never becomes a public URL by accident.",
-    matters: [
-      "RTMP live with replay to VOD",
-      "Password-protected videos with scoped playback tokens",
-      "Channel auto-sync mirroring",
-    ],
+    body: "Live coverage that becomes an archive the moment it ends, and embargoed material that never turns into a public URL by accident.",
+    leans: "RTMP to VOD · scoped playback tokens · auto-sync",
   },
   {
     title: "A course or conference archive",
-    body: "Hundreds of talks that have to stay findable years after the event, and an accessibility obligation you cannot hand-wave away. The archive has to read as well as it plays.",
-    matters: [
-      "Whisper captions, chapters and storyboards",
-      "Hybrid search with typo-tolerant autosuggest",
-      "WCAG 2.2 AA enforced in CI",
-    ],
+    body: "Four years of talks that have to stay findable, with an accessibility obligation you cannot hand-wave away.",
+    leans: "Whisper captions · chapters · hybrid search",
+  },
+];
+
+const PROJECT = [
+  {
+    title: LICENCE,
+    body: "Use it, study it, modify it, redistribute it. Run a modified version as a service and the network clause means your users get the source too.",
+  },
+  {
+    title: "No hosted tier",
+    body: "There is nothing to upsell you to and no pricing page that changes the day you depend on it. The only way to run Vidra is to run it.",
+  },
+  {
+    title: "Clean room",
+    body: "Not a PeerTube fork and not PeerTube-API-compatible. Migrating an existing instance across is supported and documented.",
+  },
+  {
+    title: "Three repositories",
+    body: "vidra-core (Go 1.26, Echo, PostgreSQL 18, Redis 8), vidra-user (Next.js 16) and vidra-search (Go), each with its own CI. Images build only from tags.",
   },
 ];
 
@@ -116,302 +68,163 @@ export default function HomePage() {
           className="pointer-events-none absolute inset-0 -z-10"
           style={{
             background:
-              "radial-gradient(70% 62% at 18% -6%, rgb(34 189 227 / 0.20), rgb(34 189 227 / 0) 68%)",
+              "radial-gradient(70% 62% at 18% -6%, rgb(34 189 227 / 0.22), rgb(34 189 227 / 0) 68%)",
           }}
         />
-        <div className="measure-text pt-16 pb-20 md:pt-28 md:pb-32">
-          <h1 className="text-hero max-w-[16ch] text-balance">
-            Run your own video platform.
-          </h1>
-          <p className="text-standfirst mt-6 max-w-[72ch] text-pretty text-onink-2">
-            The self-hosted alternative to YouTube. Your videos on your domain,
-            under your rules, with no ads — installed in minutes on a small
-            server you own.
+        {/* 72px graph paper, masked out before it reaches the type. */}
+        <div
+          aria-hidden="true"
+          className="hero-grid pointer-events-none absolute inset-0 -z-10"
+        />
+        <div className="measure-text pt-12 pb-14 md:pt-22 md:pb-24">
+          <p className="text-micro inline-flex items-center gap-2 rounded-full bg-ink-surface px-3 py-2 uppercase text-onink-2 ring-1 ring-inset ring-ink-hairline">
+            <span
+              aria-hidden="true"
+              className="animate-pulse-dot h-2 w-2 rounded-full bg-vidra"
+            />
+            {VERSION} · {LICENCE}
           </p>
-          <div className="mt-9 flex flex-wrap gap-3">
-            <Button href="/get-started" variant="vidra">
-              Get started
+          <h1 className="text-hero mt-5 max-w-[15ch] text-balance">
+            Your videos. Your server. Your rules.
+          </h1>
+          <p className="text-standfirst mt-5 max-w-[56ch] text-pretty text-onink-2">
+            Vidra is a self-hosted video platform you install the way you install
+            WordPress. One command on a small box, and you have a federated site
+            with a player, live streaming, search and captions — no ads, no
+            algorithm, nobody to upsell you.
+          </p>
+          <div className="mt-7 flex flex-wrap gap-3">
+            <Button href={INSTALL_ANCHOR} variant="vidra" size="large">
+              Install it in one command
             </Button>
-            <Button href="/demo" variant="ice-outline">
-              See it running
+            <Button href="/#calculator" variant="ice-outline" size="large">
+              What will it cost me?
             </Button>
           </div>
-          <p className="text-mono mt-7 text-onink-2">
-            {LICENCE} · Go backend · one command to install · {VERSION}
-          </p>
+          <dl className="mt-10 grid max-w-[820px] grid-cols-2 gap-x-4 gap-y-5 md:grid-cols-4">
+            {STATS.map((stat) => (
+              <div key={stat.figure}>
+                <dt className="text-head text-vidra">{stat.figure}</dt>
+                <dd className="text-small mt-2 text-onink-2">{stat.body}</dd>
+              </div>
+            ))}
+          </dl>
         </div>
       </section>
 
-      {/* 2 — Install strip. Paper. */}
-      <Section ground="paper">
+      {/* 2 — Install. Paper. */}
+      <Section ground="paper" id="get-started" className="scroll-mt-18">
         <Eyebrow>Install</Eyebrow>
-        <Head className="mt-3">One command, then an interview.</Head>
-        <div className="mt-8">
-          <CommandBlock command={INSTALL_COMMAND} />
+        <Head className="mt-3">Four ways in. Pick your box.</Head>
+        <Standfirst className="mt-4">
+          All four end in the same place: a running instance on {VERSION} with an
+          owner account you claimed yourself.
+        </Standfirst>
+        <div className="mt-7">
+          <InstallTabs />
         </div>
-        <p className="text-body mt-6 max-w-[66ch] text-onpaper-2">
-          The script installs Docker Engine and Compose v2 if they are missing,
-          unpacks a checksum-verified release bundle to{" "}
-          <code className="text-mono text-onpaper">/opt/vidra</code>, installs the{" "}
-          <code className="text-mono text-onpaper">vidra</code> CLI, and runs{" "}
-          <code className="text-mono text-onpaper">vidra setup</code> — a terminal
-          interview, or a{" "}
-          <code className="text-mono text-onpaper">--web</code> wizard if you
-          prefer a browser. It never writes over an existing env file, never opens
-          a port, and never touches sshd.
-        </p>
-        <p className="text-body mt-4 max-w-[66ch] text-onpaper-2">
-          On first boot every signup path refuses, including yours. The boot log
-          prints an owner-claim token; you redeem it at{" "}
-          <code className="text-mono text-onpaper">/setup/claim</code> and the
-          instance is yours.
-        </p>
-        <p className="mt-6">
-          <TextLink href={DOCS.root} external>
-            Read what the installer does →
-          </TextLink>
-        </p>
       </Section>
 
-      {/* 3 — Egress. Ink. */}
-      <Section ground="ink" media>
-        <div className="max-w-[1080px]">
-          <Eyebrow ground="ink">Egress</Eyebrow>
-          <Head className="mt-3">One small server. A million viewers.</Head>
-          <div className="mt-8 grid gap-8 md:grid-cols-2 md:gap-12">
-            <div className="text-body space-y-5 text-onink">
-              <p>
-                Your box serves HLS. Put a CDN in front of it and the CDN serves
-                the segments instead. Turn on the IPFS tier and public media is
-                fetched from gateways. In each case the bytes leave somebody
-                else&apos;s network, so your egress bill stops tracking your
-                viewer count.
-              </p>
-              <p>
-                What stays on your machine is encoding, and encoding is
-                measurable. A 1080p <code className="text-mono">TargetAll</code>{" "}
-                job runs 12 encode passes and takes roughly 1.5 to 2.5 times the
-                source duration on 4 vCPU. Two concurrent jobs want about 16 GB
-                of scratch at a 2 GB upload limit.
-              </p>
-            </div>
-            <div className="text-body space-y-5 text-onink-2">
-              <p>
-                There is no DRM, and in-player peer-to-peer delivery is on the
-                roadmap rather than in {VERSION}. Size your bandwidth for HLS, a
-                CDN and IPFS gateways — the three things that actually carry
-                bytes today.
-              </p>
-              <p>
-                The topology below is the shipped compose file, not an
-                architecture sketch. Every port is the port the container listens
-                on.
-              </p>
-            </div>
-          </div>
+      {/* 3 — Sizing. Ink. */}
+      <Section ground="ink" id="calculator" className="scroll-mt-18">
+        <Eyebrow ground="ink">Sizing</Eyebrow>
+        <Head className="mt-3">Nobody publishes this. So here it is.</Head>
+        <Standfirst ground="ink" className="mt-4">
+          Move the sliders and the box changes. The two profiles come from the
+          deploy guide; everything between them is arithmetic you can check.
+        </Standfirst>
+        <div className="mt-7">
+          <SizingCalculator />
         </div>
-        <div className="mt-12">
-          <ArchitectureDiagram />
-        </div>
+        <p className="text-small mt-5 max-w-[70ch] text-onink-2">
+          Two things that cost real money if you skip them: do not use a 2 GB
+          droplet, and use Docker Compose 2.24 or newer. Older Compose silently
+          publishes PostgreSQL and Redis on{" "}
+          <code className="text-mono text-onink">0.0.0.0</code> — your database on
+          the public internet, with no error to tell you.
+        </p>
       </Section>
 
       {/* 4 — Federation. Paper. */}
       <Section ground="paper">
         <Eyebrow>Federation</Eyebrow>
-        <Head className="mt-3">
-          Federation is on by default. Turn it off per channel.
-        </Head>
-        <Standfirst className="mt-6">
-          Two protocols and one storage layer, each doing a specific job. None of
-          them is a checkbox that phones an integration partner.
+        <Head className="mt-3">On by default. Off per channel.</Head>
+        <Standfirst className="mt-4">
+          Three layers do three jobs. Step through them and watch what leaves
+          your server.
         </Standfirst>
-        <div className="mt-12 grid gap-6 md:grid-cols-3">
-          {FEDERATION.map((item) => (
-            <div
-              key={item.name}
-              className="rounded-card border border-paper-hairline bg-white p-6"
-            >
-              <h3 className="text-card">{item.name}</h3>
-              <p className="text-body mt-3 text-onpaper-2">{item.body}</p>
-            </div>
-          ))}
+        <div className="mt-7">
+          <FederationFigure />
         </div>
       </Section>
 
-      {/* 5 — What you get. Ink. */}
-      <Section ground="ink">
-        <Eyebrow ground="ink">What you get</Eyebrow>
-        <Head className="mt-3">Shipped in {VERSION}, not planned.</Head>
-        <dl className="mt-12 grid gap-x-10 gap-y-9 sm:grid-cols-2 lg:grid-cols-3">
-          {CAPABILITIES.map((item) => (
-            <div key={item.title} className="border-t border-slate/70 pt-5">
-              <dt className="text-card text-onink">{item.title}</dt>
-              <dd className="text-small mt-2 text-onink-2">{item.body}</dd>
-            </div>
-          ))}
-        </dl>
-
-        <div className="mt-14">
-          <NotYet ground="ink" />
+      {/* 5 — Architecture. Ink. */}
+      <Section ground="ink" media>
+        <Eyebrow ground="ink">Architecture</Eyebrow>
+        <Head className="mt-3">Eight containers. Tap one.</Head>
+        <Standfirst ground="ink" className="mt-4">
+          This is the shipped compose file, not an architecture sketch. Every
+          port is the port the container actually listens on.
+        </Standfirst>
+        <div className="mt-7">
+          <ArchitectureExplorer />
         </div>
-
-        <ScreenSlot label="The admin console, on a running instance" ground="ink" />
-
-        <p className="mt-10">
-          <TextLink href="/features" ground="ink">
-            Every feature, grouped by lifecycle →
-          </TextLink>
+        <p className="text-small mt-5 max-w-[70ch] text-onink-2">
+          Put a CDN in front of the HLS, or turn on the IPFS tier, and the bytes
+          leave somebody else&apos;s network. What stays on your machine is
+          encoding — and encoding is measurable.
         </p>
       </Section>
 
       {/* 6 — Who runs it. Paper. */}
-      <Section ground="paper">
+      <Section ground="paper" id="use-cases" className="scroll-mt-18">
         <Eyebrow>Who runs it</Eyebrow>
         <Head className="mt-3">Four instances that look nothing alike.</Head>
-        <div className="mt-12 grid gap-6 md:grid-cols-2">
+        <div className="mt-7 grid gap-4 sm:grid-cols-2">
           {AUDIENCES.map((item) => (
             <article
               key={item.title}
-              className="rounded-card border border-paper-hairline bg-white p-6 md:p-8"
+              className="rounded-card border border-paper-hairline bg-white p-5"
             >
               <h3 className="text-card">{item.title}</h3>
               <p className="text-body mt-3 text-onpaper-2">{item.body}</p>
-              <h4 className="text-micro mt-6 uppercase text-label">
-                What matters here
-              </h4>
-              <ul className="text-small mt-3 space-y-2 text-onpaper-2">
-                {item.matters.map((m) => (
-                  <li key={m} className="flex gap-3">
-                    <span
-                      aria-hidden="true"
-                      className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-action"
-                    />
-                    <span>{m}</span>
-                  </li>
-                ))}
-              </ul>
+              <p className="text-small mt-4 text-link">{item.leans}</p>
             </article>
           ))}
         </div>
-        <p className="mt-10">
-          <TextLink href="/use-cases">
-            The four, in more detail →
-          </TextLink>
+        <p className="mt-6">
+          <TextLink href="/use-cases">The four, in more detail →</TextLink>
         </p>
       </Section>
 
-      {/* 7 — How it compares. Ink.
-          This is the only slot on the page where an Ink section fits: it sits
-          between two light grounds (Paper above, Mist below), so the
-          never-two-Ink-in-a-row rhythm holds. */}
-      <Section ground="ink" media>
-        <div className="max-w-[1080px]">
-          <Eyebrow ground="ink">How it compares</Eyebrow>
-          <Head className="mt-3">Where Vidra differs, and where it does not.</Head>
-          <Standfirst ground="ink" className="mt-6">
-            Two of these columns agree more often than they differ — self-hosting
-            is the thing they share. Where Vidra parts company is federation,
-            runtime, and what you can do about egress.
-          </Standfirst>
-        </div>
-        <div className="mt-12">
-          <Comparison />
-        </div>
-        <p className="text-small mt-8 max-w-[72ch] text-onink-2">
-          Vidra is a clean-room implementation rather than a fork of anything,
-          and it is not PeerTube-API-compatible. Moving an existing PeerTube
-          instance across is supported and documented —{" "}
-          <TextLink href={DOCS.migration} external ground="ink">
-            read the migration overview
-          </TextLink>
-          .
-        </p>
-      </Section>
-
-      {/* 8 — Requirements. Mist, the quiet tint. */}
-      <Section ground="mist" id="requirements">
-        <Eyebrow>Requirements</Eyebrow>
-        <Head className="mt-3">What it costs to run.</Head>
-        <Standfirst className="mt-6">
-          Sizing from the deploy guide, with the prices of the droplets it was
-          measured on. Nobody publishes this; you need it before you start, not
-          after.
-        </Standfirst>
-        <div className="mt-10">
-          <RequirementsTable />
-        </div>
-        <RequirementsTruths />
-      </Section>
-
-      {/* 9 — Project. Ink. */}
-      <Section ground="ink">
-        <Eyebrow ground="ink">The project</Eyebrow>
+      {/* 7 — The project. Mist, the quiet third ground. */}
+      <Section ground="mist">
+        <Eyebrow>The project</Eyebrow>
         <Head className="mt-3">Free software, and nothing behind it.</Head>
-        <div className="mt-12 grid gap-10 md:grid-cols-2 md:gap-x-12">
-          <div>
-            <h3 className="text-card text-onink">The licence</h3>
-            <p className="text-body mt-3 text-onink-2">
-              Vidra is {LICENCE}. You can use it, study it, modify it and
-              distribute it, as long as your changes carry the same licence — and
-              if you run a modified version as a service, the network clause means
-              your users get the source too.
-            </p>
-          </div>
-          <div>
-            <h3 className="text-card text-onink">Clean room</h3>
-            <p className="text-body mt-3 text-onink-2">
-              Vidra is not a PeerTube fork and it is not PeerTube-API-compatible.
-              It is a clean-room implementation that happens to serve the same
-              purpose. Migrating an existing PeerTube instance into Vidra is
-              supported and documented.
-            </p>
-          </div>
-          <div>
-            <h3 className="text-card text-onink">Nobody to upsell you</h3>
-            <p className="text-body mt-3 text-onink-2">
-              There is no hosted tier and no plan for one — nothing to upsell you
-              to, and no pricing page that changes the day you depend on it. The
-              only way to run Vidra is to run it.
-            </p>
-          </div>
-          <div>
-            <h3 className="text-card text-onink">Releases</h3>
-            <p className="text-body mt-3 text-onink-2">
-              {VERSION} today. Three repositories carry the services — vidra-core
-              (Go 1.26, Echo, PostgreSQL 18, Redis 8), vidra-user (Next.js 16) and
-              vidra-search (Go) — each with its own CI. Container images are built
-              only from tags.
-            </p>
-          </div>
+        <div className="mt-7 grid gap-6 sm:grid-cols-2 md:grid-cols-4">
+          {PROJECT.map((item) => (
+            <div key={item.title}>
+              <h3 className="text-card">{item.title}</h3>
+              <p className="text-body mt-2 text-onpaper-2">{item.body}</p>
+            </div>
+          ))}
         </div>
-        <div className="mt-10 flex flex-wrap gap-3">
-          <Button href={GITHUB.meta} external variant="ice-outline">
-            Read the source
-          </Button>
+        <div className="mt-7">
+          <NotYet />
         </div>
       </Section>
 
-      {/* 10 — Final CTA. Paper. */}
-      <Section ground="paper">
+      {/* 8 — Final CTA. Ink. */}
+      <Section ground="ink">
         <Head>Start with one command.</Head>
-        <div className="mt-8">
-          <CommandBlock command={INSTALL_COMMAND} />
-        </div>
-        <div className="mt-8 flex flex-wrap gap-3">
-          <Button href={DOCS.root} external variant="ink-outline">
-            Read the docs
-          </Button>
-          <Button href="/get-started" variant="action">
+        <div className="mt-6 flex flex-wrap gap-3">
+          <Button href={INSTALL_ANCHOR} variant="vidra" size="large">
             Get started
           </Button>
+          <Button href={DOCS.root} external variant="ice-outline" size="large">
+            Read the docs
+          </Button>
         </div>
-        <p className="text-small mt-6 text-label">
-          Or clone the repository and bring up the compose file — the{" "}
-          <Link href="/get-started" className="text-link underline underline-offset-4">
-            four routes in
-          </Link>{" "}
-          are laid out side by side.
-        </p>
       </Section>
     </>
   );

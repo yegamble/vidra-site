@@ -1,38 +1,27 @@
 import { NOT_YET } from "@/lib/site";
 
-/** Three things Vidra does not do. Stated where people will look for them. */
-export function NotYet({ ground = "ink" }: { ground?: "ink" | "paper" }) {
-  const ink = ground === "ink";
-
+/**
+ * Three things Vidra does not do, stated where people will look for them.
+ *
+ * A native `<details>` rather than a card that is always open: the negatives
+ * have to be findable and quotable, but they are not the pitch, and a
+ * disclosure widget the platform already ships is keyboard-operable, printable
+ * and searchable without a line of JavaScript.
+ */
+export function NotYet() {
   return (
-    <div
-      className={`rounded-card border p-6 md:p-8 ${
-        ink ? "border-slate/70" : "border-paper-hairline bg-white"
-      }`}
-    >
-      <h3
-        className={`text-micro uppercase ${ink ? "text-onink-2" : "text-label"}`}
-      >
-        Not yet, and in one case not ever
-      </h3>
-      <dl className="mt-6 grid gap-6 md:grid-cols-3">
+    <details className="rounded-card border border-paper-hairline bg-white p-5">
+      <summary className="text-body flex min-h-11 cursor-pointer items-center font-semibold">
+        Three things Vidra does not do
+      </summary>
+      <dl className="mt-4 grid gap-4 sm:grid-cols-3">
         {NOT_YET.map((item) => (
           <div key={item.title}>
-            <dt
-              className={`text-card ${ink ? "text-onink" : "text-onpaper"}`}
-            >
-              {item.title}
-            </dt>
-            <dd
-              className={`mt-2 text-small ${
-                ink ? "text-onink-2" : "text-onpaper-2"
-              }`}
-            >
-              {item.body}
-            </dd>
+            <dt className="text-body font-bold">{item.title}</dt>
+            <dd className="text-small mt-1 text-onpaper-2">{item.body}</dd>
           </div>
         ))}
       </dl>
-    </div>
+    </details>
   );
 }
