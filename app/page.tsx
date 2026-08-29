@@ -176,7 +176,9 @@ export default function HomePage() {
           what is it → is it for me → what does it cost → how does it work. */}
       <Section ground="paper" id="use-cases" className="scroll-mt-18">
         <Eyebrow>Who runs it</Eyebrow>
-        <Head className="mt-3">Four instances that look nothing alike.</Head>
+        {/* Deliberately uncounted: /use-cases holds five instances and this
+            grid shows four — a counted headline here is the drift class. */}
+        <Head className="mt-3">Instances that look nothing alike.</Head>
         <div className="mt-7 grid gap-4 sm:grid-cols-2">
           {AUDIENCES.map((item) => (
             <article
@@ -258,16 +260,11 @@ export default function HomePage() {
           </TextLink>
           , and the bytes reach viewers from somebody else&apos;s network.
         </p>
-        <p className="mt-5">
+        <p className="mt-5 flex flex-wrap gap-x-6 gap-y-2">
           <TextLink href="/scale" ground="ink">
             What happens at scale →
-          </TextLink>{" "}
-          <TextLink
-            href={DOCS.architecture}
-            external
-            ground="ink"
-            className="ml-6"
-          >
+          </TextLink>
+          <TextLink href={DOCS.architecture} external ground="ink">
             The architecture, in the docs →
           </TextLink>
         </p>

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Button, TextLink } from "@/components/Button";
 import {
   BookOpenIcon,
-  CpuIcon,
+  HostsIcon,
   RadioIcon,
   UsersIcon,
   VideoIcon,
@@ -152,7 +152,7 @@ const CASES: UseCase[] = [
   },
   {
     id: "organisation",
-    icon: CpuIcon,
+    icon: HostsIcon,
     eyebrow: "Many channels, a team behind them",
     title: "An organisation outgrowing one box",
     scenario: [

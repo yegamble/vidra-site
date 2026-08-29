@@ -38,6 +38,21 @@ function Icon({
 
 type IconProps = { label?: string; className?: string };
 
+export function HostsIcon(props: IconProps) {
+  // Two offset hosts — drawn for the organisation use-case card (an instance
+  // outgrowing one machine); CpuIcon double-booked the architecture
+  // explorer's vidra-core glyph. Same feather stroke vocabulary: the dots
+  // are zero-length round-cap lines, the server idiom.
+  return (
+    <Icon {...props}>
+      <rect x="3" y="4" width="14" height="7" rx="1.5" />
+      <rect x="7" y="13" width="14" height="7" rx="1.5" />
+      <line x1="6" y1="7.5" x2="6.01" y2="7.5" />
+      <line x1="10" y1="16.5" x2="10.01" y2="16.5" />
+    </Icon>
+  );
+}
+
 export function MenuIcon(props: IconProps) {
   return (
     <Icon {...props}>

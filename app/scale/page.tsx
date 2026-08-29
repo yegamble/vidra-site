@@ -69,7 +69,7 @@ const PLANNED = [
   },
   {
     title: "Studio DRM",
-    body: "Production DRM behind the proven seam — not built. A test lane proves the seam only.",
+    body: "Production DRM is not built. A test lane proves the seam, and nothing more.",
   },
   {
     title: "Multi-region replication",

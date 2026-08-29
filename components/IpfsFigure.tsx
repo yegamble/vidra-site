@@ -74,14 +74,14 @@ function Figure({ step }: { step: (typeof STEPS)[number] }) {
       {/* Your instance: the Ink block holding both copies. */}
       <rect x={20} y={70} width={200} height={120} rx={12} fill="#0C2136" />
       <rect x={34} y={86} width={82} height={60} rx={8} fill={fill(on("copies"))} stroke={tone(on("copies"))} strokeWidth={on("copies") ? 1.8 : 1.3} />
-      <text x={75} y={112} textAnchor="middle" fontSize="12" fontWeight="700" fill="#0C2136" fontFamily="system-ui, sans-serif">
+      <text x={75} y={112} textAnchor="middle" fontSize="12" fontWeight="700" fill={on("copies") ? "#0C2136" : "#5C7285"} fontFamily="system-ui, sans-serif">
         object store
       </text>
       <text x={75} y={128} textAnchor="middle" fontSize="10" fill="#5C7285" fontFamily="ui-monospace, Menlo, monospace">
         canonical
       </text>
       <rect x={124} y={86} width={82} height={60} rx={8} fill={fill(on("copies"))} stroke={tone(on("copies"))} strokeWidth={on("copies") ? 1.8 : 1.3} />
-      <text x={165} y={112} textAnchor="middle" fontSize="12" fontWeight="700" fill="#0C2136" fontFamily="system-ui, sans-serif">
+      <text x={165} y={112} textAnchor="middle" fontSize="12" fontWeight="700" fill={on("copies") ? "#0C2136" : "#5C7285"} fontFamily="system-ui, sans-serif">
         IPFS node
       </text>
       <text x={165} y={128} textAnchor="middle" fontSize="10" fill="#5C7285" fontFamily="ui-monospace, Menlo, monospace">
