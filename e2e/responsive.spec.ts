@@ -262,6 +262,9 @@ test.describe("sizing calculator", () => {
     await expect(result).toHaveAttribute("aria-live", "polite");
 
     await expect(result).toContainText("Small, private profile");
+    // The default state must derive the hero's quoted number: the first thing
+    // the reader checks has to agree with the first thing the site claims.
+    await expect(cost).toContainText("$63");
     const before = (await cost.textContent())?.trim();
 
     // One job fits the 4 vCPU box; two do not.
@@ -271,9 +274,12 @@ test.describe("sizing calculator", () => {
     await expect(result).toContainText("Public launch profile");
     const after = (await cost.textContent())?.trim();
     expect(after, "the cost must move with the profile").not.toBe(before);
-    // The larger droplet, and the block storage priced on top of it — the
-    // headline figure is $168 plus whatever the disk costs, not a flat $168.
     await expect(result).toContainText("8 vCPU / 16 GB");
+
+    // Stored video past what the included disk holds prices block storage on
+    // top of the droplet — the headline figure is $168 plus the disk, not a
+    // flat $168.
+    await page.getByLabel(/Hours of video stored/).fill("200");
     await expect(result).toContainText("block storage at $0.10 a GB");
 
     // With nothing stored, the disk that comes with the droplet is enough and

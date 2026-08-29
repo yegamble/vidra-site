@@ -12,10 +12,14 @@ import { PROFILES } from "@/lib/site";
  *
  *   - two concurrent jobs, or live ingest, needs the 8 vCPU box
  *   - ClamAV costs 2 GB of RAM and no cores
- *   - disk is the HLS ladder (2 GB an hour) plus transcode scratch plus the
- *     instance itself, rounded up to the next 20 GB and floored at the 160 GB
- *     that comes with the droplet
+ *   - disk is the HLS ladder (an assumed 2 GB an hour — an estimate, labelled
+ *     as such in the UI; see the gbPerHour note in lib/site.ts) plus transcode
+ *     scratch plus the instance itself, rounded up to the next 20 GB and
+ *     floored at the 160 GB that comes with the droplet
  *   - cost is the droplet list price plus block storage past that 160 GB
+ *
+ * The default state (1 job, 50 hours) derives exactly the small profile's ~$63,
+ * so the first number the reader checks agrees with the hero's quoted number.
  */
 
 function size(jobs: number, hours: number, live: boolean, clam: boolean) {
@@ -56,7 +60,7 @@ function Toggle({
 
 export function SizingCalculator() {
   const [jobs, setJobs] = useState(1);
-  const [hours, setHours] = useState(200);
+  const [hours, setHours] = useState(50);
   const [live, setLive] = useState(false);
   const [clam, setClam] = useState(false);
 
@@ -70,7 +74,7 @@ export function SizingCalculator() {
   const costNote =
     `Droplet list price for ${vcpu} vCPU / ${ram} GB` +
     (extra > 0
-      ? `, plus ${extra} GB of block storage at $0.10 a GB.`
+      ? `, plus ${extra} GB of block storage at $0.10 a GB — DigitalOcean volume list pricing.`
       : `. ${PROFILES.small.disk} GB is included with the droplet.`);
 
   return (
@@ -120,8 +124,8 @@ export function SizingCalculator() {
               className="mt-1"
             />
             <p className="text-small text-onink-2">
-              Estimated at {PROFILES.gbPerHour} GB per hour for the full HLS
-              ladder. Your mileage varies with the source.
+              Assumes roughly {PROFILES.gbPerHour} GB per source hour for the
+              full HLS ladder — an estimate, not a measured figure.
             </p>
           </div>
 
@@ -143,7 +147,7 @@ export function SizingCalculator() {
       >
         <p className="text-micro uppercase text-onink-2">Your box</p>
         <p data-testid="calc-cost" className="text-head mt-2 tabular-nums">
-          ${cost}
+          ~${cost}
           <span className="text-small font-semibold text-onink-2"> / month</span>
         </p>
         <p className="text-small mt-2 text-onink-2">{profileName}</p>
