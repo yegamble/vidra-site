@@ -22,9 +22,14 @@ const nextConfig: NextConfig = {
 
   async rewrites() {
     return [
-      // Bare /docs, so the nav link resolves without a trailing segment.
-      { source: "/docs", destination: `${DOCS_ORIGIN}/docs` },
-      { source: "/docs/:path*", destination: `${DOCS_ORIGIN}/docs/:path*` },
+      // The proxy strips the /docs prefix: the docs build's baseUrl is
+      // /docs/ (so every URL it *generates* carries the prefix and routes
+      // back through this origin), but the emitted files sit at the docs
+      // origin's root — Docusaurus writes content relative to the output
+      // dir, not the baseUrl. Forwarding the prefix upstream was the bug
+      // that 404ed the entire seam.
+      { source: "/docs", destination: `${DOCS_ORIGIN}/` },
+      { source: "/docs/:path*", destination: `${DOCS_ORIGIN}/:path*` },
     ];
   },
 };
