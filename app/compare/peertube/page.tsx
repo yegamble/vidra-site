@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import { Button, TextLink } from "@/components/Button";
 import { Comparison, type ComparisonRow } from "@/components/Comparison";
 import { Eyebrow, Head, Section, Standfirst } from "@/components/Section";
-import { DOCS, INSTALL_ANCHOR, VERSION } from "@/lib/site";
+import { DOCS, INSTALL_ANCHOR, MESSAGING, SCALE, VERSION } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Vidra vs PeerTube",
   description:
-    "Vidra and PeerTube, compared honestly: federation, Bluesky sign-in, operability, in-player P2P — checked against PeerTube 8.2 — and the one-way migration path.",
+    "Vidra and PeerTube, compared honestly: federation, Bluesky sign-in, direct messages, uploads, operability, scaling, in-player P2P — checked against PeerTube 8.2 — and the one-way migration path.",
 };
 
 /**
@@ -41,6 +41,13 @@ const ROWS: ComparisonRow[] = [
     ],
   },
   {
+    label: "Direct messages",
+    cells: [
+      "None as of v8.2.4 (August 2026) — the closest surface is the moderation thread on an abuse report.",
+      `One-to-one messages, with an opt-in end-to-end encrypted mode — encryption runs on the device, the server stores only ciphertext — and disappearing timers, ${MESSAGING.timerMin} to ${MESSAGING.timerMax}, on encrypted conversations.`,
+    ],
+  },
+  {
     label: "In-player P2P",
     cells: [
       "Built in: playback shares bandwidth between viewers over WebRTC, and a viewer can turn it off.",
@@ -48,10 +55,28 @@ const ROWS: ComparisonRow[] = [
     ],
   },
   {
+    // PeerTube cell checked against docs.joinpeertube.org/admin/remote-storage
+    // on 2026-08-28, per the page's caption discipline.
+    label: "Uploads and storage",
+    cells: [
+      "Uploads and transcodes work on local disk; with remote storage configured, files move to S3 after processing.",
+      "Object-storage-native: upload chunks stream straight to the storage backend and never touch the server's local disk. A server dying mid-upload loses nothing.",
+    ],
+  },
+  {
     label: "Operations",
     cells: [
       "Judge it from PeerTube's own admin documentation.",
       "One command in; vidra doctor runs 26 checks and names the failure; deploy, rollback, backup and restore are scripted.",
+    ],
+  },
+  {
+    // PeerTube cell checked against docs.joinpeertube.org/admin/remote-runners
+    // on 2026-08-28.
+    label: "Growing past one box",
+    cells: [
+      "Remote runners can take transcoding off the main server; judge the rest from PeerTube's own admin documentation.",
+      `The same image splits into api and worker roles. Replicas hold leases and elect leaders — soak-tested at two replicas, ${SCALE.soak} deliveries, zero duplicates — and a CDN with purge is wired in. Multi-CDN steering, studio DRM and multi-region are the published roadmap, not the release.`,
     ],
   },
   {
@@ -120,7 +145,10 @@ export default function ComparePeerTubePage() {
             deploy, rollback, backup and restore are scripted, with published
             sizing that carries prices. It also speaks ATProto: viewers can
             sign in with Bluesky or any PDS, and public videos can cross-post
-            to Bluesky — PeerTube federates over ActivityPub only.
+            to Bluesky — PeerTube federates over ActivityPub only. Vidra also
+            ships direct messages — including an end-to-end encrypted mode
+            with disappearing timers — where PeerTube has no user-to-user
+            messaging at all.
           </p>
           <p>
             If you run PeerTube happily, keep running it. If operations are the
@@ -136,7 +164,9 @@ export default function ComparePeerTubePage() {
       <Section ground="ink" media>
         <div className="max-w-[1080px]">
           <Eyebrow ground="ink">Side by side</Eyebrow>
-          <Head className="mt-3">Eight differences that decide it.</Head>
+          {/* Deliberately uncounted: a counted heading is the count-drift
+              failure class waiting to recur every time a row is added. */}
+          <Head className="mt-3">The differences that decide it.</Head>
         </div>
         <div className="mt-8">
           <Comparison
