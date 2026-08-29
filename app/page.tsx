@@ -252,7 +252,7 @@ export default function HomePage() {
           {/* v0.5.0 is a frozen literal, like the provenance sentence: this
               line describes the capture, and must not drift with VERSION. */}
           <Standfirst ground="ink" className="mt-4">
-            Vidra v0.5.0 on a local machine, playing a 48-second clip the
+            Vidra v0.5.0 on a local machine, playing a 47-second clip the
             instance itself ingested and transcoded to four renditions.
           </Standfirst>
         </div>
@@ -263,7 +263,7 @@ export default function HomePage() {
           width={2464}
           height={1540}
           narrow={{ src: "/product/watch-780.jpg", width: 780, height: 1688 }}
-          alt="The Vidra watch page mid-playback with the quality menu open, listing Auto, 1080p, 720p, 480p and 360p, with Auto currently playing 1080p."
+          alt="The Vidra watch page mid-playback with selectable quality: Auto plus 1080p, 720p, 480p and 360p, transcoded by the instance."
           provenance="Captured 2026-08-29 from Vidra v0.5.0 running locally via docker compose — all four repositories at the v0.5.0 release tags. The video shown was uploaded through the studio and transcoded by the instance itself."
         />
         <p className="mt-6">

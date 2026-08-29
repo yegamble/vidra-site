@@ -47,7 +47,7 @@ export default function DemoPage() {
             <p className="text-body text-onpaper-2">
               Every image on this page is a screenshot of the real frontend
               talking to the real backend, all four repositories checked out at
-              the v0.5.0 release tags. The 48-second clip was uploaded through
+              the v0.5.0 release tags. The 47-second clip was uploaded through
               the studio, transcoded by the instance&apos;s own pipeline to a
               four-rendition H.264 HLS ladder, and is what the player is
               playing.
@@ -59,13 +59,15 @@ export default function DemoPage() {
             </p>
           </div>
         </div>
+        {/* No narrow source here, deliberately: the paragraph above claims
+            the quality menu, so the figure must show it at every width — and
+            band 6 already gives the phone capture its own moment. */}
         <ScreenFigure
           className="mt-8"
           eager
           src="/product/watch-quality-2464.jpg"
           width={2464}
           height={1540}
-          narrow={{ src: "/product/watch-780.jpg", width: 780, height: 1688 }}
           alt="The Vidra watch page mid-playback with the quality menu open, listing Auto, 1080p, 720p, 480p and 360p, with Auto currently playing 1080p."
           provenance={PROVENANCE_FULL}
         />

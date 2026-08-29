@@ -99,7 +99,7 @@ export function ScreenFigure({
           />
         </picture>
       </div>
-      <figcaption className={`text-small mt-3 ${capBody}`}>
+      <figcaption className={`text-small mt-3 max-w-[90ch] ${capBody}`}>
         {caption ? (
           <span className={`font-semibold ${capLead}`}>{caption} </span>
         ) : null}
