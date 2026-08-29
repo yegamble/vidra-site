@@ -32,6 +32,31 @@ test("/get-started is a permanent redirect to the install section", async ({
   await expect(page.locator("#get-started")).toBeVisible();
 });
 
+// The anti-mockup contract, machine-enforced: every product capture on the
+// site renders inside a <figure> whose <figcaption> carries its provenance
+// ("Captured …" in full, or the sanctioned "Same instance: …" short form).
+// A capture without provenance is a defect, by spec — not a style choice.
+for (const route of ROUTES) {
+  test(`${route}: every figure image carries a provenance caption`, async ({
+    page,
+  }) => {
+    await page.goto(route);
+    const figures = page.locator("figure:has(img)");
+    const count = await figures.count();
+    for (let i = 0; i < count; i++) {
+      const caption = figures.nth(i).locator("figcaption");
+      await expect(
+        caption,
+        `${route} figure ${i} must have a figcaption`,
+      ).toHaveCount(1);
+      await expect(
+        caption,
+        `${route} figure ${i} caption must state provenance`,
+      ).toContainText(/Captured|Same instance:/);
+    }
+  });
+}
+
 test("an unknown route is a 404, not a redirect or a 200", async ({ page }) => {
   const response = await page.goto("/nonexistent");
   expect(response?.status()).toBe(404);

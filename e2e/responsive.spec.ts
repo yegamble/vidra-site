@@ -358,9 +358,9 @@ test("the long scroll never puts two Ink sections in a row", async ({
 
   // Brand rhythm (vidra-branding §07): Ink and Paper alternate, Mist is the
   // quiet third ground. Two Ink bands touching read as one very long band and
-  // the page loses its beat. The homepage runs
-  // Ink · Paper · Ink · Paper · Ink · Paper · Ink · Mist · Ink — bands 7 and
-  // 9 are both Ink, legally, because Mist separates them.
+  // the page loses its beat. The homepage runs its full ten-band target order
+  // — Ink · Paper · Ink · Paper · Ink · Paper · Ink · Paper · Mist · Ink —
+  // now that the capture band holds the reserved fifth slot.
   const grounds = await page.evaluate(() => {
     const ink = "rgb(12, 33, 54)";
     const mist = "rgb(238, 247, 251)";
@@ -386,15 +386,17 @@ test("the long scroll never puts two Ink sections in a row", async ({
 
   // The exact beat, so a reorder is a decision recorded here rather than a
   // drift: comprehension order is what is it → is it for me → what does it
-  // cost → how does it work → why not the alternatives → can I trust it.
+  // cost → how does it work → see it running → why not the alternatives →
+  // can I trust it. Ten bands is the ceiling; anything new displaces.
   expect(grounds.map((g) => g.ground)).toEqual([
     "ink", // hero
     "light", // who runs it
     "ink", // sizing
     "light", // install
-    "ink", // architecture
+    "ink", // the player, running
     "light", // federation
-    "ink", // why not the alternatives
+    "ink", // architecture
+    "light", // why not the alternatives
     "mist", // the project + is this ready
     "ink", // final CTA
   ]);

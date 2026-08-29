@@ -8,6 +8,7 @@ import {
 import { Button, TextLink } from "@/components/Button";
 import { CommandBlock } from "@/components/CommandBlock";
 import { FederationFigure } from "@/components/FederationFigure";
+import { ScreenFigure } from "@/components/ScreenFigure";
 import { InstallTabs } from "@/components/InstallTabs";
 import { NotYet } from "@/components/NotYet";
 import { Eyebrow, Head, Section, Standfirst } from "@/components/Section";
@@ -239,7 +240,58 @@ export default function HomePage() {
         </div>
       </Section>
 
-      {/* 5 — Architecture. Ink. */}
+      {/* 5 — The player, running. Ink. The reserved tenth band, spent: real
+          captures from a genuinely running v0.5.0 finally exist. Ten bands is
+          the ceiling — from here, anything new displaces something. One focal
+          point (the figure), one link, no Button: the hero and the closing
+          band own the buttons. */}
+      <Section ground="ink" media>
+        <div className="max-w-[1080px]">
+          <Eyebrow ground="ink">The product</Eyebrow>
+          <Head className="mt-3">The player, running.</Head>
+          {/* v0.5.0 is a frozen literal, like the provenance sentence: this
+              line describes the capture, and must not drift with VERSION. */}
+          <Standfirst ground="ink" className="mt-4">
+            Vidra v0.5.0 on a local machine, playing a 48-second clip the
+            instance itself ingested and transcoded to four renditions.
+          </Standfirst>
+        </div>
+        <ScreenFigure
+          className="mt-10"
+          ground="ink"
+          src="/product/watch-quality-2464.jpg"
+          width={2464}
+          height={1540}
+          narrow={{ src: "/product/watch-780.jpg", width: 780, height: 1688 }}
+          alt="The Vidra watch page mid-playback with the quality menu open, listing Auto, 1080p, 720p, 480p and 360p, with Auto currently playing 1080p."
+          provenance="Captured 2026-08-29 from Vidra v0.5.0 running locally via docker compose — all four repositories at the v0.5.0 release tags. The video shown was uploaded through the studio and transcoded by the instance itself."
+        />
+        <p className="mt-6">
+          <TextLink href="/demo" ground="ink">
+            See the rest of the instance →
+          </TextLink>
+        </p>
+      </Section>
+
+      {/* 6 — Federation. Paper. */}
+      <Section ground="paper">
+        <Eyebrow>Federation</Eyebrow>
+        <Head className="mt-3">Yours to enable. On for every channel once you do.</Head>
+        <Standfirst className="mt-4">
+          Three layers do three jobs. Step through them and watch what leaves
+          your server.
+        </Standfirst>
+        <div className="mt-7">
+          <FederationFigure />
+        </div>
+        <p className="mt-5">
+          <TextLink href={DOCS.federation} external>
+            How federation works, in the docs →
+          </TextLink>
+        </p>
+      </Section>
+
+      {/* 7 — Architecture. Ink. */}
       <Section ground="ink" media>
         <Eyebrow ground="ink">Architecture</Eyebrow>
         <Head className="mt-3">Eight containers. Tap one.</Head>
@@ -270,48 +322,31 @@ export default function HomePage() {
         </p>
       </Section>
 
-      {/* 6 — Federation. Paper. */}
+      {/* 8 — Why not the alternatives. Paper — its round-2 Ink ground was
+          interim, not identity; the capture band now holds the Ink slot. The
+          teaser answers the two objections in prose and hands off to the full
+          surfaces; a table here would fight the one-focal-point rule. */}
       <Section ground="paper">
-        <Eyebrow>Federation</Eyebrow>
-        <Head className="mt-3">Yours to enable. On for every channel once you do.</Head>
-        <Standfirst className="mt-4">
-          Three layers do three jobs. Step through them and watch what leaves
-          your server.
-        </Standfirst>
-        <div className="mt-7">
-          <FederationFigure />
-        </div>
-        <p className="mt-5">
-          <TextLink href={DOCS.federation} external>
-            How federation works, in the docs →
-          </TextLink>
-        </p>
-      </Section>
-
-      {/* 7 — Why not the alternatives. Ink. The teaser answers the two
-          objections in prose and hands off to the full surfaces; a table here
-          would fight the one-focal-point rule. */}
-      <Section ground="ink">
-        <Eyebrow ground="ink">Compared</Eyebrow>
+        <Eyebrow>Compared</Eyebrow>
         <Head className="mt-3">Why not YouTube? Why not PeerTube?</Head>
         <div className="mt-7 grid gap-8 md:grid-cols-2">
           <div>
             <h3 className="text-card">YouTube</h3>
-            <p className="text-body mt-3 max-w-[60ch] text-onink-2">
+            <p className="text-body mt-3 max-w-[60ch] text-onpaper-2">
               The terms, the moderation policy and the ranking are Google&apos;s
               to change, and the platform sells advertising against your
               audience. On your own instance there is no ad system and nobody
               between you and your viewers.
             </p>
             <p className="mt-4">
-              <TextLink href="/features#comparison" ground="ink">
+              <TextLink href="/features#comparison">
                 The full comparison →
               </TextLink>
             </p>
           </div>
           <div>
             <h3 className="text-card">PeerTube</h3>
-            <p className="text-body mt-3 max-w-[60ch] text-onink-2">
+            <p className="text-body mt-3 max-w-[60ch] text-onpaper-2">
               PeerTube is the established choice, with years of maturity, a
               plugin ecosystem and in-player P2P that Vidra does not have.
               Vidra is a clean-room alternative that trades that head start for
@@ -320,7 +355,7 @@ export default function HomePage() {
               messages, which PeerTube does not have.
             </p>
             <p className="mt-4">
-              <TextLink href="/compare/peertube" ground="ink">
+              <TextLink href="/compare/peertube">
                 Vidra vs PeerTube →
               </TextLink>
             </p>
