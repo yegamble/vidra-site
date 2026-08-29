@@ -13,8 +13,8 @@ const DESCRIPTION =
   "Vidra is a self-hosted, federated alternative to YouTube, written in Go. You " +
   "install it yourself, the way you would install WordPress: your domain, your " +
   "storage, your rules, no ads. It federates over ActivityPub, speaks ATProto " +
-  "for Bluesky sign-in and cross-posting, stores media on IPFS if you want it " +
-  "to, and it is free software under AGPL v3.";
+  "for Bluesky sign-in and cross-posting, mirrors public media to IPFS if you " +
+  "want it to, and it is free software under AGPL v3.";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://vidra.yosef.app"),

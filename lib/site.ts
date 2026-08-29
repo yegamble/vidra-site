@@ -87,6 +87,51 @@ export const PROFILES = {
   scratchGbPerJob: 8,
 } as const;
 
+/**
+ * Scale and pipeline figures. Each one is pinned to a source; the counts-drift
+ * failure class applies to every number here, so change the source before you
+ * change the value.
+ */
+export const SCALE = {
+  /** 24 `jobloop.Loop{` registrations in vidra-core/cmd/api/main.go. */
+  workers: 24,
+  /**
+   * Two-replica soak: 406 of 406 deliveries, zero duplicates; the deliberate
+   * counterfactual (lease removed) produced 17 duplicates, proving the
+   * harness catches the failure it checks for.
+   * vidra/docs/productionization/phase-3-media-pipeline.md:166.
+   */
+  soak: "406 of 406",
+  /**
+   * Lean encoding on object storage: full-source decodes 13 → 3, source
+   * reads 8 → 1 (exact); peak scratch ~10.3 → ~3.6 GB (computed from the
+   * ladder table, not measured — copy must say "computes to").
+   * vidra/docs/productionization/lean-encoding-on-object-storage.md:358-360.
+   */
+  decodesBefore: 13,
+  decodesAfter: 3,
+  readsBefore: 8,
+  readsAfter: 1,
+  scratchBeforeGb: 10.3,
+  scratchAfterGb: 3.6,
+} as const;
+
+/**
+ * Messaging figures, from vidra-core: E2EE disappearing-message timers
+ * (internal/e2ee/service.go:24-34, 30 s to 90 days) and the plaintext-lane
+ * attachment cap (internal/messaging/service.go:76-81, 100 MiB). E2EE
+ * conversations refuse attachments; never join "messages" and "IPFS" in copy.
+ */
+export const MESSAGING = {
+  timerMin: "30 seconds",
+  timerMax: "90 days",
+  attachmentCapMiB: 100,
+} as const;
+
+/** The public productionization corpus — the "published roadmap" links here. */
+export const ROADMAP_URL =
+  "https://github.com/yegamble/vidra/tree/main/docs/productionization";
+
 /** The three things the site must never let itself imply are shipping. */
 export const NOT_YET = [
   {
@@ -95,7 +140,7 @@ export const NOT_YET = [
   },
   {
     title: "DRM",
-    body: "There is none. If your distributor requires encrypted playback, Vidra is the wrong tool.",
+    body: "None shipped: a test lane proves the seam, and production DRM sits behind an unbuilt roadmap item. If your distributor requires encrypted playback today, Vidra is the wrong tool.",
   },
   {
     title: "A hosted tier",

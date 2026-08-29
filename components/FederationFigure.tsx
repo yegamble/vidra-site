@@ -40,7 +40,7 @@ const LAYERS = [
     tab: "IPFS",
     label: "Layer three of three",
     title: "IPFS, dual tier",
-    body: "Public media offloads to gateways, so the bytes leave somebody else's network. A private tier keyed to your own swarm carries anything that should not.",
+    body: "Public media offloads to gateways, so the bytes reach viewers from somebody else's network. A private tier keyed to your own swarm carries anything that should not.",
   },
 ] as const;
 
@@ -151,17 +151,29 @@ function Figure({ layer }: { layer: (typeof LAYERS)[number] }) {
         bluesky
       </Label>
 
-      <rect
-        x={450}
-        y={50}
-        width={100}
-        height={44}
-        rx={10}
-        fill={on("ipfs") ? "#EEF7FB" : "#F5F5F7"}
+      {/* Gateways are conduits, not storage: two open rails and a wire that
+          passes straight through — never a box, which would read as a place
+          bytes stay. The distinction is also in the step's words. */}
+      <line
+        x1={450}
+        y1={54}
+        x2={556}
+        y2={54}
         stroke={on("ipfs") ? LIVE : DIM}
         strokeWidth={on("ipfs") ? 1.8 : 1.3}
+        strokeLinecap="round"
       />
-      <Label x={500} y={78} on={on("ipfs")}>
+      <line
+        x1={450}
+        y1={90}
+        x2={556}
+        y2={90}
+        stroke={on("ipfs") ? LIVE : DIM}
+        strokeWidth={on("ipfs") ? 1.8 : 1.3}
+        strokeLinecap="round"
+      />
+      <Wire on={on("ipfs")} d="M450,72 H556" />
+      <Label x={500} y={110} on={on("ipfs")}>
         gateways
       </Label>
       <rect
