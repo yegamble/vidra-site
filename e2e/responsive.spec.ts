@@ -194,13 +194,17 @@ test.describe("install tabs", () => {
     await page.setViewportSize({ width: PHONE.width, height: PHONE.height });
     await page.goto("/");
 
-    const command = page.getByRole("group", { name: /Install command/ });
+    // Scoped to the install panel: the hero carries its own command block now,
+    // and this test is about the tabs.
+    const command = page
+      .locator("#install-panel")
+      .getByRole("group", { name: /Install command/ });
     await expect(command).toBeVisible();
 
     // A migration is not a command, so that panel does not pretend to have one.
     await page.getByRole("tab", { name: "From PeerTube" }).click();
     await expect(command).toBeHidden();
-    await expect(page.getByRole("tabpanel")).toContainText(
+    await expect(page.locator("#install-panel")).toContainText(
       "not a PeerTube fork",
     );
 
@@ -445,36 +449,41 @@ test.describe("comparison", () => {
 });
 
 test.describe("federation walkthrough", () => {
-  test("steps through three layers and wraps", async ({ page }) => {
+  test("three named layer tabs select directly and wrap on arrows", async ({
+    page,
+  }) => {
     await page.goto("/");
 
-    const next = page.getByRole("button", { name: "Next layer" });
+    // Direct selection: the reader sees the three layers before touching
+    // anything, and any layer is one activation away.
+    const tablist = page.getByRole("tablist", { name: "Federation layers" });
     const figure = page.getByRole("img", { name: /federating over/ });
 
     await expect(figure).toHaveAttribute(
       "aria-label",
       "Your instance federating over ActivityPub",
     );
-    await next.click();
+    await tablist.getByRole("tab", { name: "IPFS" }).click();
+    await expect(figure).toHaveAttribute(
+      "aria-label",
+      "Your instance federating over IPFS, dual tier",
+    );
+    await tablist.getByRole("tab", { name: "ATProto" }).click();
     await expect(figure).toHaveAttribute(
       "aria-label",
       "Your instance federating over ATProto",
     );
-    await next.click();
+
+    // Roving tabindex: arrows move focus and selection, and wrap.
+    await page.keyboard.press("ArrowRight");
     await expect(figure).toHaveAttribute(
       "aria-label",
       "Your instance federating over IPFS, dual tier",
     );
-    await next.click();
+    await page.keyboard.press("ArrowRight");
     await expect(figure).toHaveAttribute(
       "aria-label",
       "Your instance federating over ActivityPub",
-    );
-
-    await page.getByRole("button", { name: "Previous layer" }).click();
-    await expect(figure).toHaveAttribute(
-      "aria-label",
-      "Your instance federating over IPFS, dual tier",
     );
   });
 });

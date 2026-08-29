@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 /**
  * Three federation layers, stepped through one at a time.
@@ -23,18 +23,21 @@ import { useState } from "react";
 const LAYERS = [
   {
     id: "ap",
+    tab: "ActivityPub",
     label: "Layer one of three",
     title: "ActivityPub",
     body: "Your channels and videos are addressable from the rest of the fediverse. A follow from Mastodon or another PeerTube instance travels over the protocol, not over an integration someone bolted on afterwards.",
   },
   {
     id: "at",
+    tab: "ATProto",
     label: "Layer two of three",
     title: "ATProto",
     body: "Viewers sign in with Bluesky, or with any ATProto PDS they already have. Cross-posting a public video to Bluesky is optional and stays off until you switch it on.",
   },
   {
     id: "ipfs",
+    tab: "IPFS",
     label: "Layer three of three",
     title: "IPFS, dual tier",
     body: "Public media offloads to gateways, so the bytes leave somebody else's network. A private tier keyed to your own swarm carries anything that should not.",
@@ -192,42 +195,94 @@ function Figure({ layer }: { layer: (typeof LAYERS)[number] }) {
 
 export function FederationFigure() {
   const [step, setStep] = useState(0);
+  const refs = useRef<(HTMLButtonElement | null)[]>([]);
   const layer = LAYERS[step];
+
+  // Direct selection in the InstallTabs idiom: the reader sees what the three
+  // layers are before touching anything, and reaching the third one is one
+  // activation, not two. Roving tabindex, automatic activation — nothing
+  // loads, so deferring selection would only add a keystroke.
+  const move = (next: number) => {
+    const i = (next + LAYERS.length) % LAYERS.length;
+    setStep(i);
+    refs.current[i]?.focus();
+  };
+
+  const onKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>) => {
+    switch (event.key) {
+      case "ArrowRight":
+      case "ArrowDown":
+        event.preventDefault();
+        move(step + 1);
+        break;
+      case "ArrowLeft":
+      case "ArrowUp":
+        event.preventDefault();
+        move(step - 1);
+        break;
+      case "Home":
+        event.preventDefault();
+        move(0);
+        break;
+      case "End":
+        event.preventDefault();
+        move(LAYERS.length - 1);
+        break;
+    }
+  };
 
   return (
     <div className="rounded-card border border-paper-hairline bg-white">
-      <div className="px-5 pt-5 pb-1">
+      <div
+        role="tablist"
+        aria-label="Federation layers"
+        className="flex flex-wrap gap-2 px-5 pt-5"
+      >
+        {LAYERS.map((l, i) => {
+          const selected = i === step;
+          return (
+            <button
+              key={l.id}
+              ref={(el) => {
+                refs.current[i] = el;
+              }}
+              type="button"
+              role="tab"
+              id={`federation-tab-${l.id}`}
+              aria-selected={selected}
+              aria-controls="federation-panel"
+              tabIndex={selected ? 0 : -1}
+              onClick={() => setStep(i)}
+              onKeyDown={onKeyDown}
+              className={`inline-flex min-h-11 items-center rounded-full px-4 text-small font-semibold ring-1 ring-inset ring-paper-hairline transition-colors ${
+                selected
+                  ? "bg-action text-white"
+                  : "bg-transparent text-onpaper hover:bg-ink/5"
+              }`}
+            >
+              {l.tab}
+            </button>
+          );
+        })}
+      </div>
+      <div className="px-5 pt-4 pb-1">
         <Figure layer={layer} />
       </div>
-      <div className="px-5 pt-1 pb-5" aria-live="polite">
+      <div
+        id="federation-panel"
+        role="tabpanel"
+        aria-live="polite"
+        aria-labelledby={`federation-tab-${layer.id}`}
+        className="px-5 pt-1 pb-5"
+      >
         <p className="text-micro uppercase text-label">{layer.label}</p>
         <h3 className="text-card mt-2">{layer.title}</h3>
-        {/* 5.2em reserves the tallest of the three bodies, so the buttons
-            below do not jump as you step through. A reserved line count, like
-            the ch measures elsewhere — not a magic pixel. */}
+        {/* 5.2em reserves the tallest of the three bodies, so nothing below
+            jumps as you switch layers. A reserved line count, like the ch
+            measures elsewhere — not a magic pixel. */}
         <p className="text-body mt-2 min-h-[5.2em] max-w-[60ch] text-onpaper-2">
           {layer.body}
         </p>
-        <div className="mt-4 flex items-center gap-3">
-          <button
-            type="button"
-            aria-label="Previous layer"
-            onClick={() => setStep((s) => (s + LAYERS.length - 1) % LAYERS.length)}
-            className="text-small inline-flex min-h-11 min-w-11 items-center justify-center rounded-button px-4 font-semibold text-onpaper ring-1 ring-inset ring-paper-hairline transition-colors hover:bg-ink/5"
-          >
-            <span aria-hidden="true">←</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setStep((s) => (s + 1) % LAYERS.length)}
-            className="text-small inline-flex min-h-11 items-center justify-center rounded-button bg-action px-4 font-semibold text-white transition-colors hover:bg-ink"
-          >
-            Next layer →
-          </button>
-          <span className="text-small ml-auto tabular-nums text-label">
-            {step + 1} / {LAYERS.length}
-          </span>
-        </div>
       </div>
     </div>
   );

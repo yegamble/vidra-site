@@ -5,7 +5,13 @@
  * homepage's `#get-started` section, and it is asserted as one in
  * `routes.spec.ts` rather than swept as a page.
  */
-export const ROUTES = ["/", "/features", "/use-cases", "/demo"] as const;
+export const ROUTES = [
+  "/",
+  "/features",
+  "/use-cases",
+  "/compare/peertube",
+  "/demo",
+] as const;
 
 /**
  * The widths the site has to survive. Phone, tablet portrait, tablet
