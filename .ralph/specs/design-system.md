@@ -6,8 +6,12 @@
 > redesign added the four interactive widgets, glass navigation chrome and the
 > mobile install bar — see "Interactive widgets" and "Overturned rules".)
 > Source of truth: the
-> **vidra-branding** repo — `guidelines/brand-guidelines.md` **v1.1** and
-> `design-system/brand-tokens.css`. `app/brand.css` is a *copy* of that, and
+> **vidra-branding** repo — `guidelines/brand-guidelines.md` **v1.2** and
+> `design-system/brand-tokens.css`. (The 2026-08-28 canon amendments absorbed
+> this site's type ramp, alpha hairlines, surface/chrome tokens and motion
+> exceptions, admitted nav-layer glass in identity §7, and codified the
+> comparison idiom and the tabular number voice — the audit-era disagreements
+> between this spec and the canon are closed.) `app/brand.css` is a *copy*, and
 > copies drift: **where this spec or `app/brand.css` diverges from the branding
 > repo, the branding repo wins** — fix the copy, do not fork it. Two further
 > sources are imported rather than invented: Apple's Human Interface Guidelines,
@@ -412,6 +416,11 @@ state that it is overturned and why. Silently editing a guardrail loses the
 reason it existed, and the next agent re-introduces the bug it prevented.
 
 ### 2026-08-28 — "No glass on this site" is overturned for the navigation layer
+
+**Canon has since agreed**: identity-system §7 was amended the same day
+(brand v1.2, decision-logged) to admit glass on the navigation layer of brand
+surfaces under exactly the conditions below — this entry is no longer a
+site-side deviation, it is the canon's rule restated.
 
 **The old rule** (Components, and the "never glass" clause under Depth):
 

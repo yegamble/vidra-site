@@ -45,10 +45,12 @@
   --brand-on-ink: #e6f6fa;
   --brand-on-ink-secondary: #8fb4c9;
 
-  /* Depth on Ink: Slate at low alpha. Composites to ~#122e48. */
+  /* Depth on Ink: Slate at low alpha. Composites to ~#122e48. Hairline names
+   * are the canonical ones from brand-tokens.css v1.2 (the canon adopted the
+   * site's alpha values and the site adopts the canon's names). */
   --brand-ink-surface: rgb(29 70 106 / 0.32);
-  --brand-ink-hairline: rgb(29 70 106 / 0.6);
-  --brand-paper-hairline: rgb(12 33 54 / 0.12);
+  --brand-hairline-ink: rgb(29 70 106 / 0.6);
+  --brand-hairline: rgb(12 33 54 / 0.12);
 
   /* Ink at high alpha, and a tint of the brand cyan. Named here rather than
    * repeated inline: the 2026-08 redesign uses each of them in more than one

@@ -31,7 +31,8 @@ export const metadata: Metadata = {
     description: DESCRIPTION,
     url: "/",
     // A PNG, deliberately: X, Slack and older LinkedIn drop SVG cards.
-    // Regenerate with scripts/og-card.mjs when the branding banner changes.
+    // Regenerate from the canonical template when the banner changes:
+    // node ../vidra-branding/assets/social/og-card.mjs public/brand/og-card.png
     images: [
       { url: "/brand/og-card.png", width: 1200, height: 630, alt: "Vidra" },
     ],

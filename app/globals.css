@@ -27,8 +27,8 @@
 
   /* Depth */
   --color-ink-surface: var(--brand-ink-surface);
-  --color-ink-hairline: var(--brand-ink-hairline);
-  --color-paper-hairline: var(--brand-paper-hairline);
+  --color-ink-hairline: var(--brand-hairline-ink);
+  --color-paper-hairline: var(--brand-hairline);
   --color-ink-chip: var(--brand-ink-chip);
   --color-vidra-tint: var(--brand-vidra-tint);
 
@@ -172,8 +172,8 @@
    an element. Documented exception in .ralph/specs/design-system.md. */
 @utility hero-grid {
   background-image:
-    linear-gradient(var(--brand-ink-hairline) 1px, transparent 1px),
-    linear-gradient(90deg, var(--brand-ink-hairline) 1px, transparent 1px);
+    linear-gradient(var(--brand-hairline-ink) 1px, transparent 1px),
+    linear-gradient(90deg, var(--brand-hairline-ink) 1px, transparent 1px);
   background-size: 72px 72px;
   mask-image: radial-gradient(80% 60% at 70% 0%, #000, transparent 70%);
   -webkit-mask-image: radial-gradient(80% 60% at 70% 0%, #000, transparent 70%);
