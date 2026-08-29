@@ -4,15 +4,23 @@
  * No adjectives, no scoring, no ticks and crosses — the reader can do the
  * arithmetic. Where Vidra matches the other self-hosted options, the table says
  * so rather than inventing a difference.
+ *
+ * The component is the idiom; the dataset below is its canonical instance
+ * (YouTube · other self-hosted · Vidra). Other pages pass their own columns
+ * and rows — /compare/peertube runs the two-column variant — and the paired
+ * table/stacked structure, the emphasis-by-heading-colour-and-fill-and-
+ * position treatment and the one-copy-in-the-a11y-tree behaviour carry over.
  */
 
-export const COMPARISON_COLUMNS = [
+export type ComparisonRow = { label: string; cells: string[] };
+
+export const COMPARISON_COLUMNS: string[] = [
   "Hosted platforms (YouTube)",
   "Other self-hosted video platforms",
   "Vidra",
-] as const;
+];
 
-export const COMPARISON_ROWS: { label: string; cells: [string, string, string] }[] =
+export const COMPARISON_ROWS: ComparisonRow[] =
   [
     {
       label: "Who sets the rules",
@@ -72,28 +80,41 @@ export const COMPARISON_ROWS: { label: string; cells: [string, string, string] }
     },
   ];
 
-/** Emphasis on the third column, without marking the other two down. */
-const cellTone = (i: number) => (i === 2 ? "text-onink" : "text-onink-2");
+export function Comparison({
+  columns = COMPARISON_COLUMNS,
+  rows = COMPARISON_ROWS,
+  emphasisIndex = 2,
+  srCaption = "Vidra compared with hosted video platforms and with other self-hosted video platforms",
+}: {
+  columns?: string[];
+  rows?: ComparisonRow[];
+  /** The Vidra column: emphasised by heading colour, fill and position — never colour alone. */
+  emphasisIndex?: number;
+  srCaption?: string;
+}) {
+  /** Emphasis on one column, without marking the others down. */
+  const cellTone = (i: number) =>
+    i === emphasisIndex ? "text-onink" : "text-onink-2";
+  // Proportional measures, like the ones this table has always carried: the
+  // label column and equal data columns, for the two widths the site renders.
+  const labelWidth = columns.length === 2 ? "w-[20%]" : "w-[15%]";
+  const cellWidth = columns.length === 2 ? "w-[40%]" : "w-[28%]";
 
-export function Comparison() {
   return (
     <>
-      {/* Table for anything wide enough to hold three columns of prose. */}
+      {/* Table for anything wide enough to hold the columns as prose. */}
       <div className="hidden md:block">
         <table className="w-full border-collapse text-left">
-          <caption className="sr-only">
-            Vidra compared with hosted video platforms and with other
-            self-hosted video platforms
-          </caption>
+          <caption className="sr-only">{srCaption}</caption>
           <thead>
             <tr>
-              <th scope="col" className="w-[15%] pb-4" />
-              {COMPARISON_COLUMNS.map((c, i) => (
+              <th scope="col" className={`${labelWidth} pb-4`} />
+              {columns.map((c, i) => (
                 <th
                   key={c}
                   scope="col"
-                  className={`w-[28%] border-b border-slate/70 px-5 pb-4 align-bottom text-micro uppercase ${
-                    i === 2 ? "text-vidra" : "text-onink-2"
+                  className={`${cellWidth} border-b border-slate/70 px-5 pb-4 align-bottom text-micro uppercase ${
+                    i === emphasisIndex ? "text-vidra" : "text-onink-2"
                   }`}
                 >
                   {c}
@@ -102,7 +123,7 @@ export function Comparison() {
             </tr>
           </thead>
           <tbody>
-            {COMPARISON_ROWS.map((row) => (
+            {rows.map((row) => (
               <tr key={row.label} className="align-top">
                 <th
                   scope="row"
@@ -112,10 +133,10 @@ export function Comparison() {
                 </th>
                 {row.cells.map((cell, i) => (
                   <td
-                    key={COMPARISON_COLUMNS[i]}
+                    key={columns[i]}
                     className={`border-b border-slate/70 px-5 py-5 text-small ${cellTone(
                       i,
-                    )} ${i === 2 ? "bg-ink-surface" : ""}`}
+                    )} ${i === emphasisIndex ? "bg-ink-surface" : ""}`}
                   >
                     {cell}
                   </td>
@@ -129,7 +150,7 @@ export function Comparison() {
       {/* Stacked on small screens: same data, no sideways scrolling.
           Exactly one of the two is in the accessibility tree at any width. */}
       <div className="flex flex-col gap-8 md:hidden">
-        {COMPARISON_ROWS.map((row) => (
+        {rows.map((row) => (
           <section key={row.label} aria-label={row.label}>
             <h3 className="border-b border-slate/70 pb-3 text-card text-onink">
               {row.label}
@@ -137,17 +158,17 @@ export function Comparison() {
             <dl className="mt-4 flex flex-col gap-4">
               {row.cells.map((cell, i) => (
                 <div
-                  key={COMPARISON_COLUMNS[i]}
+                  key={columns[i]}
                   className={
-                    i === 2 ? "rounded-card bg-ink-surface p-4" : "px-4"
+                    i === emphasisIndex ? "rounded-card bg-ink-surface p-4" : "px-4"
                   }
                 >
                   <dt
                     className={`text-micro uppercase ${
-                      i === 2 ? "text-vidra" : "text-onink-2"
+                      i === emphasisIndex ? "text-vidra" : "text-onink-2"
                     }`}
                   >
-                    {COMPARISON_COLUMNS[i]}
+                    {columns[i]}
                   </dt>
                   <dd className={`mt-2 text-small ${cellTone(i)}`}>{cell}</dd>
                 </div>

@@ -30,9 +30,15 @@ const columns: { heading: string; items: Item[] }[] = [
     ],
   },
   {
-    heading: "Migrate",
+    heading: "Compare",
     items: [
+      { label: "Vidra vs PeerTube", href: "/compare/peertube", external: false },
       { label: "Migrating from PeerTube", href: DOCS.migration, external: true },
+      {
+        label: "How Vidra compares",
+        href: "/features#comparison",
+        external: false,
+      },
     ],
   },
 ];

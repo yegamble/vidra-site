@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
 import { Comparison } from "@/components/Comparison";
 import { NotYet } from "@/components/NotYet";
-import { TextLink } from "@/components/Button";
+import { Button, TextLink } from "@/components/Button";
 import { Eyebrow, Head, Section, Standfirst } from "@/components/Section";
-import { DOCS, VERSION } from "@/lib/site";
+import { DOCS, INSTALL_ANCHOR, VERSION } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Features",
   description:
-    "Every shipped Vidra feature, grouped by lifecycle: publish, watch, find, connect, moderate, operate. Each with the detail that makes it checkable.",
+    "What Vidra ships: resumable uploads, HLS transcoding, live streaming with replay-to-VOD, Whisper captions, hybrid search, ActivityPub federation, Bluesky sign-in, moderation and the operator CLI — and what it does not do yet.",
 };
 
 type Group = {
@@ -255,40 +255,40 @@ export default function FeaturesPage() {
         </div>
       </section>
 
-      {/* 2 — The groups. Paper. */}
+      {/* 2 — Publish · Watch · Find. Paper, opened by the jump nav: a reader
+          who arrived to check one thing should not have to scroll blind
+          through 38 rows. Non-sticky by design — glass and stickiness belong
+          to the navigation layer alone. */}
       <Section ground="paper">
-        <div className="flex flex-col gap-11">
-          {GROUPS.map((group) => (
-            <section key={group.name} aria-labelledby={`g-${group.name}`}>
-              <div className="border-t-2 border-ink pt-5">
-                <h2 id={`g-${group.name}`} className="text-sub">
-                  {group.name}
-                </h2>
-                <p className="text-body mt-2 text-onpaper-2">{group.intro}</p>
-              </div>
-              <dl className="mt-6 grid gap-x-9 gap-y-6 sm:grid-cols-2">
-                {group.rows.map((row) => (
-                  <div key={row.feature}>
-                    <dt className="text-body font-bold">{row.feature}</dt>
-                    <dd className="text-small mt-1 text-onpaper-2">
-                      {row.detail}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
-            </section>
+        <nav aria-label="Feature groups">
+          <ul className="flex flex-wrap gap-3">
+            {[...GROUPS.map((g) => g.name), "How it compares"].map((name) => (
+              <li key={name}>
+                <a
+                  href={
+                    name === "How it compares"
+                      ? "#comparison"
+                      : `#g-${name.toLowerCase()}`
+                  }
+                  className="inline-flex min-h-11 items-center rounded-full px-4 text-small font-semibold text-onpaper ring-1 ring-inset ring-paper-hairline transition-colors hover:bg-ink/5"
+                >
+                  {name}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+        <div className="mt-10 flex flex-col gap-11">
+          {GROUPS.slice(0, 3).map((group) => (
+            <FeatureGroup key={group.name} group={group} />
           ))}
-        </div>
-
-        {/* The three negatives stay on this page: a feature list is exactly
-            where a reader goes looking for what is missing. */}
-        <div className="mt-11">
-          <NotYet />
         </div>
       </Section>
 
-      {/* 3 — How it compares. Ink, the closing band before the footer. */}
-      <Section ground="ink" media>
+      {/* 3 — How it compares. Ink, mid-page: the strongest objection-handling
+          content sits where the funnel actually reaches it, not at the foot
+          of the page. */}
+      <Section ground="ink" media id="comparison" className="scroll-mt-18">
         <div className="max-w-[1080px]">
           <Eyebrow ground="ink">How it compares</Eyebrow>
           <Head className="mt-3">Where Vidra differs, and where it does not.</Head>
@@ -303,14 +303,71 @@ export default function FeaturesPage() {
         </div>
         <p className="text-small mt-6 max-w-[72ch] text-onink-2">
           Vidra is a clean-room implementation rather than a fork of anything,
-          and it is not PeerTube-API-compatible. Moving an existing PeerTube
-          instance across is supported and documented —{" "}
+          and it is not PeerTube-API-compatible. Comparing against PeerTube
+          specifically? That has{" "}
+          <TextLink href="/compare/peertube" ground="ink">
+            its own page
+          </TextLink>
+          . Moving an existing instance across is supported and documented —{" "}
           <TextLink href={DOCS.migration} external ground="ink">
             read the migration overview
           </TextLink>
           .
         </p>
       </Section>
+
+      {/* 4 — Connect · Moderate · Operate. Paper. */}
+      <Section ground="paper">
+        <div className="flex flex-col gap-11">
+          {GROUPS.slice(3).map((group) => (
+            <FeatureGroup key={group.name} group={group} />
+          ))}
+        </div>
+
+        {/* The three negatives stay on this page: a feature list is exactly
+            where a reader goes looking for what is missing. */}
+        <div className="mt-11">
+          <NotYet />
+        </div>
+      </Section>
+
+      {/* 5 — Closing CTA. Ink, the homepage's closing idiom: the page now has
+          a conversion path instead of ending at the footer. */}
+      <Section ground="ink">
+        <Head>Start with one command.</Head>
+        <div className="mt-6 flex flex-wrap gap-3">
+          <Button href={INSTALL_ANCHOR} variant="vidra" size="large">
+            Get started
+          </Button>
+          <Button href={DOCS.root} external variant="ice-outline" size="large">
+            Read the docs
+          </Button>
+        </div>
+      </Section>
     </>
+  );
+}
+
+function FeatureGroup({ group }: { group: Group }) {
+  return (
+    <section
+      aria-labelledby={`g-${group.name.toLowerCase()}`}
+      className="scroll-mt-18"
+    >
+      <div className="border-t-2 border-ink pt-5">
+        <h2 id={`g-${group.name.toLowerCase()}`} className="text-sub">
+          {group.name}
+        </h2>
+        <p className="text-body mt-2 text-onpaper-2">{group.intro}</p>
+      </div>
+      <dl className="mt-6 grid gap-x-9 gap-y-6 sm:grid-cols-2">
+        {group.rows.map((row) => (
+          <div key={row.feature}>
+            <dt className="text-body font-bold">{row.feature}</dt>
+            <dd className="text-small mt-1 text-onpaper-2">{row.detail}</dd>
+          </div>
+        ))}
+      </dl>
+    </section>
   );
 }
