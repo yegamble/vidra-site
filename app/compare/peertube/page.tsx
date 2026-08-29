@@ -97,9 +97,8 @@ export default function ComparePeerTubePage() {
           </Head>
           <Standfirst ground="ink" className="mt-5">
             Vidra is a clean-room implementation — not a fork, not
-            PeerTube-API-compatible, and younger. Here is where the two differ,
-            where PeerTube is ahead, and what moving an instance across
-            involves.
+            PeerTube-API-compatible. Here is where the two differ, where
+            PeerTube is ahead, and what moving an instance across involves.
           </Standfirst>
         </div>
       </section>

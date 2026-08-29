@@ -333,7 +333,7 @@ export default function HomePage() {
             below. What is already fixed is the discipline it is built with.
             These gates run on every change, in every repository.
           </p>
-          <dl className="mt-5 flex flex-col gap-4">
+          <dl className="mt-5 grid gap-x-9 gap-y-6 sm:grid-cols-3">
             <div>
               <dt className="text-body font-bold">Gates in every repo</dt>
               <dd className="text-small mt-1 text-onpaper-2">
@@ -353,8 +353,9 @@ export default function HomePage() {
             <div>
               <dt className="text-body font-bold">Accessibility, gated</dt>
               <dd className="text-small mt-1 text-onpaper-2">
-                axe accessibility failures fail CI in both frontends; this
-                site&apos;s own CI additionally gates WCAG 2.2 AA explicitly.
+                Accessibility failures fail the build: axe serious and critical
+                findings gate CI in both frontends, and this site&apos;s own CI
+                additionally gates WCAG 2.2 AA explicitly.
               </dd>
             </div>
           </dl>

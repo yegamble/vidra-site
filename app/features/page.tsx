@@ -231,7 +231,7 @@ const GROUPS: Group[] = [
       {
         feature: "Accessibility",
         detail:
-          "Axe accessibility failures fail the build in both frontends' CI; this site's own CI gates WCAG 2.2 AA explicitly.",
+          "Accessibility failures fail the build: axe gates CI in both frontends, and this site's own CI gates WCAG 2.2 AA explicitly.",
       },
     ],
   },

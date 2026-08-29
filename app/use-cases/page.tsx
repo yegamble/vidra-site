@@ -142,7 +142,7 @@ const CASES: UseCase[] = [
       },
       {
         feature: "Accessibility gates in CI",
-        why: "axe serious and critical failures fail the frontend build, so the obligation is checkable.",
+        why: "Accessibility failures fail the frontend build — axe gates serious and critical findings — so the obligation is checkable.",
       },
     ],
     sizing:
