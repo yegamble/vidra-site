@@ -14,11 +14,30 @@ import { Eyebrow, Head, Section, Standfirst } from "@/components/Section";
 import { SizingCalculator } from "@/components/SizingCalculator";
 import {
   DOCS,
+  GITHUB,
   INSTALL_ANCHOR,
   INSTALL_COMMAND,
   LICENCE,
   VERSION,
 } from "@/lib/site";
+
+/**
+ * Structured data for the one query pattern that matters here: someone
+ * searching for self-hosted video software. Every value traces to lib/site.ts
+ * or the repositories it cites.
+ */
+const JSON_LD = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "Vidra",
+  applicationCategory: "MultimediaApplication",
+  operatingSystem: "Linux (Docker)",
+  softwareVersion: VERSION,
+  url: "https://vidra.yosef.app",
+  license: GITHUB.licence,
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  sameAs: [GITHUB.meta, GITHUB.core, GITHUB.user, GITHUB.search],
+};
 
 /** Four figures, each of which can be checked against a repository. */
 const STATS = [
@@ -88,6 +107,10 @@ const PROJECT = [
 export default function HomePage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD) }}
+      />
       {/* 1 — Hero. Ink. */}
       <section className="on-ink relative isolate overflow-hidden bg-ink text-onink">
         {/* Flat radial atmosphere. The one permitted radial on Ink. */}

@@ -30,16 +30,17 @@ export const metadata: Metadata = {
     title: "Vidra — self-hosted, federated video platform",
     description: DESCRIPTION,
     url: "/",
-    // TODO: some crawlers (X, Slack, older LinkedIn) will not render an SVG
-    // card and will fall back to no image. Export a 1200x630 PNG from
-    // vidra-branding/assets/readme/banner.svg and point this at it.
-    images: [{ url: "/brand/banner.svg", alt: "Vidra" }],
+    // A PNG, deliberately: X, Slack and older LinkedIn drop SVG cards.
+    // Regenerate with scripts/og-card.mjs when the branding banner changes.
+    images: [
+      { url: "/brand/og-card.png", width: 1200, height: 630, alt: "Vidra" },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Vidra — self-hosted, federated video platform",
     description: DESCRIPTION,
-    images: ["/brand/banner.svg"],
+    images: ["/brand/og-card.png"],
   },
 };
 
