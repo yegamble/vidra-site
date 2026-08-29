@@ -46,7 +46,13 @@ const STATS = [
     figure: "Bluesky",
     body: "sign-in and cross-posting over ATProto; federation over ActivityPub",
   },
-  { figure: "228", body: "API paths under one OpenAPI contract" },
+  {
+    // "228 API paths" was credibility-not-benefit here (round-1 diagnosis);
+    // the count keeps its home on /features. This stat carries the
+    // dual-positioning mechanism instead.
+    figure: "1 image",
+    body: "from a one-person box to an api+worker fleet — one variable apart",
+  },
   { figure: "AA", body: "axe gates CI in both frontends; this site pins WCAG 2.2 AA" },
 ];
 
@@ -243,12 +249,25 @@ export default function HomePage() {
           <ArchitectureExplorer />
         </div>
         <p className="text-small mt-5 max-w-[70ch] text-onink-2">
-          Put a CDN in front of the HLS, or turn on the IPFS tier, and the bytes
-          leave somebody else&apos;s network. What stays on your machine is
-          encoding — and encoding is measurable.
+          Uploads stream straight to the storage backend — they never touch the
+          server&apos;s disk — and when one box stops being enough, the same
+          image splits into api and worker roles, soak-tested with a deliberate
+          counterfactual. Put a CDN in front of the HLS, or turn on{" "}
+          <TextLink href="/ipfs" ground="ink">
+            the IPFS tier
+          </TextLink>
+          , and the bytes reach viewers from somebody else&apos;s network.
         </p>
         <p className="mt-5">
-          <TextLink href={DOCS.architecture} external ground="ink">
+          <TextLink href="/scale" ground="ink">
+            What happens at scale →
+          </TextLink>{" "}
+          <TextLink
+            href={DOCS.architecture}
+            external
+            ground="ink"
+            className="ml-6"
+          >
             The architecture, in the docs →
           </TextLink>
         </p>
@@ -300,7 +319,8 @@ export default function HomePage() {
               plugin ecosystem and in-player P2P that Vidra does not have.
               Vidra is a clean-room alternative that trades that head start for
               operability — a one-command install, a doctor, scripted backup
-              and rollback — and viewers who can sign in with Bluesky.
+              and rollback — viewers who can sign in with Bluesky, and direct
+              messages, which PeerTube does not have.
             </p>
             <p className="mt-4">
               <TextLink href="/compare/peertube" ground="ink">
