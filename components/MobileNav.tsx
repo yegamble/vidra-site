@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { MenuIcon, XIcon } from "@/components/icons";
 import { INSTALL_ANCHOR, NAV } from "@/lib/site";
 
 /**
@@ -50,28 +51,9 @@ export function MobileNav() {
         aria-controls="mobile-nav"
         aria-label={open ? "Close menu" : "Open menu"}
         onClick={() => setOpen((v) => !v)}
-        className="flex h-11 w-11 items-center justify-center rounded-button ring-1 ring-inset ring-ice/40"
+        className="flex h-11 w-11 items-center justify-center rounded-button text-onink ring-1 ring-inset ring-ice/40"
       >
-        <svg
-          width="18"
-          height="14"
-          viewBox="0 0 18 14"
-          aria-hidden="true"
-          fill="none"
-        >
-          {open ? (
-            <>
-              <path d="M2 2L16 12" stroke="#E6F6FA" strokeWidth="2" />
-              <path d="M16 2L2 12" stroke="#E6F6FA" strokeWidth="2" />
-            </>
-          ) : (
-            <>
-              <path d="M0 1h18" stroke="#E6F6FA" strokeWidth="2" />
-              <path d="M0 7h18" stroke="#E6F6FA" strokeWidth="2" />
-              <path d="M0 13h18" stroke="#E6F6FA" strokeWidth="2" />
-            </>
-          )}
-        </svg>
+        {open ? <XIcon className="h-5 w-5" /> : <MenuIcon className="h-5 w-5" />}
       </button>
 
       {open ? (

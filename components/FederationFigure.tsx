@@ -41,7 +41,10 @@ const LAYERS = [
   },
 ] as const;
 
-const DIM = "#C9D4DD";
+/* Palette values only (documented exception 4): #5C7285 is `label`, the same
+   value the figure's own off-state text uses — off wires and off labels share
+   one colour. */
+const DIM = "#5C7285";
 const LIVE = "#0B7EA3";
 
 function Wire({ on, d }: { on: boolean; d: string }) {
@@ -126,7 +129,7 @@ function Figure({ layer }: { layer: (typeof LAYERS)[number] }) {
         cx={68}
         cy={72}
         r={44}
-        fill={on("ap") ? "#EEF7FB" : "#F2F3F5"}
+        fill={on("ap") ? "#EEF7FB" : "#F5F5F7"}
         stroke={on("ap") ? LIVE : DIM}
         strokeWidth={on("ap") ? 1.8 : 1.3}
       />
@@ -137,7 +140,7 @@ function Figure({ layer }: { layer: (typeof LAYERS)[number] }) {
         cx={68}
         cy={180}
         r={44}
-        fill={on("at") ? "#EEF7FB" : "#F2F3F5"}
+        fill={on("at") ? "#EEF7FB" : "#F5F5F7"}
         stroke={on("at") ? LIVE : DIM}
         strokeWidth={on("at") ? 1.8 : 1.3}
       />
@@ -151,7 +154,7 @@ function Figure({ layer }: { layer: (typeof LAYERS)[number] }) {
         width={100}
         height={44}
         rx={10}
-        fill={on("ipfs") ? "#EEF7FB" : "#F2F3F5"}
+        fill={on("ipfs") ? "#EEF7FB" : "#F5F5F7"}
         stroke={on("ipfs") ? LIVE : DIM}
         strokeWidth={on("ipfs") ? 1.8 : 1.3}
       />
@@ -164,7 +167,7 @@ function Figure({ layer }: { layer: (typeof LAYERS)[number] }) {
         width={100}
         height={44}
         rx={10}
-        fill={on("ipfs") ? "#EEF7FB" : "#F2F3F5"}
+        fill={on("ipfs") ? "#EEF7FB" : "#F5F5F7"}
         stroke={on("ipfs") ? LIVE : DIM}
         strokeWidth={on("ipfs") ? 1.8 : 1.3}
       />

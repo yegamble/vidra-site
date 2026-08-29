@@ -37,14 +37,14 @@ export function SiteHeader() {
                 {item.external ? (
                   <a
                     href={item.href}
-                    className="text-small text-onink-2 transition-colors hover:text-onink"
+                    className="inline-flex min-h-11 items-center text-small text-onink-2 transition-colors hover:text-onink"
                   >
                     {item.label}
                   </a>
                 ) : (
                   <Link
                     href={item.href}
-                    className="text-small text-onink-2 transition-colors hover:text-onink"
+                    className="inline-flex min-h-11 items-center text-small text-onink-2 transition-colors hover:text-onink"
                   >
                     {item.label}
                   </Link>
