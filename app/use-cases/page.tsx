@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Button, TextLink } from "@/components/Button";
 import {
   BookOpenIcon,
+  CpuIcon,
   RadioIcon,
   UsersIcon,
   VideoIcon,
@@ -12,7 +13,7 @@ import { DOCS, INSTALL_ANCHOR } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Use cases",
   description:
-    "Who runs Vidra and on what: an independent creator, a community, a newsroom, a course archive — the features each one leans on, and what the server costs, from about $63 a month.",
+    "Who runs Vidra and on what: an independent creator, a community, a newsroom, a course archive, an organisation outgrowing one box — the features each one leans on, and what the server costs, from about $63 a month.",
 };
 
 type UseCase = {
@@ -149,6 +150,37 @@ const CASES: UseCase[] = [
       "Small, private to start, moving to public launch as the catalogue and concurrent viewers grow.",
     docs: { href: DOCS.search, label: "How search works →" },
   },
+  {
+    id: "organisation",
+    icon: CpuIcon,
+    eyebrow: "Many channels, a team behind them",
+    title: "An organisation outgrowing one box",
+    scenario: [
+      "Your catalogue and audience no longer fit the launch profile: encoding queues back up on release days, and one machine is a single point of failure that you answer for.",
+      "The image you installed on day one splits into roles — api replicas behind a load balancer, worker hosts for encoding — with object storage as the canonical store and a CDN with purge in front of public media. What is not built yet — multi-CDN steering, studio DRM, multi-region — is written down in a public roadmap with decision records, so you can judge the distance before you commit.",
+    ],
+    matters: [
+      {
+        feature: "Role-split deployment",
+        why: "One image, split into api and worker by a boot variable. No fork, and no separate enterprise build to buy.",
+      },
+      {
+        feature: "Durable Postgres queues",
+        why: "Adding worker hosts adds encode throughput without double-processing — soak-tested with a deliberate counterfactual.",
+      },
+      {
+        feature: "One-release rollback, enforced by CI",
+        why: "A schema-compat gate proves the previous release runs on the new schema before anything ships, and vidra update arms the rollback.",
+      },
+      {
+        feature: "Zero-downtime storage migration",
+        why: "Local to S3 with hash verification at every step; rollback is one settings change.",
+      },
+    ],
+    sizing:
+      "Beyond the published profiles. Validated at two api replicas and three workers on one PostgreSQL; a single-region deployment is the honest ceiling today, and live streaming stays on one host.",
+    docs: { href: DOCS.production, label: "The production deployment →" },
+  },
 ];
 
 export default function UseCasesPage() {
@@ -159,15 +191,15 @@ export default function UseCasesPage() {
         <div className="measure-text py-12 md:py-24">
           <Eyebrow ground="ink">Use cases</Eyebrow>
           <Head as="h1" className="mt-3">
-            Four instances, and what each one needs.
+            Five instances, and what each one needs.
           </Head>
           <Standfirst ground="ink" className="mt-5">
-            The same software, sized and configured four different ways.
+            The same software, sized and configured five different ways.
           </Standfirst>
         </div>
       </section>
 
-      {/* 2 — The four, as cards. Paper. */}
+      {/* 2 — The five, as cards. Paper. */}
       <Section ground="paper">
         <div className="flex flex-col gap-11">
           {CASES.map((item) => (
