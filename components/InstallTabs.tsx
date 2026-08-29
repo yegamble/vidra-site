@@ -33,7 +33,11 @@ const TABS: Tab[] = [
     command: INSTALL_COMMAND,
     intro:
       "For a fresh server you control. Run it as a user who can use sudo. It never writes over an existing env file, never opens a port, and never touches sshd.",
-    link: { label: "Installer reference", href: DOCS.root, external: true },
+    link: {
+      label: "Installer reference",
+      href: DOCS.oneLineInstall,
+      external: true,
+    },
     steps: [
       "Docker Engine and Compose v2 are installed if they are missing. Compose 2.20 is the floor; 2.24 is the production minimum.",
       "A checksum-verified release bundle is unpacked to /opt/vidra and the vidra CLI is installed.",
@@ -64,7 +68,7 @@ const TABS: Tab[] = [
     command: "deploy/compose.sh",
     intro:
       "For a host you already manage with your own conventions. You write the env file, you run the deploy script, and the CLI takes over from there.",
-    link: { label: "Deployment guide", href: DOCS.root, external: true },
+    link: { label: "Deployment guide", href: DOCS.production, external: true },
     steps: [
       "Check the Compose version first. Below 2.24, Compose silently publishes PostgreSQL and Redis on 0.0.0.0.",
       // 26 is the length of the `checks` slice in

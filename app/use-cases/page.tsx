@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Button, TextLink } from "@/components/Button";
 import {
   BookOpenIcon,
   RadioIcon,
@@ -6,11 +7,12 @@ import {
   VideoIcon,
 } from "@/components/icons";
 import { Eyebrow, Head, Section, Standfirst } from "@/components/Section";
+import { DOCS, INSTALL_ANCHOR } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Use cases",
   description:
-    "Four kinds of instance — an independent creator, a community, a newsroom, a course archive — with the features each one leans on and the server each one needs.",
+    "Who runs Vidra and on what: an independent creator, a community, a newsroom, a course archive — the features each one leans on, and what the server costs, from about $63 a month.",
 };
 
 type UseCase = {
@@ -21,6 +23,7 @@ type UseCase = {
   scenario: [string, string];
   matters: { feature: string; why: string }[];
   sizing: string;
+  docs: { href: string; label: string };
 };
 
 const CASES: UseCase[] = [
@@ -52,6 +55,7 @@ const CASES: UseCase[] = [
       },
     ],
     sizing: "Small, private: 4 vCPU, 8 GB, 160 GB — around $63 a month.",
+    docs: { href: DOCS.quickstart, label: "Read the quickstart →" },
   },
   {
     id: "community",
@@ -82,6 +86,7 @@ const CASES: UseCase[] = [
     ],
     sizing:
       "Small, private with headroom: 4 vCPU and 8 GB, plus 2 GB if you enable ClamAV.",
+    docs: { href: DOCS.moderation, label: "Moderation, from day two →" },
   },
   {
     id: "newsroom",
@@ -111,6 +116,7 @@ const CASES: UseCase[] = [
       },
     ],
     sizing: "Public launch: 8 vCPU, 16 GB, 160 GB — around $168 a month.",
+    docs: { href: DOCS.videoPipeline, label: "The pipeline, live to VOD →" },
   },
   {
     id: "archive",
@@ -141,6 +147,7 @@ const CASES: UseCase[] = [
     ],
     sizing:
       "Small, private to start, moving to public launch as the catalogue and concurrent viewers grow.",
+    docs: { href: DOCS.search, label: "How search works →" },
   },
 ];
 
@@ -203,11 +210,33 @@ export default function UseCasesPage() {
                       Sizing
                     </span>
                     <span className="mt-2 block">{item.sizing}</span>
+                    <TextLink href="/#calculator" className="mt-3 inline-block">
+                      Check the arithmetic →
+                    </TextLink>
+                  </p>
+                  <p className="mt-5">
+                    <TextLink href={item.docs.href} external>
+                      {item.docs.label}
+                    </TextLink>
                   </p>
                 </div>
               </div>
             </article>
           ))}
+        </div>
+      </Section>
+
+      {/* 3 — Closing CTA. Ink. The page where readers recognise themselves
+          must not be a dead end. */}
+      <Section ground="ink">
+        <Head>Start with one command.</Head>
+        <div className="mt-6 flex flex-wrap gap-3">
+          <Button href={INSTALL_ANCHOR} variant="vidra" size="large">
+            Get started
+          </Button>
+          <Button href="/#calculator" variant="ice-outline" size="large">
+            What will it cost me?
+          </Button>
         </div>
       </Section>
     </>

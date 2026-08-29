@@ -19,9 +19,29 @@ export const GITHUB = {
   licence: "https://github.com/yegamble/vidra/blob/main/LICENSE",
 } as const;
 
+/**
+ * Every path below exists in vidra-docs/sidebars.ts (checked 2026-08-28).
+ * Deep links go through this map only — never a literal in a component.
+ * NOTE: the production docs deployment is stale (built before the /docs
+ * baseUrl); every target 404s until vidra-docs redeploys from its
+ * docs/brand-overhaul branch. The paths here match the new config.
+ */
 export const DOCS = {
   root: "/docs",
+  quickstart: "/docs/start/quickstart",
+  requirements: "/docs/start/requirements",
+  architecture: "/docs/concepts/architecture",
+  videoPipeline: "/docs/concepts/video-pipeline",
+  federation: "/docs/concepts/federation",
+  search: "/docs/concepts/search",
+  oneLineInstall: "/docs/install/one-line-install",
+  production: "/docs/install/production",
+  cli: "/docs/operate/cli",
+  moderation: "/docs/operate/moderation",
   migration: "/docs/migration/overview",
+  migrationPlanning: "/docs/migration/planning",
+  migrationCutover: "/docs/migration/cutover",
+  migrationTroubleshooting: "/docs/migration/troubleshooting",
 } as const;
 
 /**

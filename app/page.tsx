@@ -188,6 +188,11 @@ export default function HomePage() {
           <code className="text-mono text-onink">0.0.0.0</code> — your database on
           the public internet, with no error to tell you.
         </p>
+        <p className="mt-5">
+          <TextLink href={DOCS.requirements} external ground="ink">
+            The requirements, in detail →
+          </TextLink>
+        </p>
       </Section>
 
       {/* 4 — Install. Paper. */}
@@ -219,6 +224,11 @@ export default function HomePage() {
           leave somebody else&apos;s network. What stays on your machine is
           encoding — and encoding is measurable.
         </p>
+        <p className="mt-5">
+          <TextLink href={DOCS.architecture} external ground="ink">
+            The architecture, in the docs →
+          </TextLink>
+        </p>
       </Section>
 
       {/* 6 — Federation. Paper. */}
@@ -232,6 +242,11 @@ export default function HomePage() {
         <div className="mt-7">
           <FederationFigure />
         </div>
+        <p className="mt-5">
+          <TextLink href={DOCS.federation} external>
+            How federation works, in the docs →
+          </TextLink>
+        </p>
       </Section>
 
       {/* 7 — Why not the alternatives. Ink. The teaser answers the two
