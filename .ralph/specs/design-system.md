@@ -327,17 +327,21 @@ The only sanctioned departures. Anything else is a defect.
 5. **The pulse on the hero version pill** — `vd-pulse`, a 2.4s opacity loop on
    a 8px dot. Ambient, `aria-hidden`, and the only thing it says is "this is
    the current release".
-6. **The travelling dash on the federation figure** — `vd-dash`, a 1.1s linear
-   `stroke-dashoffset` loop on the active wires. This is an **infinite
-   animation and a deliberate exception to the 300ms cap**: the figure's whole
-   job is to say which way bytes travel, and direction of travel is not
-   something a 300ms one-shot can express — a static dashed line says
-   "connection", a moving one says "flow, this way". It is confined to the two
-   or three wires that are live for the current step, it carries no
+6. **The travelling dash on the federation and IPFS figures** — `vd-dash`, a
+   1.1s linear `stroke-dashoffset` loop on the active wires. This is an
+   **infinite animation and a deliberate exception to the 300ms cap**: each
+   figure's whole job is to say which way bytes travel, and direction of
+   travel is not something a 300ms one-shot can express — a static dashed
+   line says "connection", a moving one says "flow, this way". Two instances
+   carry it (amended 2026-08-28, canon §09's ambient-exception clause):
+   `FederationFigure.tsx`, on the two or three wires live for the current
+   step, and `IpfsFigure.tsx`, on the gateway conduit only while its
+   gateways step is active — bytes pass *through* a gateway, and the moving
+   dash passing through and out is that exact claim drawn. Neither carries
    information that is not also in the text beside it, and the global
-   `prefers-reduced-motion` reset neutralises it completely (the dashes
-   remain, they simply stop). If a third infinite animation is ever proposed,
-   it needs this paragraph written for it first.
+   `prefers-reduced-motion` reset neutralises both completely (the dashes
+   remain, they simply stop). A further instance needs this paragraph
+   written for it first.
 7. **The federation figure's in-drawing labels fall below the type ramp on a
    phone.** The `560 × 250` viewBox scaled into a ~302px phone column renders
    its 15-unit labels at roughly 8px — under the 11px micro floor. This is

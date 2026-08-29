@@ -10,6 +10,8 @@ export const ROUTES = [
   "/features",
   "/use-cases",
   "/compare/peertube",
+  "/scale",
+  "/ipfs",
   "/demo",
 ] as const;
 

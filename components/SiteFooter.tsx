@@ -10,6 +10,8 @@ const columns: { heading: string; items: Item[] }[] = [
     items: [
       { label: "Features", href: "/features", external: false },
       { label: "Use cases", href: "/use-cases", external: false },
+      { label: "Scale", href: "/scale", external: false },
+      { label: "IPFS", href: "/ipfs", external: false },
       { label: "Get started", href: INSTALL_ANCHOR, external: false },
     ],
   },
