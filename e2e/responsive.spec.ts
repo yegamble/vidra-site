@@ -116,19 +116,19 @@ test.describe("hero", () => {
       const h1 = page.getByRole("heading", { level: 1 });
       await expect(h1).toHaveCount(1);
       await expect(h1).toBeVisible();
-      await expect(h1).toHaveText("Your videos. Your server. Your rules.");
+      await expect(h1).toHaveText("Run your own video platform.One command.");
 
       // Above-the-fold is deliberately NOT asserted: the standfirst is allowed
-      // to push the buttons below 844px on a phone. What is asserted is that
-      // the primary action is real — visible, in the document flow, and
-      // pointing at the install section.
-      const cta = page
-        .getByRole("main")
-        .getByRole("link", { name: "Install it in one command" });
+      // to push the actions below 844px on a phone. What is asserted is that
+      // the primary action is real: the install command itself sits in the
+      // hero with a working copy control, and the cost question is one tap.
+      const hero = page.locator("main > section").first();
+      const copy = hero.getByRole("button", { name: /copy install command/i });
+      await expect(copy).toBeVisible();
+      await expect(copy).toBeEnabled();
+      const cta = hero.getByRole("link", { name: "What will it cost me?" });
       await expect(cta).toBeVisible();
-      await expect(cta).toHaveAttribute("href", "/#get-started");
-      await cta.scrollIntoViewIfNeeded();
-      await expect(cta).toBeEnabled();
+      await expect(cta).toHaveAttribute("href", "/#calculator");
     });
   }
 });
@@ -354,8 +354,9 @@ test("the long scroll never puts two Ink sections in a row", async ({
 
   // Brand rhythm (vidra-branding §07): Ink and Paper alternate, Mist is the
   // quiet third ground. Two Ink bands touching read as one very long band and
-  // the page loses its beat. The redesigned homepage runs
-  // Ink · Paper · Ink · Paper · Ink · Paper · Mist · Ink.
+  // the page loses its beat. The homepage runs
+  // Ink · Paper · Ink · Paper · Ink · Paper · Ink · Mist · Ink — bands 7 and
+  // 9 are both Ink, legally, because Mist separates them.
   const grounds = await page.evaluate(() => {
     const ink = "rgb(12, 33, 54)";
     const mist = "rgb(238, 247, 251)";
@@ -378,6 +379,21 @@ test("the long scroll never puts two Ink sections in a row", async ({
 
   // Mist is the quiet third ground and appears once.
   expect(grounds.filter((g) => g.ground === "mist")).toHaveLength(1);
+
+  // The exact beat, so a reorder is a decision recorded here rather than a
+  // drift: comprehension order is what is it → is it for me → what does it
+  // cost → how does it work → why not the alternatives → can I trust it.
+  expect(grounds.map((g) => g.ground)).toEqual([
+    "ink", // hero
+    "light", // who runs it
+    "ink", // sizing
+    "light", // install
+    "ink", // architecture
+    "light", // federation
+    "ink", // why not the alternatives
+    "mist", // the project + is this ready
+    "ink", // final CTA
+  ]);
 });
 
 test.describe("comparison", () => {

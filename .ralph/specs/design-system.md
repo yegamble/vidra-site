@@ -461,11 +461,27 @@ The tokens live in `app/brand.css` as `--brand-chrome-ink`,
 `--brand-chrome-ink-bar` and `--brand-chrome-blur`, so the values are named
 once rather than being an `rgba()` copied into two components and drifting.
 
-### 2026-08-28 — the home headline
+### 2026-08-28 — the home headline (overturned later the same day; see below)
 
-The hero H1 is **"Your videos. Your server. Your rules."** — three claims of
+~~The hero H1 is **"Your videos. Your server. Your rules."** — three claims of
 ownership, which is the thing the reader is actually deciding about.
 **"Run your own video platform." remains the brand positioning line** and is
 unchanged where positioning belongs: the `<title>`/OpenGraph metadata and the
 footer's bottom bar. The two are not competing; one is the page's argument and
-the other is the brand's sentence. Do not "unify" them.
+the other is the brand's sentence. Do not "unify" them.~~
+
+**Overturned 2026-08-28.** Two reasons, one of authority and one of substance.
+Authority: `brand-guidelines.md` §06 says the positioning line "appears in the
+banner, **site heroes**, social bios and meta descriptions" — the entry above
+overturned a *canon* rule from the site side, which is not this repo's call
+(canon wins, AGENTS hard rule 1). Substance: a claims sweep and a positioning
+review found "Your videos. Your server. Your rules." is the generic
+self-hosting promise — any competitor could run it — while the checkable
+differentiator (one command in, an operator CLI out) sat below the fold. The
+hero H1 is now **two authored segments**: the canonical line, then
+**"One command."** in Vidra Cyan (large type on Ink is exactly what the canon
+reserves that colour for), with the install command itself in the hero as the
+primary conversion. The `<title>` now carries the category query
+("self-hosted, federated video platform") instead of duplicating the hero.
+If a future page argues for a bespoke hero again, that argument goes to
+vidra-branding §06 first — not into this file.

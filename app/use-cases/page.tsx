@@ -135,8 +135,8 @@ const CASES: UseCase[] = [
         why: "Full-text and trigram together, so a wrong spelling still lands.",
       },
       {
-        feature: "WCAG 2.2 AA in CI",
-        why: "Enforced by axe as a hard gate, so the obligation is checkable.",
+        feature: "Accessibility gates in CI",
+        why: "axe serious and critical failures fail the frontend build, so the obligation is checkable.",
       },
     ],
     sizing:

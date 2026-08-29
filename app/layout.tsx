@@ -19,7 +19,7 @@ const DESCRIPTION =
 export const metadata: Metadata = {
   metadataBase: new URL("https://vidra.yosef.app"),
   title: {
-    default: "Vidra — run your own video platform",
+    default: "Vidra — self-hosted, federated video platform",
     template: "%s — Vidra",
   },
   description: DESCRIPTION,
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: "Vidra",
-    title: "Vidra — run your own video platform",
+    title: "Vidra — self-hosted, federated video platform",
     description: DESCRIPTION,
     url: "/",
     // TODO: some crawlers (X, Slack, older LinkedIn) will not render an SVG
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Vidra — run your own video platform",
+    title: "Vidra — self-hosted, federated video platform",
     description: DESCRIPTION,
     images: ["/brand/banner.svg"],
   },
