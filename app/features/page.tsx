@@ -3,18 +3,22 @@ import { Comparison } from "@/components/Comparison";
 import { NotYet } from "@/components/NotYet";
 import { Button, TextLink } from "@/components/Button";
 import { Eyebrow, Head, Section, Standfirst } from "@/components/Section";
-import { DOCS, INSTALL_ANCHOR, VERSION } from "@/lib/site";
+import { DOCS, INSTALL_ANCHOR, MESSAGING, SCALE, VERSION } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Features",
   description:
-    "What Vidra ships: resumable uploads, HLS transcoding, live streaming with replay-to-VOD, Whisper captions, hybrid search, ActivityPub federation, Bluesky sign-in, moderation and the operator CLI — and what it does not do yet.",
+    "What Vidra ships: resumable uploads, HLS transcoding, live streaming with replay-to-VOD, Whisper captions, hybrid search, ActivityPub federation, Bluesky sign-in, direct messages with an end-to-end encrypted mode, moderation and the operator CLI — and what it does not do yet.",
 };
 
 type Group = {
   name: string;
   intro: string;
-  rows: { feature: string; detail: string }[];
+  rows: {
+    feature: string;
+    detail: string;
+    link?: { label: string; href: string };
+  }[];
 };
 
 const GROUPS: Group[] = [
@@ -26,6 +30,15 @@ const GROUPS: Group[] = [
         feature: "Resumable and chunked uploads",
         detail:
           "A dropped connection picks up where it stopped rather than starting the file again.",
+      },
+      {
+        feature: "Straight-to-storage uploads",
+        detail:
+          "Chunks stream to the storage backend — local or S3 — and never touch the server's disk. A server dying mid-upload loses nothing.",
+      },
+      {
+        feature: "Lean encode path",
+        detail: `A full-ladder job reads the source once, down from ${SCALE.readsBefore}, and decodes it in full ${SCALE.decodesAfter} times, down from ${SCALE.decodesBefore}. Peak scratch computes to about ${SCALE.scratchAfterGb} GB, from about ${SCALE.scratchBeforeGb}.`,
       },
       {
         feature: "Upload from a URL",
@@ -138,7 +151,8 @@ const GROUPS: Group[] = [
   },
   {
     name: "Connect",
-    intro: "Two federation protocols, one storage network, and identity.",
+    intro:
+      "ActivityPub federation, ATProto for Bluesky, messaging, one storage network, and identity.",
     rows: [
       {
         feature: "ActivityPub",
@@ -156,12 +170,24 @@ const GROUPS: Group[] = [
       {
         feature: "IPFS media, dual-tier",
         detail:
-          "A public tier that offloads delivery to gateways, and a private tier keyed to your own swarm.",
+          "A public tier that offloads delivery to gateways, and a private tier keyed to your own swarm — replication, not distribution. Off by default.",
+        link: { label: "What IPFS actually does →", href: "/ipfs" },
       },
       {
         feature: "Direct messages",
+        detail: `One-to-one conversations, with images and files — attachments are capped at ${MESSAGING.attachmentCapMiB} MiB and scanned for malware before they become linkable.`,
+      },
+      {
+        // Three rows, deliberately: the split keeps "opt-in" and "text only"
+        // structurally unmissable, so "all messages encrypted" can never be
+        // read into this page. Never merge them back into one row.
+        feature: "End-to-end encrypted conversations",
         detail:
-          "One to one, with optional end-to-end encryption using client-side Olm.",
+          "An opt-in conversation type. Encryption runs on your device; the server stores only ciphertext and cannot read the content — though, as with Signal or Matrix, it still knows who is talking to whom and when. Text only: attachments stay in standard conversations, where they can be scanned.",
+      },
+      {
+        feature: "Disappearing messages",
+        detail: `Encrypted conversations can auto-delete on a timer, ${MESSAGING.timerMin} to ${MESSAGING.timerMax}. Expired messages vanish from every read immediately and are hard-deleted from the server by a sweeper.`,
       },
       {
         feature: "OAuth, OIDC and TOTP two-factor",
@@ -218,7 +244,13 @@ const GROUPS: Group[] = [
         // count is not checkable against the tree, and a count on this site
         // cites code or stays unpinned.
         feature: "Durable queues",
-        detail: "Queued work survives a restart.",
+        detail:
+          "Postgres-backed, claimed with SKIP LOCKED and leases: queued work survives a restart, and two workers cannot claim the same job.",
+      },
+      {
+        feature: "Roles and replicas",
+        detail:
+          "One boot variable splits the same image into api and worker processes. Replicas take leases, elect a leader for sweeps, and drain behind /readyz — soak-tested at two replicas with a deliberate counterfactual.",
       },
       {
         feature: "Schema history",
@@ -364,7 +396,15 @@ function FeatureGroup({ group }: { group: Group }) {
         {group.rows.map((row) => (
           <div key={row.feature}>
             <dt className="text-body font-bold">{row.feature}</dt>
-            <dd className="text-small mt-1 text-onpaper-2">{row.detail}</dd>
+            <dd className="text-small mt-1 text-onpaper-2">
+              {row.detail}
+              {row.link ? (
+                <>
+                  {" "}
+                  <TextLink href={row.link.href}>{row.link.label}</TextLink>
+                </>
+              ) : null}
+            </dd>
           </div>
         ))}
       </dl>
