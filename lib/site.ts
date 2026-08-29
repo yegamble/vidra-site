@@ -50,9 +50,18 @@ export const PROFILES = {
   launch: { vcpu: 8, ram: 16, disk: 160, droplet: 168 },
   /** ClamAV costs RAM, not cores. */
   clamavRamGb: 2,
-  /** Block storage beyond the droplet's included 160 GB. */
+  /**
+   * Block storage beyond the droplet's included 160 GB. Source: DigitalOcean
+   * volume list pricing, $0.10/GiB-month (verified July 2026) — a provider
+   * price, not a deploy/ figure.
+   */
   blockStoragePerGb: 0.1,
-  /** The full HLS ladder, per hour of source. Varies with the source. */
+  /**
+   * ASSUMPTION, not a measured figure. No repository pins a GB-per-hour number
+   * for the full HLS ladder; anything derived from this must be labelled an
+   * estimate in the UI. Durable fix: measure a real encode corpus, document the
+   * figure in deploy/README, then re-pin and drop the label.
+   */
   gbPerHour: 2,
   /** Scratch space a concurrent transcode job wants, at a 2 GB upload limit. */
   scratchGbPerJob: 8,

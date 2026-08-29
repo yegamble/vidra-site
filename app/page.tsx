@@ -16,9 +16,12 @@ import { DOCS, INSTALL_ANCHOR, LICENCE, VERSION } from "@/lib/site";
 /** Four numbers, each of which can be checked against a repository. */
 const STATS = [
   { figure: "$63", body: "a month runs a small private instance" },
-  { figure: "2", body: "federation protocols: ActivityPub and ATProto" },
+  {
+    figure: "2",
+    body: "protocols: ActivityPub federation, plus Bluesky sign-in and cross-posting over ATProto",
+  },
   { figure: "228", body: "API paths under one OpenAPI contract" },
-  { figure: "AA", body: "WCAG 2.2, enforced by axe as a CI gate" },
+  { figure: "AA", body: "axe gates CI in both frontends; this site pins WCAG 2.2 AA" },
 ];
 
 const AUDIENCES = [
@@ -158,7 +161,7 @@ export default function HomePage() {
       {/* 4 — Federation. Paper. */}
       <Section ground="paper">
         <Eyebrow>Federation</Eyebrow>
-        <Head className="mt-3">On by default. Off per channel.</Head>
+        <Head className="mt-3">Yours to enable. On for every channel once you do.</Head>
         <Standfirst className="mt-4">
           Three layers do three jobs. Step through them and watch what leaves
           your server.

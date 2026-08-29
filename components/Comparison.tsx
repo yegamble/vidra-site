@@ -35,7 +35,7 @@ export const COMPARISON_ROWS: { label: string; cells: [string, string, string] }
       cells: [
         "None. Accounts, subscriptions and discovery stay on one platform.",
         "Varies by project. ActivityPub where it is offered.",
-        "ActivityPub and ATProto. On by default, off per channel.",
+        "ActivityPub and ATProto. Enabled per instance; once on, every channel federates by default and can opt out.",
       ],
     },
     {
