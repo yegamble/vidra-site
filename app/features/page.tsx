@@ -170,7 +170,7 @@ const GROUPS: Group[] = [
       {
         feature: "IPFS media, dual-tier",
         detail:
-          "A public tier that offloads delivery to gateways, and a private tier keyed to your own swarm — replication, not distribution. Off by default.",
+          "A public tier that serves through gateways and puts every public video's CIDs in the API so anyone can pin a copy; a private tier keyed to your own swarm — replication, not distribution. Off by default.",
         link: { label: "What IPFS actually does →", href: "/ipfs" },
       },
       {

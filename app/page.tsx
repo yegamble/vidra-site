@@ -316,11 +316,13 @@ export default function HomePage() {
           Uploads stream straight to the storage backend — they never touch the
           server&apos;s disk — and when one box stops being enough, the same
           image splits into api and worker roles, soak-tested with a deliberate
-          counterfactual. Put a CDN in front of the HLS, or turn on{" "}
+          counterfactual. Put a CDN in front of the HLS and the bytes reach
+          viewers from its edge, not your box; turn on{" "}
           <TextLink href="/ipfs" ground="ink">
             the IPFS tier
-          </TextLink>
-          , and the bytes reach viewers from somebody else&apos;s network.
+          </TextLink>{" "}
+          and any copy someone pins becomes another source that is not your
+          server.
         </p>
         <p className="mt-5 flex flex-wrap gap-x-6 gap-y-2">
           <TextLink href="/scale" ground="ink">

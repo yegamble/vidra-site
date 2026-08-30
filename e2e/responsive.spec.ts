@@ -406,6 +406,35 @@ test("the long scroll never puts two Ink sections in a row", async ({
   ]);
 });
 
+test("/ipfs keeps its beat: no adjacent Ink, Mist exactly once", async ({
+  page,
+}) => {
+  await page.goto("/ipfs");
+
+  // The viral-case band took the sanctioned Mist slot beside the public tier
+  // (I·P·I·P·M·I·P·I) — recorded here the way the homepage's beat is, so a
+  // future band is a decision, not a drift.
+  const grounds = await page.evaluate(() => {
+    const ink = "rgb(12, 33, 54)";
+    const mist = "rgb(238, 247, 251)";
+    return [...document.querySelectorAll("main > section")].map((el) => {
+      const bg = getComputedStyle(el).backgroundColor;
+      return bg === ink ? "ink" : bg === mist ? "mist" : "light";
+    });
+  });
+
+  expect(grounds).toEqual([
+    "ink", // hero
+    "light", // the mirror + figure
+    "ink", // the fence
+    "light", // the public tier
+    "mist", // when a video takes off
+    "ink", // the private tier
+    "light", // what it buys
+    "ink", // closing CTA
+  ]);
+});
+
 test.describe("comparison", () => {
   // Moved to /features with the redesign: the homepage carries the sizing
   // calculator and the topology explorer instead, and a comparison table

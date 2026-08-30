@@ -112,7 +112,7 @@ const NODES: Node[] = [
     name: "IPFS",
     sub: "Offload tier",
     role: "Offload tier",
-    body: "Public media is fetched from gateways rather than from your box, which is where your egress bill stops tracking your viewer count. A private tier stays keyed to your own swarm.",
+    body: "Public media serves by content address through the gateway you configure, and any copy someone else pins is another source your server does not carry. A private tier stays keyed to your own swarm.",
     facts: ["gateway tier", "swarm-keyed tier"],
   },
 ];

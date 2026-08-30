@@ -29,28 +29,35 @@ const STEPS = [
   {
     id: "copies",
     tab: "Two copies",
-    label: "Step one of four",
+    label: "Step one of five",
     title: "Two copies, both yours",
     body: "The authoritative copy of every video stays in your storage — local disk or S3. The mirror is a second copy, pinned on your own IPFS node. Only public, published media is even eligible — the fence is default-deny — and the whole tier is off until you turn it on.",
   },
   {
     id: "replicas",
     tab: "Your replicas",
-    label: "Step two of four",
+    label: "Step two of five",
     title: "Your replicas",
     body: "The only automatic replication in the system is across machines you run and pay for — a cluster that pins what your node pins.",
   },
   {
     id: "gateways",
     tab: "Gateways and peers",
-    label: "Step three of four",
+    label: "Step three of five",
     title: "Gateways pass it through",
     body: "A gateway fetches on demand and verifies by hash — it serves your bytes, it does not keep them. Anyone holding the address may choose to pin a copy: a possibility, never a promise. Joining the public network is a second explicit opt-in.",
   },
   {
+    id: "pinned",
+    tab: "Pinned copies",
+    label: "Step four of five",
+    title: "Pinned copies, independently held",
+    body: "Anyone holding a public video's address may pin it on a full node they run. Each pinned copy is another independent source — bytes can come from it instead of your server, and if your origin disappears, every copy that anyone pinned keeps the same address. A choice other people make, never a service the network performs.",
+  },
+  {
     id: "private",
     tab: "The private tier",
-    label: "Step four of four",
+    label: "Step five of five",
     title: "Replication, not distribution",
     body: "Private media may mirror only to a separate, swarm-keyed node — no gateway, and its addresses never appear in any API response. Its job is durability across machines you run; nothing crosses out of the fence.",
   },
@@ -117,11 +124,61 @@ function Figure({ step }: { step: (typeof STEPS)[number] }) {
         gateway
       </text>
 
-      {/* The one third party: hollow, dashed, and labelled as a possibility. */}
-      <line x1={492} y1={104} x2={504} y2={72} stroke={DIM} strokeWidth={1.3} strokeDasharray="4 4" strokeLinecap="round" />
-      <circle cx={508} cy={56} r={14} fill="none" stroke={DIM} strokeWidth={1.3} strokeDasharray="4 4" />
-      <text x={492} y={30} textAnchor="middle" fontSize="11" fontWeight="700" fill="#5C7285" fontFamily="system-ui, sans-serif">
-        a peer that may pin
+      {/* The third parties: three hollow rings, exactly — more would read as
+          a worldwide mirror field, the forbidden picture. Two-axis vocabulary:
+          filled = yours, ring = not yours; dashed = possibility, solid =
+          chosen-and-running. In the pinned step the rings resolve to solid
+          LIVE with one static wire each exiting the canvas — "exists as a
+          source", so no travelling dash: the motion exception stays at two
+          instances. Never a filled third-party node, never a viewer node,
+          never an arrow from the conduit into the rings. */}
+      {/* The possibility tail ties the rings to the gateway rail only while
+          pinning is still a maybe. In the pinned state it is cut entirely:
+          the exit wires carry the connectivity story, and a stub toward your
+          own gateway would contradict the step's claim — bytes come from the
+          pinned copies instead of your server. */}
+      {!on("pinned") ? (
+        <line
+          x1={466}
+          y1={102}
+          x2={478}
+          y2={119}
+          stroke={DIM}
+          strokeWidth={1.3}
+          strokeDasharray="4 4"
+          strokeLinecap="round"
+        />
+      ) : null}
+      {[
+        { cx: 466, cy: 88 },
+        { cx: 500, cy: 62 },
+        { cx: 532, cy: 38 },
+      ].map((ring) => (
+        <g key={`${ring.cx}-${ring.cy}`}>
+          <circle
+            cx={ring.cx}
+            cy={ring.cy}
+            r={14}
+            fill="none"
+            stroke={on("pinned") ? LIVE : DIM}
+            strokeWidth={on("pinned") ? 1.8 : 1.3}
+            strokeDasharray={on("pinned") ? undefined : "4 4"}
+          />
+          {on("pinned") ? (
+            <line
+              x1={ring.cx + 14}
+              y1={ring.cy}
+              x2={556}
+              y2={ring.cy}
+              stroke={LIVE}
+              strokeWidth={1.8}
+              strokeLinecap="round"
+            />
+          ) : null}
+        </g>
+      ))}
+      <text x={462} y={18} textAnchor="middle" fontSize="11" fontWeight="700" fill={on("pinned") ? "#0C2136" : "#5C7285"} fontFamily="system-ui, sans-serif">
+        {on("pinned") ? "pinned copies — each one chosen" : "peers that may pin"}
       </text>
 
       {/* The private tier: a sealed solid fence; arrows only inside. */}
@@ -216,9 +273,13 @@ export function IpfsFigure() {
       >
         <p className="text-micro uppercase text-label">{step.label}</p>
         <h3 className="text-card mt-2">{step.title}</h3>
-        {/* 7.8em reserves the tallest of the four bodies, so nothing below
-            jumps as you switch steps. A reserved line count, not a pixel. */}
-        <p className="text-body mt-2 min-h-[7.8em] max-w-[60ch] text-onpaper-2">
+        {/* 9.2em reserves the tallest of the five bodies (the pinned step's,
+            six lines at the 60ch measure), so nothing below jumps as you
+            switch steps. The reserve holds at the desktop measure; at phone
+            width the longest body exceeds it and the panel grows — accepted,
+            as every reserved-height panel on the site does at 390. A
+            reserved line count, not a pixel. */}
+        <p className="text-body mt-2 min-h-[9.2em] max-w-[60ch] text-onpaper-2">
           {step.body}
         </p>
       </div>

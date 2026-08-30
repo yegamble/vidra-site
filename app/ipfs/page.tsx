@@ -7,7 +7,7 @@ import { DOCS, INSTALL_ANCHOR } from "@/lib/site";
 export const metadata: Metadata = {
   title: "How Vidra uses IPFS",
   description:
-    "Vidra can mirror public media to IPFS for gateway delivery, and replicate private media across a swarm-keyed private tier. What content addressing buys — integrity, location-independence, survivability if pinned — and what it does not: automatic hosting by others, speed, permanence.",
+    "Vidra can mirror public media to IPFS for gateway delivery, and replicate private media across a swarm-keyed private tier. Every public video's CIDs are in the API, so anyone can pin a copy — each pinned copy is an independent source that outlives the origin. What IPFS does not do here: automatic hosting by others, speed, permanence.",
 };
 
 /**
@@ -31,8 +31,8 @@ export default function IpfsPage() {
           <Standfirst ground="ink" className="mt-5">
             Vidra can mirror media to IPFS — a public tier for delivery, a
             private tier for replication. Both are off by default, and neither
-            one means strangers host your videos. Here is the mechanism,
-            without the folklore.
+            one means strangers host your videos — though anyone who wants to
+            can pin a copy. Here is the mechanism, without the folklore.
           </Standfirst>
         </div>
       </section>
@@ -51,11 +51,12 @@ export default function IpfsPage() {
           <IpfsFigure />
         </div>
         <p className="text-small mt-5 max-w-[72ch] text-onpaper-2">
-          The solid nodes are yours: your object store, your IPFS node, and any
-          cluster replicas you run. Gateways pass content through and verify it
-          by hash — they do not keep it. The dashed peer is potential: anyone
-          with a public CID can choose to pin it. The sealed loop is the
-          private tier; nothing crosses out of it.
+          The filled nodes are yours: your object store, your IPFS node, and
+          any cluster replicas you run. Hollow rings are other people&apos;s
+          nodes — dashed while pinning is only a possibility, solid once
+          someone has chosen to run a node and pin. Gateways pass content
+          through and verify it by hash — they do not keep it. The sealed loop
+          is the private tier; nothing crosses out of it.
         </p>
       </Section>
 
@@ -91,7 +92,80 @@ export default function IpfsPage() {
         </p>
       </Section>
 
-      {/* 5 — The private tier. Ink. */}
+      {/* 5 — When a video takes off. Mist, the quiet third ground: the
+          loudest question on the page answered on the quietest surface, one
+          scroll under the page's rosiest sentence so the null case corrects
+          the over-read immediately. The null case leads — it is the trust
+          engine. No numbers, no magnitudes, no speed words, ever: egress
+          division is contingent on pinners, never a consequence of views. */}
+      <Section ground="mist" id="viral" className="scroll-mt-18">
+        <Eyebrow>The viral case</Eyebrow>
+        <Head className="mt-3">When a video takes off.</Head>
+        <div className="mt-7 max-w-[66ch] divide-y divide-paper-hairline">
+          <div className="py-5">
+            <p className="text-body font-bold text-onpaper">
+              On its own: nothing changes.
+            </p>
+            <p className="text-body mt-2 text-onpaper-2">
+              A video of yours goes viral and every viewer is an ordinary
+              browser: nothing automatic happens. Browsers fetch; they cannot
+              serve — the routing interface they use has no way to announce a
+              provider — and Vidra adds no peer-to-peer in the player,
+              deliberately, so watching a video never exposes a viewer&apos;s
+              IP address to other viewers. The bytes still come from the
+              gateway you configured, and if that gateway is your own node,
+              every byte still crosses your uplink.
+            </p>
+          </div>
+          <div className="py-5">
+            <p className="text-body font-bold text-onpaper">
+              When people pin it: the sources multiply.
+            </p>
+            <p className="text-body mt-2 text-onpaper-2">
+              What changes it is a viewer who runs a node. Every public,
+              published video already publishes its content addresses — the
+              original file&apos;s CID and the HLS ladder&apos;s root — in its
+              API response, and anyone can pin one:{" "}
+              <code className="text-mono text-onpaper">ipfs pin add</code>, on
+              any machine they control. Each pinned copy is a complete,
+              independent source. Fetches that travel over IPFS — a fan&apos;s
+              node, another instance, a gateway warming its cache — then split
+              across every node that has the bytes, so your node&apos;s share
+              of the serving divides roughly with the number of copies. And if
+              your server dies, every copy that anyone pinned keeps the video
+              reachable at the same content address. What replication does not
+              buy is speed: it moves egress and availability, not latency, and
+              no latency figure has ever been measured here.
+            </p>
+          </div>
+          <div className="py-5">
+            <p className="text-body font-bold text-onpaper">
+              What Vidra ships for that day.
+            </p>
+            <p className="text-body mt-2 text-onpaper-2">
+              Vidra&apos;s half of this is shipped, not roadmap. The addresses
+              are in the public API today, for public, published videos only —
+              the privacy fence above decides what exists to pin.
+              Public-network announcing is its own switch, off by default:
+              turn it on and your node announces every public CID to the
+              global IPFS DHT, which the config scripts treat as a permanent
+              public-disclosure decision. And an operator who wants guaranteed
+              copies rather than volunteered ones can attach an IPFS Cluster,
+              so every pin replicates across peers they run, to a replication
+              factor they choose. What does not exist yet: a pin-this-video
+              button, or a channel pinset to follow. Today a fan brings a node
+              and a copied address — the surface is shipped; the ceremony is
+              not.
+            </p>
+          </div>
+        </div>
+        <p className="text-body mt-7 max-w-[66ch] font-bold text-onpaper">
+          Popularity recruits servers only when the audience includes people
+          who run one.
+        </p>
+      </Section>
+
+      {/* 6 — The private tier. Ink. */}
       <Section ground="ink">
         <Eyebrow ground="ink">The private tier</Eyebrow>
         <Head className="mt-3">Replication, not distribution.</Head>
@@ -105,7 +179,7 @@ export default function IpfsPage() {
         </p>
       </Section>
 
-      {/* 6 — What it buys, and what it does not. Paper. */}
+      {/* 7 — What it buys, and what it does not. Paper. */}
       <Section ground="paper">
         <Eyebrow>Content addressing</Eyebrow>
         <Head className="mt-3">What it buys, and what it does not.</Head>
@@ -144,7 +218,7 @@ export default function IpfsPage() {
         </div>
       </Section>
 
-      {/* 7 — Closing CTA. Ink. */}
+      {/* 8 — Closing CTA. Ink. */}
       <Section ground="ink">
         <Head>Off by default. Yours to enable.</Head>
         <div className="mt-6 flex flex-wrap gap-3">
