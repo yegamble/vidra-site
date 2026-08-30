@@ -42,7 +42,7 @@ const TABS: Tab[] = [
       "Docker Engine and Compose v2 are installed if they are missing. Compose 2.20 is the floor; 2.24 is the production minimum.",
       "A checksum-verified release bundle is unpacked to /opt/vidra and the vidra CLI is installed.",
       "vidra setup runs a terminal interview — domain, storage, mail, federation. Pass --web for the browser wizard instead.",
-      "Every signup path refuses on first boot. The boot log prints an owner-claim token; redeem it at /setup/claim and the instance is yours.",
+      "Every signup path refuses on first boot. The most recent boot log prints an owner-claim token — a restart mints a new one and invalidates the old — and redeeming it at /setup/claim makes the instance yours.",
     ],
   },
   {

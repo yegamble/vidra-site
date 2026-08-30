@@ -120,7 +120,21 @@ test.describe("hero", () => {
       const h1 = page.getByRole("heading", { level: 1 });
       await expect(h1).toHaveCount(1);
       await expect(h1).toBeVisible();
-      await expect(h1).toHaveText("Run your own video platform.One command.");
+      await expect(h1).toHaveText(
+        "Run your own video platform.One command. Yours is the first account.",
+      );
+
+      // "One or two lines, never three" is the standfirst's own spec, and the
+      // phone is where three happens: the approved wording measured three
+      // lines in a 342px column and was trimmed until it did not.
+      const standfirst = page.locator("main > section").first().locator("p.text-standfirst");
+      const lines = await standfirst.evaluate((el) =>
+        Math.round(
+          el.getBoundingClientRect().height /
+            parseFloat(getComputedStyle(el).lineHeight),
+        ),
+      );
+      expect(lines, `the hero standfirst runs ${lines} lines at ${vp.name}`).toBeLessThanOrEqual(2);
 
       // Above-the-fold is deliberately NOT asserted: the standfirst is allowed
       // to push the actions below 844px on a phone. What is asserted is that

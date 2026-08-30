@@ -59,7 +59,13 @@ const STATS = [
     figure: "1 image",
     body: "from a one-person box to an api+worker fleet — one variable apart",
   },
-  { figure: "AA", body: "axe gates CI in both frontends; this site pins WCAG 2.2 AA" },
+  {
+    // 26 is the length of the `checks` slice in
+    // vidra-core/internal/doctor/doctor.go. The meta-repo README still says
+    // 18; the code is the source, not the README.
+    figure: "26",
+    body: "checks vidra doctor runs against a live instance, each naming its own failure",
+  },
 ];
 
 const AUDIENCES = [
@@ -103,8 +109,11 @@ const PROJECT = [
     body: "Use it, study it, modify it, redistribute it. Run a modified version as a service and the network clause means your users get the source too.",
   },
   {
-    title: "No hosted tier",
-    body: "There is nothing to upsell you to and no pricing page that changes the day you depend on it. The only way to run Vidra is to run it.",
+    // The hero used to carry "No ads, nothing to upsell". It is a claim about
+    // the project rather than about the install, and this is the band where
+    // the reader is deciding whether to trust the project.
+    title: "No ads, nothing to upsell",
+    body: "No ad system and no monetisation layer, no hosted tier to be moved onto, and no pricing page that changes the day you depend on it. The only way to run Vidra is to run it.",
   },
   {
     title: "Clean room",
@@ -148,14 +157,29 @@ export default function HomePage() {
             {VERSION} · {LICENCE}
           </p>
           {/* Two authored segments so the break never lands mid-claim: the
-              canonical positioning line, then the mechanism in Vidra Cyan. */}
+              canonical positioning line, then the mechanism in Vidra Cyan.
+              "Yours is the first account." is a shipped behaviour, not a
+              promise: every signup path refuses while the instance is
+              unclaimed, and it is test-covered with no boot race. It is true
+              of a fresh install, which is the only thing this hero is about —
+              no sentence here may extend it to an upgrade. */}
           <h1 className="text-hero mt-5 text-balance">
             <span className="block">Run your own video platform.</span>
-            <span className="block text-vidra">One command.</span>
+            <span className="block text-vidra">
+              One command. Yours is the first account.
+            </span>
           </h1>
+          {/* Two lines at 390, and at 768 and 1440 — gated in
+              e2e/responsive.spec.ts. The standfirst spec is "one or two lines,
+              never three", and the phone is where three happens. The approved
+              wording ended "the way you would install WordPress on one", which
+              measures three lines in a 342px column at every trim short of
+              this one; "like WordPress" is the shortest form that keeps the
+              analogy, the server-you-administer claim and the Bluesky line
+              intact. */}
           <p className="text-standfirst mt-5 max-w-[54ch] text-pretty text-onink-2">
-            Install it the way you install WordPress. No ads, nothing to upsell
-            — and viewers can sign in with Bluesky.
+            It installs on a server you administer, like WordPress. Viewers
+            sign in with Bluesky.
           </p>
           {/* The headline says "One command." — the artifact is adjacent, and
               copying it is the page's primary conversion. It runs to the same
