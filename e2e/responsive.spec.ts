@@ -206,6 +206,45 @@ test.describe("install tabs", () => {
     }
   });
 
+  test("the one-line route states a permit, and keeps it short", async ({
+    page,
+  }) => {
+    // Piping a stranger's script into a shell with sudo is the largest ask on
+    // the site. The panel says what the script will not touch before it says
+    // what it does — and the length cap is the point: a permit nobody reads
+    // is the same as no permit, so 90 words per clause is gated rather than
+    // left to a reviewer's patience.
+    await page.goto("/");
+    const panel = page.locator("#install-panel");
+
+    const clauses = await panel.locator("dl dd").allTextContents();
+    expect(clauses.length, "four clauses").toBe(4);
+
+    for (const clause of clauses) {
+      const words = clause.trim().split(/\s+/).length;
+      expect(
+        words,
+        `a permit clause runs ${words} words: "${clause.slice(0, 60)}…"`,
+      ).toBeLessThanOrEqual(90);
+    }
+
+    const headings = await panel.locator("dl dt").allTextContents();
+    expect(headings).toEqual([
+      "What it will not touch",
+      "What it will change",
+      "How you sign it",
+      "How it hands back",
+    ]);
+
+    // The floor install.sh actually enforces. It dies below 2.24; the 2.20
+    // floor is the root compose file's, and belongs to the clone tab.
+    await expect(panel).toContainText("below 2.24");
+    await expect(panel).not.toContainText("2.20");
+
+    await page.getByRole("tab", { name: "Compose clone" }).click();
+    await expect(panel).toContainText("Compose 2.20 or newer");
+  });
+
   test("the PeerTube route has no command row, and the others do", async ({
     page,
   }) => {

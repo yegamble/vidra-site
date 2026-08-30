@@ -23,6 +23,19 @@ type Tab = {
   command: string;
   intro: string;
   steps: string[];
+  /**
+   * The one-line route shows a permit instead of a numbered list. Piping a
+   * stranger's script into a shell with sudo is the single largest ask on
+   * this site, and a list of what the script achieves is not what a cautious
+   * reader needs — they need to know what it will not touch before they read
+   * what it does.
+   *
+   * Every clause below is quoted from `install.sh` at `ce605f3`: the refusal
+   * block at lines 69-80, the usage text at 116-124, the Compose floor at
+   * 363-367 and 580, the `/dev/tty` read at 448-496, and the hand-back at
+   * 981-988. No line here may be added without one.
+   */
+  permit?: { heading: string; body: string }[];
   link: { label: string; href: string; external: boolean };
 };
 
@@ -32,17 +45,30 @@ const TABS: Tab[] = [
     label: "One-line",
     command: INSTALL_COMMAND,
     intro:
-      "For a fresh server you control. Run it as a user who can use sudo. It never writes over an existing env file, never opens a port, and never touches sshd.",
+      "For a fresh server you control. Run it as a user who can use sudo. Here is what it will and will not do, before you run it.",
     link: {
       label: "Installer reference",
       href: DOCS.oneLineInstall,
       external: true,
     },
-    steps: [
-      "Docker Engine and Compose v2 are installed if they are missing. Compose 2.20 is the floor; 2.24 is the production minimum.",
-      "A checksum-verified release bundle is unpacked to /opt/vidra and the vidra CLI is installed.",
-      "vidra setup runs a terminal interview — domain, storage, mail, federation. Pass --web for the browser wizard instead.",
-      "Every signup path refuses on first boot. The most recent boot log prints an owner-claim token — a restart mints a new one and invalidates the old — and redeeming it at /setup/claim makes the instance yours.",
+    steps: [],
+    permit: [
+      {
+        heading: "What it will not touch",
+        body: "It never writes or overwrites env/production.env. That file holds the keys sealing MFA, federation and ATProto data in the database, and re-minting them orphans everything already sealed — so vidra setup owns the file, refuses to rewrite an existing one without --yes, and this script never passes --yes. It never runs docker compose up: deploying is a separate step. It opens no port and does not touch sshd.",
+      },
+      {
+        heading: "What it will change",
+        body: "It installs Docker Engine and the Compose v2 plugin if they are missing, and stops if Compose is below 2.24 — docker-compose.prod.yml uses the !reset and !override merge tags, and an older Compose ignores them without a word, leaving PostgreSQL and Redis published on 0.0.0.0. It unpacks the release bundle into /opt/vidra, checksum-verified and without a git clone, and puts the vidra CLI in /usr/local/bin.",
+      },
+      {
+        heading: "How you sign it",
+        body: "It asks before any of that, and reads your answer from /dev/tty rather than stdin — under curl … | sh, stdin is the script itself, so a script that read from it would answer its own questions. On a host with no terminal it stops instead of guessing. Unattended runs pass --yes, which is your decision to make, not its default.",
+      },
+      {
+        heading: "How it hands back",
+        body: "vidra setup asks nine questions — domain, storage, mail, federation — in the terminal, or in a browser with --web. Then every signup path answers 403 until the instance is claimed: the api mints a one-time token at boot and prints it to its own log. Read the most recent log. A restart mints a new token and the previous one stops working.",
+      },
     ],
   },
   {
@@ -58,7 +84,11 @@ const TABS: Tab[] = [
     },
     steps: [
       "The meta-repository pulls the three services: vidra-core, vidra-user and vidra-search.",
-      "make dev brings them up together with PostgreSQL, Redis and object storage.",
+      // The 2.20 floor is this tab's, and only this tab's: it comes from the
+      // root docker-compose.yml's `include:` key (deploy/README.md:220). The
+      // production overlay's floor is 2.24, which is what install.sh and
+      // deploy.sh both refuse to go below.
+      "make dev brings them up together with PostgreSQL, Redis and object storage. The root compose file uses the include: key, so Compose 2.20 or newer.",
       "Everything runs locally, so nothing here is hardened for a public address.",
     ],
   },
@@ -183,11 +213,28 @@ export function InstallTabs() {
           </div>
         ) : null}
 
-        <ol className="text-body mt-5 flex max-w-[66ch] list-decimal flex-col gap-3 pl-6 text-onpaper-2 marker:text-label">
-          {tab.steps.map((step) => (
-            <li key={step.slice(0, 32)}>{step}</li>
-          ))}
-        </ol>
+        {tab.permit ? (
+          <dl className="mt-6 grid gap-6 sm:grid-cols-2">
+            {tab.permit.map((clause) => (
+              <div key={clause.heading}>
+                <dt className="text-micro uppercase text-label">
+                  {clause.heading}
+                </dt>
+                <dd className="text-small mt-2 max-w-[60ch] text-onpaper-2">
+                  {clause.body}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        ) : null}
+
+        {tab.steps.length > 0 ? (
+          <ol className="text-body mt-5 flex max-w-[66ch] list-decimal flex-col gap-3 pl-6 text-onpaper-2 marker:text-label">
+            {tab.steps.map((step) => (
+              <li key={step.slice(0, 32)}>{step}</li>
+            ))}
+          </ol>
+        ) : null}
 
         <p className="mt-5">
           <TextLink href={tab.link.href} external={tab.link.external}>
