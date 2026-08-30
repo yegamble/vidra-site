@@ -80,7 +80,7 @@ const ROWS: ComparisonRow[] = [
     label: "Growing past one box",
     cells: [
       "Remote runners can take transcoding off the main server; judge the rest from PeerTube's own admin documentation.",
-      `The same image splits into api and worker roles. Replicas hold leases and elect leaders — soak-tested at two replicas, ${SCALE.soak} deliveries, zero duplicates — and a CDN with purge is wired in. Multi-CDN steering, studio DRM and multi-region are the published roadmap, not the release.`,
+      `The same image splits into api and worker roles. Replicas hold leases and elect leaders — soak-tested at two replicas: ${SCALE.soak} deliveries with zero duplicates, and ${SCALE.soakControlDeliveries} deliveries with ${SCALE.soakControlDuplicates} duplicates once the safeguards were removed on purpose, so the harness is known to catch it. A CDN with purge is wired in. Multi-CDN steering, studio DRM and multi-region are the published roadmap, not the release.`,
     ],
   },
   {

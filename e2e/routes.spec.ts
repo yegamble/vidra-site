@@ -218,6 +218,23 @@ test("the encryption claim names its mechanism and its status", async ({
   }
 });
 
+test.describe("a clean number never travels without its control", () => {
+  // "406 of 406, zero duplicates" is only evidence because the same harness
+  // was re-run with the safeguards removed and reported 423 deliveries with
+  // 17 duplicates. Quoting the clean figure alone turns a control experiment
+  // into a boast, so the pair is gated rather than trusted to review.
+  for (const route of ROUTES) {
+    test(route, async ({ page }) => {
+      await page.goto(route);
+      const text = (await page.locator("main").textContent()) ?? "";
+      if (!text.includes("406")) return;
+
+      expect(text, `${route} quotes 406 without the control's deliveries`).toContain("423");
+      expect(text, `${route} quotes 406 without the control's duplicates`).toContain("17");
+    });
+  }
+});
+
 test("rich results no longer say the product is free of charge", async ({
   page,
 }) => {

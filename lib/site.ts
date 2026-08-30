@@ -142,12 +142,26 @@ export const SCALE = {
   /** 24 `jobloop.Loop{` registrations in vidra-core/cmd/api/main.go. */
   workers: 24,
   /**
-   * Two-replica soak: 406 of 406 deliveries, zero duplicates; the deliberate
-   * counterfactual (lease removed) produced 17 duplicates, proving the
-   * harness catches the failure it checks for.
-   * vidra/docs/productionization/phase-3-media-pipeline.md:166.
+   * Two-replica soak: 406 deliveries for 406 unique events, zero duplicates,
+   * draining 400 outbox events concurrently against one PostgreSQL.
+   * vidra/docs/productionization/phase-3-media-pipeline.md:166-171.
+   *
+   * The counterfactual is not optional decoration and the site's claims gate
+   * treats it as part of the number: with the lease AND `SKIP LOCKED` removed
+   * and the image rebuilt, the same run produced 423 deliveries with 17
+   * duplicates. Both safeguards came out, not just the lease — say both.
+   * A clean run whose harness cannot fail is not evidence, so "406 of 406"
+   * never appears on this site without 423 and 17 beside it.
    */
   soak: "406 of 406",
+  soakControlDeliveries: 423,
+  soakControlDuplicates: 17,
+  /**
+   * The second control: with `FOR UPDATE SKIP LOCKED` removed, verified
+   * against real PostgreSQL, the double claim reproduces in 5 runs out of 5.
+   * phase-3-media-pipeline.md:147-152.
+   */
+  skipLockedControlRuns: 5,
   /**
    * Lean encoding on object storage: full-source decodes 13 → 3, source
    * reads "up to 8" → 1; peak scratch ~10.3 → ~3.6 GB (computed from the
