@@ -6,17 +6,25 @@
  * so rather than inventing a difference.
  *
  * The component is the idiom; the dataset below is its canonical instance
- * (YouTube · other self-hosted · Vidra). Other pages pass their own columns
- * and rows — /compare/peertube runs the two-column variant — and the paired
- * table/stacked structure, the emphasis-by-heading-colour-and-fill-and-
+ * (YouTube · Vidra). Other pages pass their own columns and rows, and the
+ * paired table/stacked structure, the emphasis-by-heading-colour-and-fill-and-
  * position treatment and the one-copy-in-the-a11y-tree behaviour carry over.
+ *
+ * There used to be a middle column, "Other self-hosted video platforms". It
+ * was removed on 2026-08-30 and should not come back in that shape. Every
+ * cell in it was a universally quantified claim about an open set nobody can
+ * check — and it could not be written honestly, so it wasn't: four of its
+ * seven cells agreed with the Vidra column, two answered "varies by project",
+ * and the Leaving row's Vidra cell was the middle cell plus four words. A
+ * column that cannot state a difference is not evidence, it is a shape. If a
+ * later cycle wants the comparison back, it starts from a named sample —
+ * "Two examples: PeerTube, MediaCMS" — not from the anonymous category.
  */
 
 export type ComparisonRow = { label: string; cells: string[] };
 
 export const COMPARISON_COLUMNS: string[] = [
   "Hosted platforms (YouTube)",
-  "Other self-hosted video platforms",
   "Vidra",
 ];
 
@@ -26,7 +34,6 @@ export const COMPARISON_ROWS: ComparisonRow[] =
       label: "Who sets the rules",
       cells: [
         "Google. The terms, the moderation policy and the ranking are theirs to change.",
-        "You do. That is what self-hosting means.",
         "You do. Registration approval, reports and instance settings sit in your own admin console.",
       ],
     },
@@ -34,7 +41,6 @@ export const COMPARISON_ROWS: ComparisonRow[] =
       label: "Ads and your audience",
       cells: [
         "The platform sells advertising against your audience and sets the revenue share.",
-        "No ad system unless the project ships one.",
         "No ad system and no monetisation layer. Vidra is not a creator monetisation platform.",
       ],
     },
@@ -42,7 +48,6 @@ export const COMPARISON_ROWS: ComparisonRow[] =
       label: "Federation",
       cells: [
         "None. Accounts, subscriptions and discovery stay on one platform.",
-        "Varies by project. ActivityPub where it is offered.",
         "ActivityPub and ATProto. Enabled per instance; once on, every channel federates by default and can opt out.",
       ],
     },
@@ -50,7 +55,6 @@ export const COMPARISON_ROWS: ComparisonRow[] =
       label: "Runtime",
       cells: [
         "Not something you run.",
-        "Varies by project. Check the one you are comparing.",
         "A Go backend (Go 1.26, Echo) and a Next.js 16 frontend, over PostgreSQL 18 and Redis 8.",
       ],
     },
@@ -58,7 +62,6 @@ export const COMPARISON_ROWS: ComparisonRow[] =
       label: "Egress",
       cells: [
         "Theirs to pay for.",
-        "Yours to pay for.",
         "Yours, and offloadable: a CDN in front of your HLS, or IPFS gateways carrying public media.",
       ],
     },
@@ -66,7 +69,6 @@ export const COMPARISON_ROWS: ComparisonRow[] =
       label: "Licence",
       cells: [
         "Proprietary, hosted service.",
-        "Varies. Check the licence before you commit to it.",
         "AGPL v3. Use it, study it, modify it, redistribute it — and a modified service owes its users the source.",
       ],
     },
@@ -74,8 +76,7 @@ export const COMPARISON_ROWS: ComparisonRow[] =
       label: "Leaving",
       cells: [
         "Takeout exports your video files. The URLs, the embeds and the audience stay on the platform.",
-        "Your files and your database are already on your disk.",
-        "Your files and your database are already on your disk, behind one compose file.",
+        "Your files and your database stay where you put them: media in the storage backend you configured, everything else in one PostgreSQL. Your domain is your domain, so the URLs and the embeds are yours too.",
       ],
     },
   ];
@@ -83,8 +84,8 @@ export const COMPARISON_ROWS: ComparisonRow[] =
 export function Comparison({
   columns = COMPARISON_COLUMNS,
   rows = COMPARISON_ROWS,
-  emphasisIndex = 2,
-  srCaption = "Vidra compared with hosted video platforms and with other self-hosted video platforms",
+  emphasisIndex = 1,
+  srCaption = "Vidra compared with hosted video platforms",
 }: {
   columns?: string[];
   rows?: ComparisonRow[];

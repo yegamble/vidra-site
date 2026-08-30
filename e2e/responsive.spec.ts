@@ -651,6 +651,31 @@ test.describe("comparison", () => {
       ).toBeHidden();
     });
   }
+
+  test("two columns, and no claim about an open set of other projects", async ({
+    page,
+  }) => {
+    // The middle column, "Other self-hosted video platforms", was a
+    // universally quantified claim about a set nobody can enumerate. Four of
+    // its cells agreed with Vidra's, two said "varies by project", and its
+    // egress cell was wrong about the one competitor the site names: PeerTube
+    // reduces origin egress in the player.
+    await page.setViewportSize({ width: LAPTOP.width, height: LAPTOP.height });
+    await page.goto("/features");
+
+    const table = page.locator("table", {
+      has: page.locator("caption", { hasText: "Vidra compared with" }),
+    });
+    await expect(table.locator("thead th")).toHaveCount(3); // label + 2
+    await expect(table).not.toContainText("Other self-hosted");
+    await expect(table).not.toContainText("Varies by project");
+    await expect(table).not.toContainText("Varies.");
+
+    // And the question the table does not answer routes to the page that does.
+    await expect(
+      page.getByRole("link", { name: /Vidra and PeerTube, compared/ }),
+    ).toHaveAttribute("href", "/compare/peertube");
+  });
 });
 
 test.describe("federation walkthrough", () => {

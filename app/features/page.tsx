@@ -324,24 +324,30 @@ export default function FeaturesPage() {
       <Section ground="ink" media id="comparison" className="scroll-mt-18">
         <div className="max-w-[1080px]">
           <Eyebrow ground="ink">How it compares</Eyebrow>
-          <Head className="mt-3">Where Vidra differs, and where it does not.</Head>
+          <Head className="mt-3">A platform you publish to, or software you run.</Head>
           <Standfirst ground="ink" className="mt-5">
-            Two of these columns agree more often than they differ — self-hosting
-            is the thing they share. Where Vidra parts company is federation,
-            runtime, and what you can do about egress.
+            Every row below follows from that one difference: who sets the
+            rules, who pays for the bytes, and what is still on your disk if
+            you stop.
           </Standfirst>
         </div>
         <div className="mt-8">
           <Comparison />
         </div>
-        <p className="text-small mt-6 max-w-[72ch] text-onink-2">
-          Vidra is a clean-room implementation rather than a fork of anything,
-          and it is not PeerTube-API-compatible. Comparing against PeerTube
-          specifically? That has{" "}
+        {/* The routing line. This table answers "platform or my own server?";
+            it deliberately does not answer "which self-hosted one?", which is
+            a different question with a named competitor and a page of its
+            own. */}
+        <p className="text-body mt-6 max-w-[72ch] text-onink">
+          Choosing between self-hosted options?{" "}
           <TextLink href="/compare/peertube" ground="ink">
-            its own page
+            Vidra and PeerTube, compared →
           </TextLink>
-          . Moving an existing instance across is supported and documented —{" "}
+        </p>
+        <p className="text-small mt-4 max-w-[72ch] text-onink-2">
+          Vidra is a clean-room implementation rather than a fork of anything,
+          and it is not PeerTube-API-compatible. Moving an existing instance
+          across is supported and documented —{" "}
           <TextLink href={DOCS.migration} external ground="ink">
             read the migration overview
           </TextLink>
