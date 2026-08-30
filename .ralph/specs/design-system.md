@@ -253,6 +253,18 @@ library, no mockups, and above all **no fabricated screenshots** — a rendered
 - Drawn diagrams are allowed where they are *true*: `FederationFigure.tsx` is
   the three federation layers, and nothing in it is a claim that is not made in
   words beside it.
+- **Annotation over a capture is the second sanctioned capture treatment**
+  (added 2026-08-30, argued in place per this spec's own protocol — an
+  addition, not an overturn). `AnnotatedScreen.tsx` positions `aria-pressed`
+  marker buttons over a real capture, each selecting an explanation in a
+  reserved-height `aria-live` panel *under* the figure. The pixels stay the
+  capture's; the markers assert only position; every body is copy and gets
+  the count sweep. Floating callout bubbles over the image are not permitted
+  (they cover the evidence and fail at phone width), markers never float
+  over the narrow source (below `sm` the same DOM list renders as labelled
+  chips beneath the frame), and a simulated product UI remains the hardest
+  ban in this section — annotation explains a photograph; it never performs
+  the product.
 
 ## Motion
 

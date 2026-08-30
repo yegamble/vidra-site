@@ -54,6 +54,28 @@ for (const route of ROUTES) {
         `${route} figure ${i} caption must state provenance`,
       ).toContainText(/Captured|Same instance:/);
     }
+
+    // And every figure image must actually load — a deleted or renamed asset
+    // renders alt text over an empty Ink box and no other gate notices.
+    const broken = await page.evaluate(async () => {
+      const imgs = [
+        ...document.querySelectorAll<HTMLImageElement>("figure img"),
+      ];
+      await Promise.all(
+        imgs.map((img) =>
+          img.complete
+            ? Promise.resolve()
+            : new Promise((r) => {
+                img.addEventListener("load", r, { once: true });
+                img.addEventListener("error", r, { once: true });
+              }),
+        ),
+      );
+      return imgs
+        .filter((img) => img.naturalWidth === 0)
+        .map((img) => img.currentSrc || img.src);
+    });
+    expect(broken, `${route}: figure images that failed to load`).toEqual([]);
   });
 }
 

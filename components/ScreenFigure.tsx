@@ -1,7 +1,11 @@
 import type { ReactNode } from "react";
 
 /**
- * The single sanctioned way a product capture appears anywhere on this site.
+ * The plain way a product capture appears on this site — one of exactly two
+ * sanctioned treatments: this static figure, and AnnotatedScreen.tsx (marker
+ * buttons over a capture, admitted in the design spec's Imagery section,
+ * 2026-08-30). This component stays non-interactive by contract; anything
+ * needing markers uses AnnotatedScreen, not props added here.
  *
  * Stills only, deliberately: no recording exists, and an untested video branch
  * would anyway have to argue its way past the motion spec. Imagery canon

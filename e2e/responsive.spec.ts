@@ -406,6 +406,66 @@ test("the long scroll never puts two Ink sections in a row", async ({
   ]);
 });
 
+test.describe("annotated screens", () => {
+  // AnnotatedScreen's structural promise: markers float over the capture at
+  // desktop and NEVER over a phone-width image — below sm the same DOM list
+  // renders as labelled chips beneath the frame. Both states must answer a
+  // press in the live panel.
+  test("markers sit inside the figure at 1440 and answer", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/demo");
+
+    const quality = page.getByRole("button", { name: "Quality menu" });
+    await quality.scrollIntoViewIfNeeded();
+    const frame = page
+      .locator("figure")
+      .filter({ has: quality })
+      .locator("img")
+      .first();
+    const frameBox = (await frame.boundingBox())!;
+    const markerBox = (await quality.boundingBox())!;
+    expect(markerBox.x).toBeGreaterThanOrEqual(frameBox.x);
+    expect(markerBox.x + markerBox.width).toBeLessThanOrEqual(
+      frameBox.x + frameBox.width + 1,
+    );
+    expect(markerBox.y).toBeGreaterThanOrEqual(frameBox.y);
+
+    const controls = page.getByRole("button", { name: "Player controls" });
+    await controls.click();
+    await expect(controls).toHaveAttribute("aria-pressed", "true");
+    await expect(
+      page.getByText("The control bar mid-playback", { exact: false }),
+    ).toBeVisible();
+  });
+
+  test("chips render below the frame at 390 and answer", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/demo");
+
+    const quality = page.getByRole("button", { name: "Quality menu" });
+    await quality.scrollIntoViewIfNeeded();
+    const frame = page
+      .locator("figure")
+      .filter({ has: quality })
+      .locator("img")
+      .first();
+    const frameBox = (await frame.boundingBox())!;
+    const markerBox = (await quality.boundingBox())!;
+    // Below sm no marker overlaps the image box: chips sit beneath it.
+    expect(markerBox.y).toBeGreaterThanOrEqual(
+      frameBox.y + frameBox.height - 1,
+    );
+
+    const timer = page.getByRole("button", { name: "Disappearing messages" });
+    await timer.scrollIntoViewIfNeeded();
+    await timer.click();
+    await expect(timer).toHaveAttribute("aria-pressed", "true");
+    await expect(
+      page.getByText("Expired messages vanish", { exact: false }),
+    ).toBeVisible();
+  });
+});
+
 test("/ipfs keeps its beat: no adjacent Ink, Mist exactly once", async ({
   page,
 }) => {
