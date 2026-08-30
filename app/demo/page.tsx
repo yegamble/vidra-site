@@ -5,6 +5,7 @@ import { ScreenFigure } from "@/components/ScreenFigure";
 import { Eyebrow, Head, Section, Standfirst } from "@/components/Section";
 import { DOCS, INSTALL_ANCHOR, MESSAGING } from "@/lib/site";
 
+
 export const metadata = pageMetadata({
   title: "See it running",
   path: "/demo",
@@ -256,10 +257,14 @@ export default function DemoPage() {
           <Head className="mt-3">The encrypted conversation.</Head>
           <p className="text-body mt-5 max-w-[66ch] text-onink-2">
             Direct messages ship in two lanes, and the one captured here is
-            the opt-in end-to-end encrypted type: text only, encrypted on your
-            device, stored as ciphertext the server cannot read — though, as
-            with Signal or Matrix, the server still sees who is talking to
-            whom and when.
+            the opt-in end-to-end encrypted type: text only, encrypted in the
+            browser with Olm — the Matrix protocol&apos;s ratchet — and stored
+            as ciphertext the server cannot read, though the server still sees
+            who is talking to whom and when. It has not been independently
+            audited;{" "}
+            <TextLink href="/features#g-connect" ground="ink">
+              the full statement is on the features page →
+            </TextLink>
           </p>
         </div>
         <AnnotatedScreen

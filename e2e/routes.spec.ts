@@ -178,6 +178,46 @@ test.describe("the running product is one click from anywhere", () => {
   });
 });
 
+test("a rendered page names who maintains this and where to reach them", async ({
+  page,
+}) => {
+  // The site asks a stranger to run an install script from these
+  // repositories on a server they own. "Free software, and nothing behind
+  // it" is a claim that needs a name attached to it.
+  await page.goto("/");
+  const band = page.locator("main > section").filter({ hasText: "The project" });
+  await expect(band).toContainText("maintained by Yosef Gamble");
+  await expect(
+    band.getByRole("link", { name: "github.com/yegamble" }),
+  ).toHaveAttribute("href", "https://github.com/yegamble");
+});
+
+test("the encryption claim names its mechanism and its status", async ({
+  page,
+}) => {
+  // Never "audited" near E2EE: the 2016 NCC Group audit was of libolm, and
+  // it is not an audit of Vidra. Naming the protocol without its state is
+  // the same claim wearing a better coat.
+  await page.goto("/features");
+  const row = page.locator("dd", { hasText: "@matrix-org/olm" });
+  await expect(row).toContainText("Olm");
+  await expect(row).toContainText("deprecated");
+  await expect(row).toContainText("not been independently audited");
+
+  // And every occurrence of the word on the page is a denial, never a claim.
+  const mentions = await page.locator("body").evaluate((el) =>
+    [
+      ...(el.textContent ?? "").replace(/\s+/g, " ").matchAll(/.{0,30}audited/gi),
+    ].map((m) => m[0]),
+  );
+  expect(mentions.length, "the status is stated at all").toBeGreaterThan(0);
+  for (const mention of mentions) {
+    expect(mention, '"audited" may only appear as a denial').toMatch(
+      /not been independently audited/i,
+    );
+  }
+});
+
 test("rich results no longer say the product is free of charge", async ({
   page,
 }) => {

@@ -11,6 +11,9 @@ export const INSTALL_COMMAND =
   "curl -fsSL https://raw.githubusercontent.com/yegamble/vidra/main/install.sh | sh";
 
 export const GITHUB = {
+  /** The maintainer. One person, named, because the site asks readers to run
+   *  a script from these repositories on a server they own. */
+  profile: "https://github.com/yegamble",
   meta: "https://github.com/yegamble/vidra",
   core: "https://github.com/yegamble/vidra-core",
   user: "https://github.com/yegamble/vidra-user",

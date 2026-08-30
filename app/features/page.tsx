@@ -186,8 +186,15 @@ const GROUPS: Group[] = [
         // structurally unmissable, so "all messages encrypted" can never be
         // read into this page. Never merge them back into one row.
         feature: "End-to-end encrypted conversations",
+        // The mechanism is named with its status, or it is not named
+        // honestly. @matrix-org/olm ^3.2.15 is a dependency of vidra-user and
+        // its WASM is copied into the bundle at prebuild, so the encryption
+        // genuinely runs in the browser. libolm was deprecated by its
+        // maintainers on 2024-07-31 and the repository archived; the 2016 NCC
+        // Group audit was of libolm, not of Vidra, and nothing here has been
+        // independently audited. "Audited" must never appear near this row.
         detail:
-          "An opt-in conversation type. Encryption runs on your device; the server stores only ciphertext and cannot read the content — though, as with Signal or Matrix, it still knows who is talking to whom and when. Text only: attachments stay in standard conversations, where they can be scanned.",
+          "An opt-in conversation type, encrypted in your browser with Olm — the Matrix protocol's ratchet, via @matrix-org/olm — so the server stores only ciphertext and cannot read the content, though it still knows who is talking to whom and when. Two things to weigh before you rely on it: libolm was deprecated by its maintainers on 2024-07-31 and its repository archived, and Vidra's use of it has not been independently audited. Text only: attachments stay in standard conversations, where they can be scanned.",
       },
       {
         feature: "Disappearing messages",

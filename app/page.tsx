@@ -420,6 +420,17 @@ export default function HomePage() {
       <Section ground="mist">
         <Eyebrow>The project</Eyebrow>
         <Head className="mt-3">Free software, and nothing behind it.</Head>
+        {/* "Nothing behind it" is a claim that needs a name attached, or the
+            reader is being asked to run a stranger's install script on their
+            own server on the strength of an anonymous website. One person
+            maintains this, in public, and the page says who. */}
+        <Standfirst className="mt-4">
+          Vidra is written and maintained by Yosef Gamble, in public, at{" "}
+          <TextLink href={GITHUB.profile} external>
+            github.com/yegamble
+          </TextLink>{" "}
+          — where the commits, the issues and the release tags are.
+        </Standfirst>
         <div className="mt-7 grid gap-6 sm:grid-cols-2 md:grid-cols-4">
           {PROJECT.map((item) => (
             <div key={item.title}>

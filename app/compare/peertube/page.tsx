@@ -48,7 +48,7 @@ const ROWS: ComparisonRow[] = [
     label: "Direct messages",
     cells: [
       "None as of v8.2.4 (August 2026) — the closest surface is the moderation thread on an abuse report.",
-      `One-to-one messages, with an opt-in end-to-end encrypted mode — encryption runs on the device, the server stores only ciphertext — and disappearing timers, ${MESSAGING.timerMin} to ${MESSAGING.timerMax}, on encrypted conversations.`,
+      `One-to-one messages, with an opt-in end-to-end encrypted mode — Olm in the browser, so the server stores only ciphertext; not independently audited — and disappearing timers, ${MESSAGING.timerMin} to ${MESSAGING.timerMax}, on encrypted conversations.`,
     ],
   },
   {
