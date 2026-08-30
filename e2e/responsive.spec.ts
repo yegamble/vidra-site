@@ -453,7 +453,9 @@ test.describe("mobile install bar", () => {
     page,
   }) => {
     await page.setViewportSize({ width: PHONE.width, height: PHONE.height });
-    await page.goto("/");
+    // A page with no command block of its own: the bar is the only install
+    // call to action there, so it is there from the start.
+    await page.goto("/features");
 
     const bar = page.getByTestId("mobile-install-bar");
     await expect(bar).toBeVisible();
@@ -467,6 +469,25 @@ test.describe("mobile install bar", () => {
     expect(box.y + box.height).toBeLessThanOrEqual(PHONE.height + 1);
 
     await page.setViewportSize({ width: LAPTOP.width, height: LAPTOP.height });
+    await expect(bar).toBeHidden();
+  });
+
+  test(`yields to a real command block at ${PHONE.name}`, async ({ page }) => {
+    // On a 390-wide screen the bar was a second, smaller copy of the call to
+    // action, covering the bottom of the viewport to advertise the command
+    // the reader was already looking at.
+    await page.setViewportSize({ width: PHONE.width, height: PHONE.height });
+    await page.goto("/");
+
+    const bar = page.getByTestId("mobile-install-bar");
+    await expect(bar).toBeHidden();
+
+    // Scroll past the hero's command and the bar takes over.
+    await page.locator("#use-cases").scrollIntoViewIfNeeded();
+    await expect(bar).toBeVisible();
+
+    // And stands down again at the closing band's command.
+    await page.locator("main > section").last().scrollIntoViewIfNeeded();
     await expect(bar).toBeHidden();
   });
 });

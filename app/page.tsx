@@ -185,7 +185,7 @@ export default function HomePage() {
               820px as the stat grid below it rather than the old 620px, which
               was narrower than the command and so guaranteed a wrap at every
               width the site supports. */}
-          <div className="mt-7 max-w-[820px]">
+          <div className="mt-7 max-w-[820px]" data-command-anchor>
             <CommandBlock command={INSTALL_COMMAND} ground="ink" />
           </div>
           <div className="mt-4 flex flex-wrap gap-3">
@@ -207,7 +207,9 @@ export default function HomePage() {
       {/* 2 — Who runs it. Paper. Self-recognition comes before the machinery:
           what is it → is it for me → what does it cost → how does it work. */}
       <Section ground="paper" id="use-cases" className="scroll-mt-18">
-        <Eyebrow>Who runs it</Eyebrow>
+        {/* "Who runs it" reads as a question about the project — who is
+            behind Vidra — which is a question this band does not answer. */}
+        <Eyebrow>Who it&apos;s for</Eyebrow>
         {/* Deliberately uncounted: /use-cases holds five instances and this
             grid shows four — a counted headline here is the drift class. */}
         <Head className="mt-3">Instances that look nothing alike.</Head>
@@ -473,7 +475,7 @@ export default function HomePage() {
           command itself: the reader who got this far can copy it here. */}
       <Section ground="ink">
         <Head>Start with one command.</Head>
-        <div className="mt-6 max-w-[820px]">
+        <div className="mt-6 max-w-[820px]" data-command-anchor>
           <CommandBlock command={INSTALL_COMMAND} ground="ink" />
         </div>
         <div className="mt-4 flex flex-wrap gap-3">

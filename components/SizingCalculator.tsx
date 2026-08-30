@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { PROFILES } from "@/lib/site";
+import { TextLink } from "@/components/Button";
+import { INSTALL_ANCHOR, PROFILES, SCALE } from "@/lib/site";
 
 /**
  * What a Vidra instance costs to run, with the working shown.
@@ -110,7 +111,11 @@ export function SizingCalculator() {
       : "");
 
   return (
-    <div className="grid gap-5 md:grid-cols-2">
+    // Result above controls on a phone: the answer is what the reader came
+    // for, and burying it under four controls means scrolling past the
+    // question to find it. At `md` the grid takes over and the controls sit
+    // on the left, where they read as the thing you touch first.
+    <div className="flex flex-col-reverse gap-5 md:grid md:grid-cols-2">
       <div className="rounded-card bg-ink-surface p-5 ring-1 ring-inset ring-ink-hairline">
         <div className="flex flex-col gap-6">
           <div>
@@ -131,9 +136,16 @@ export function SizingCalculator() {
               onChange={(e) => setJobs(Number(e.target.value))}
               className="mt-1"
             />
+            {/* The two scratch figures are not two answers to one question:
+                3.6 GB is what one job's ladder computes to, 8 GB is the
+                budget, and the gap is the admission floor being generous on
+                purpose. Saying only one of them has read as a contradiction
+                against the other everywhere else on the site. */}
             <p className="text-small text-onink-2">
-              A 1080p job runs 12 encode passes and wants about{" "}
-              {PROFILES.scratchGbPerJob} GB of scratch.
+              One job&apos;s ladder computes to a ~{SCALE.scratchAfterGb} GB
+              peak; budget ~{PROFILES.scratchGbPerJob} GB of scratch per
+              concurrent job, because the floor that admits work is
+              deliberately generous.
             </p>
           </div>
 
@@ -175,7 +187,7 @@ export function SizingCalculator() {
       <div
         aria-live="polite"
         data-testid="calc-result"
-        className="rounded-card bg-ink-surface p-5 ring-1 ring-inset ring-vidra"
+        className="self-start rounded-card bg-ink-surface p-5 ring-1 ring-inset ring-vidra"
       >
         <p className="text-micro uppercase text-onink-2">Your box</p>
         <p data-testid="calc-cost" className="text-head mt-2 tabular-nums">
@@ -219,6 +231,14 @@ export function SizingCalculator() {
         <p className="text-small mt-4 text-onink-2">
           Droplet, volume and bandwidth prices are DigitalOcean list prices,
           checked 2026-08-30.
+        </p>
+        {/* A next step that names what happens rather than saying "get
+            started": the reader has a box in mind and the question is what
+            puts Vidra on it. */}
+        <p className="text-small mt-5">
+          <TextLink href={INSTALL_ANCHOR} ground="ink">
+            The one-line installer sets up a box this size →
+          </TextLink>
         </p>
       </div>
     </div>

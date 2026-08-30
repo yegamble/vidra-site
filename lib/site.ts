@@ -20,11 +20,8 @@ export const GITHUB = {
 } as const;
 
 /**
- * Every path below exists in vidra-docs/sidebars.ts (checked 2026-08-28).
+ * Every path below exists in vidra-docs/sidebars.ts (checked 2026-08-30).
  * Deep links go through this map only — never a literal in a component.
- * NOTE: the production docs deployment is stale (built before the /docs
- * baseUrl); every target 404s until vidra-docs redeploys from its
- * docs/brand-overhaul branch. The paths here match the new config.
  */
 export const DOCS = {
   root: "/docs",
@@ -150,9 +147,13 @@ export const SCALE = {
   soak: "406 of 406",
   /**
    * Lean encoding on object storage: full-source decodes 13 → 3, source
-   * reads 8 → 1 (exact); peak scratch ~10.3 → ~3.6 GB (computed from the
+   * reads "up to 8" → 1; peak scratch ~10.3 → ~3.6 GB (computed from the
    * ladder table, not measured — copy must say "computes to").
    * vidra/docs/productionization/lean-encoding-on-object-storage.md:358-360.
+   *
+   * `readsBefore` is a ceiling, not a fixed count: the source says "up to 8",
+   * so copy says "down from up to 8". "down from 8" claims every job read it
+   * eight times, which is not what the old path did.
    */
   decodesBefore: 13,
   decodesAfter: 3,
@@ -178,18 +179,30 @@ export const MESSAGING = {
 export const ROADMAP_URL =
   "https://github.com/yegamble/vidra/tree/main/docs/productionization";
 
-/** The three things the site must never let itself imply are shipping. */
+/**
+ * The three things the site must never let itself imply are shipping.
+ *
+ * `surfaced` marks the one that does not go behind a disclosure. DRM is the
+ * only entry here that can waste a reader's entire evaluation: peer-to-peer
+ * and the hosted tier change what an instance costs, and DRM decides whether
+ * Vidra is usable at all for anyone whose distributor requires encrypted
+ * playback. A negative with that much leverage does not belong behind a
+ * summary element.
+ */
 export const NOT_YET = [
   {
     title: "In-player peer-to-peer",
     body: `On the roadmap, not in ${VERSION}. Do not size your bandwidth around it.`,
+    surfaced: false,
   },
   {
     title: "DRM",
     body: "None shipped: a test lane proves the seam, and production DRM sits behind an unbuilt roadmap item. If your distributor requires encrypted playback today, Vidra is the wrong tool.",
+    surfaced: true,
   },
   {
     title: "A hosted tier",
     body: "A design decision, not a gap in the roadmap.",
+    surfaced: false,
   },
 ] as const;

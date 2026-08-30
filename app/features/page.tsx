@@ -39,7 +39,10 @@ const GROUPS: Group[] = [
       },
       {
         feature: "Lean encode path",
-        detail: `A full-ladder job reads the source once, down from ${SCALE.readsBefore}, and decodes it in full ${SCALE.decodesAfter} times, down from ${SCALE.decodesBefore}. Peak scratch computes to about ${SCALE.scratchAfterGb} GB, from about ${SCALE.scratchBeforeGb}.`,
+        // "down from 8" overstated the source, which says "up to 8" — the old
+        // path read the source between one and eight times depending on the
+        // ladder, and the new one reads it once regardless.
+        detail: `A full-ladder job reads the source once, down from up to ${SCALE.readsBefore}, and decodes it in full ${SCALE.decodesAfter} times, down from ${SCALE.decodesBefore}. Peak scratch computes to about ${SCALE.scratchAfterGb} GB, from about ${SCALE.scratchBeforeGb}.`,
       },
       {
         feature: "Upload from a URL",
@@ -388,13 +391,16 @@ export default function FeaturesPage() {
 }
 
 function FeatureGroup({ group }: { group: Group }) {
+  const slug = group.name.toLowerCase();
   return (
-    <section
-      aria-labelledby={`g-${group.name.toLowerCase()}`}
-      className="scroll-mt-18"
-    >
+    // The scroll-margin has to sit on the element the anchor actually
+    // targets. It used to sit on this section while `#g-publish` named the
+    // <h2> inside it, so every jump-nav link landed the heading under the
+    // sticky header. The id moves here; the heading keeps one of its own for
+    // aria-labelledby.
+    <section id={`g-${slug}`} aria-labelledby={`h-${slug}`} className="scroll-mt-18">
       <div className="border-t-2 border-ink pt-5">
-        <h2 id={`g-${group.name.toLowerCase()}`} className="text-sub">
+        <h2 id={`h-${slug}`} className="text-sub">
           {group.name}
         </h2>
         <p className="text-body mt-2 text-onpaper-2">{group.intro}</p>
