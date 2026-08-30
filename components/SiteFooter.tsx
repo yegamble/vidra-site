@@ -9,6 +9,10 @@ const columns: { heading: string; items: Item[] }[] = [
     heading: "Product",
     items: [
       { label: "Features", href: "/features", external: false },
+      // /demo had no link from anywhere but one line on the homepage, so the
+      // page carrying the only pictures of the running product was reachable
+      // from one place. The footer is on every page; the nav stays at five.
+      { label: "See it running", href: "/demo", external: false },
       { label: "Use cases", href: "/use-cases", external: false },
       { label: "Scale", href: "/scale", external: false },
       { label: "IPFS", href: "/ipfs", external: false },

@@ -155,6 +155,29 @@ test.describe("every route owns its share card", () => {
   });
 });
 
+test.describe("the running product is one click from anywhere", () => {
+  // /demo carries the only pictures of Vidra actually running. It used to be
+  // reachable from a single line on the homepage. This is reachability and
+  // nothing more — no row on the site claims the demo settles whether anyone
+  // other than its author runs an instance.
+  for (const route of ROUTES) {
+    test(route, async ({ page }) => {
+      await page.goto(route);
+      const link = page
+        .locator("footer")
+        .getByRole("link", { name: "See it running" });
+      await expect(link).toHaveAttribute("href", "/demo");
+    });
+  }
+
+  test("the primary nav is still five items", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/");
+    const nav = page.locator("header").getByRole("navigation").first();
+    await expect(nav.getByRole("link")).toHaveCount(5);
+  });
+});
+
 test("rich results no longer say the product is free of charge", async ({
   page,
 }) => {
