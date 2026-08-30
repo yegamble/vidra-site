@@ -218,9 +218,61 @@ test.describe("install tabs", () => {
 });
 
 test.describe("install command block", () => {
-  // One line tall, always: the command scrolls sideways and the copy button
-  // stays pinned on the right (never wraps underneath).
-  test(`single row with the copy button on the right at ${PHONE.name}`, async ({
+  // This suite used to assert the opposite: that the command stayed on one
+  // line and its `<pre>` scrolled sideways. It did — and at 390 that left
+  // roughly a tenth of the command on screen, getting worse as the reader's
+  // font size rose, on the artifact the hero exists to hand over. The command
+  // now wraps the way a terminal wraps, so the contract inverts: nothing is
+  // ever past the right edge of the box, at any supported width and at 200%
+  // text zoom.
+
+  for (const vp of VIEWPORTS) {
+    test(`the whole command is legible without scrolling at ${vp.name}`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width: vp.width, height: vp.height });
+      await page.goto("/");
+
+      const pre = page.getByTestId("command-text").first();
+      await expect(pre).toBeVisible();
+      await expect(pre).toContainText("install.sh | sh");
+
+      const size = await pre.evaluate((el) => ({
+        scrollWidth: el.scrollWidth,
+        clientWidth: el.clientWidth,
+      }));
+      expect(
+        size.scrollWidth,
+        `the command is clipped at ${vp.name}: ${size.scrollWidth}px of text in a ${size.clientWidth}px box`,
+      ).toBeLessThanOrEqual(size.clientWidth + 1);
+    });
+  }
+
+  test(`the command survives 200% text zoom at ${PHONE.name}`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: PHONE.width, height: PHONE.height });
+    await page.goto("/");
+
+    // The reader's own font-size setting, doubled. Everything user-facing is
+    // sized in rem precisely so this works, and the primary conversion
+    // artifact is the last thing that may stop working when it is used.
+    await page.addStyleTag({ content: "html { font-size: 200% }" });
+
+    const pre = page.getByTestId("command-text").first();
+    const size = await pre.evaluate((el) => ({
+      scrollWidth: el.scrollWidth,
+      clientWidth: el.clientWidth,
+      fontSize: getComputedStyle(el).fontSize,
+    }));
+    expect(parseFloat(size.fontSize)).toBeGreaterThan(20);
+    expect(
+      size.scrollWidth,
+      `the command is clipped at 200% zoom: ${size.scrollWidth}px of text in a ${size.clientWidth}px box`,
+    ).toBeLessThanOrEqual(size.clientWidth + 1);
+  });
+
+  test(`the copy button shares the command's row at ${PHONE.name}`, async ({
     page,
   }) => {
     await page.setViewportSize({ width: PHONE.width, height: PHONE.height });
@@ -233,16 +285,10 @@ test.describe("install command block", () => {
     await expect(pre).toBeVisible();
     await expect(button).toBeVisible();
 
-    // The command overflows a phone and scrolls; keyboard-operable (WCAG 2.1.1).
+    // Still reachable from the keyboard — now so the text can be selected by
+    // hand, which is the fallback when the clipboard refuses.
     await expect(pre).toHaveAttribute("tabindex", "0");
-    const size = await pre.evaluate((el) => ({
-      scrollWidth: el.scrollWidth,
-      clientWidth: el.clientWidth,
-    }));
-    expect(size.scrollWidth).toBeGreaterThan(size.clientWidth);
 
-    // Same row: the button's vertical span overlaps the command's, and it
-    // sits to the right of it.
     const preBox = (await pre.boundingBox())!;
     const btnBox = (await button.boundingBox())!;
     expect(btnBox.x).toBeGreaterThan(preBox.x + preBox.width - 1);
@@ -251,6 +297,30 @@ test.describe("install command block", () => {
       Math.max(preBox.y, btnBox.y);
     expect(overlap, "copy button must share the command's row").toBeGreaterThan(
       0,
+    );
+  });
+
+  test("a refused clipboard is stated, not swallowed", async ({ page }) => {
+    // The clipboard can be refused: an insecure origin, a permissions policy,
+    // a browser with no async clipboard. The old catch reset the button to
+    // "Copy", so the reader pressed a button that did nothing and was told
+    // nothing.
+    await page.addInitScript(() => {
+      Object.defineProperty(navigator, "clipboard", {
+        configurable: true,
+        value: { writeText: () => Promise.reject(new Error("refused")) },
+      });
+    });
+    await page.goto("/");
+
+    const button = page
+      .getByRole("button", { name: /Copy install command/ })
+      .first();
+    await expect(button).toHaveText("Copy");
+    await button.click();
+    await expect(button).toHaveText("Copy failed");
+    await expect(page.getByRole("status").first()).toContainText(
+      "Select it and copy it yourself",
     );
   });
 });

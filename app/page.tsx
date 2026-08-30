@@ -153,8 +153,11 @@ export default function HomePage() {
             — and viewers can sign in with Bluesky.
           </p>
           {/* The headline says "One command." — the artifact is adjacent, and
-              copying it is the page's primary conversion. */}
-          <div className="mt-7 max-w-[620px]">
+              copying it is the page's primary conversion. It runs to the same
+              820px as the stat grid below it rather than the old 620px, which
+              was narrower than the command and so guaranteed a wrap at every
+              width the site supports. */}
+          <div className="mt-7 max-w-[820px]">
             <CommandBlock command={INSTALL_COMMAND} ground="ink" />
           </div>
           <div className="mt-4 flex flex-wrap gap-3">
