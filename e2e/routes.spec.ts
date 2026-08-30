@@ -218,6 +218,52 @@ test("the encryption claim names its mechanism and its status", async ({
   }
 });
 
+test.describe("the PeerTube comparison can be read by a PeerTube admin", () => {
+  test("no row is forfeited, and the losing rows are in the table", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/compare/peertube");
+    const main = page.locator("main");
+
+    // A cell that says "go and look it up" is not neutrality. Both of these
+    // sat in the two rows where Vidra's answer is longest.
+    await expect(main).not.toContainText("Judge it from");
+
+    // The rows PeerTube wins are stated, not left to be inferred from their
+    // absence.
+    for (const row of [
+      "Native mobile apps",
+      "Plugins and themes",
+      "Mirroring another instance",
+      "Managed PostgreSQL",
+    ]) {
+      await expect(
+        page.getByRole("rowheader", { name: row, exact: true }),
+      ).toBeVisible();
+    }
+
+    // And the page says out loud who should not use Vidra.
+    await expect(
+      page.getByRole("heading", { name: "Use PeerTube if" }),
+    ).toBeVisible();
+  });
+
+  test("the version and its date agree", async ({ page }) => {
+    // 8.2.0 shipped 2026-05-27 and 8.2.4 shipped 2026-08-04, so "8.2, August
+    // 2026" paired a minor with the wrong month.
+    await page.goto("/compare/peertube");
+    const main = page.locator("main");
+    await expect(main).not.toContainText(/\b8\.2, August\b/);
+    await expect(main).toContainText("8.2.4");
+    await expect(main).toContainText("checked on 30 August 2026");
+
+    // The managed-Postgres limit is vidra-search's, and saying it about
+    // vidra-core would be false — its pool is configurable.
+    await expect(main).toContainText("search service pins its pool");
+  });
+});
+
 test.describe("a clean number never travels without its control", () => {
   // "406 of 406, zero duplicates" is only evidence because the same harness
   // was re-run with the safeguards removed and reported 423 deliveries with
