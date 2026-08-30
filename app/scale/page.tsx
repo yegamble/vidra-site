@@ -36,7 +36,7 @@ const STEPS = [
   },
   {
     title: "The audience grows",
-    body: `Split roles: api replicas behind a load balancer, worker hosts for encoding. Work rides durable Postgres queues, so adding workers adds throughput without double-processing — a two-replica soak delivered ${SCALE.soak} events with zero duplicates, then re-ran with the lease removed to prove the harness catches the failure it checks for. Put a CDN, with purge wired in, in front of public media. Encoding scales by adding hosts, not by stacking containers on one box — ffmpeg already uses the cores.`,
+    body: `Split roles: api replicas behind a load balancer, worker hosts for encoding. Work rides durable Postgres queues, so adding workers adds throughput without double-processing — a two-replica soak delivered ${SCALE.soak} events with zero duplicates, and the same run with the safeguards taken out produced ${SCALE.soakControlDeliveries} deliveries and ${SCALE.soakControlDuplicates} duplicates, which is the control below. Put a CDN, with purge wired in, in front of public media. Encoding scales by adding hosts, not by stacking containers on one box — ffmpeg already uses the cores.`,
   },
   {
     title: "Past that, the roadmap",
@@ -89,8 +89,12 @@ export default function ScalePage() {
       <section className="on-ink bg-ink text-onink">
         <div className="measure-text py-12 md:py-24">
           <Eyebrow ground="ink">Scale</Eyebrow>
+          {/* The h1 used to be "From one box to a fleet." — the growth story,
+              with the limit three bands down. A reader deciding whether Vidra
+              fits their load is deciding against the ceiling, so the ceiling
+              is the first thing the page says. */}
           <Head as="h1" className="mt-3">
-            From one box to a fleet.
+            One region is the ceiling.
           </Head>
           <Standfirst ground="ink" className="mt-5">
             A one-person instance on a box that costs $
@@ -166,7 +170,68 @@ export default function ScalePage() {
         </div>
       </Section>
 
-      {/* 4 — The wall. Paper. The known limits stated by us before an
+      {/* 4 — The control plot. Mist, the quiet third ground, used once on
+          this page. Not a reliability plaque: two entries, each a clean run
+          paired with the run where the safeguard was deliberately removed.
+          The heading carries the product claim AND the proof relationship,
+          because "we test things" is what every project says and "we broke it
+          on purpose to check the test could fail" is not.
+
+          If a later edit turns this band into "Reliability" with green ticks,
+          it has died the death its author predicted for it. The kill
+          criterion is a cold reader: shown this band, they must be able to
+          say back what was broken and what happened. */}
+      <Section ground="mist">
+        <Eyebrow>Controls</Eyebrow>
+        <Head className="mt-3">
+          Exactly-once delivery — and the test that proves the test can fail.
+        </Head>
+        <p className="text-body mt-5 max-w-[66ch] text-onpaper-2">
+          A passing test only means something if it was capable of failing. So
+          each of these was run twice: once as it ships, and once with the
+          safeguard taken out on purpose to confirm the harness notices.
+        </p>
+        <dl className="mt-8 flex flex-col gap-8">
+          <div>
+            <dt className="text-sub">
+              {SCALE.soak} deliveries, zero duplicates
+            </dt>
+            <dd className="text-body mt-2 max-w-[66ch] text-onpaper-2">
+              Two api replicas against one PostgreSQL, draining 400 outbox
+              events concurrently: 406 deliveries for 406 unique events.
+              <span className="text-small mt-2 block text-label">
+                Then the lease and{" "}
+                <code className="text-mono">SKIP LOCKED</code> were removed,
+                the image rebuilt, and the same run repeated — it produced{" "}
+                {SCALE.soakControlDeliveries} deliveries with{" "}
+                {SCALE.soakControlDuplicates} duplicates. The harness caught
+                every one of them.
+              </span>
+            </dd>
+          </div>
+          <div>
+            <dt className="text-sub">Two workers never claim the same job</dt>
+            <dd className="text-body mt-2 max-w-[66ch] text-onpaper-2">
+              Queued work is claimed under a lease with{" "}
+              <code className="text-mono">FOR UPDATE SKIP LOCKED</code>, so
+              adding worker hosts adds throughput rather than duplicate work.
+              <span className="text-small mt-2 block text-label">
+                Then <code className="text-mono">SKIP LOCKED</code> was removed
+                and the claim run against real PostgreSQL — the double claim
+                reproduced in {SCALE.skipLockedControlRuns} runs out of{" "}
+                {SCALE.skipLockedControlRuns}.
+              </span>
+            </dd>
+          </div>
+        </dl>
+        <p className="mt-8">
+          <TextLink href={ROADMAP_URL} external>
+            Both runs are written up in the productionization docs →
+          </TextLink>
+        </p>
+      </Section>
+
+      {/* 5 — The wall. Paper. The known limits stated by us before an
           evaluator finds them — this band is the page's trust engine, and it
           survives copy edits by design decision. */}
       <Section ground="paper">
@@ -184,6 +249,37 @@ export default function ScalePage() {
           checks the database per request, which puts PostgreSQL on the byte
           path. It is in the plan; it is not done. You should know where the
           wall is before you pay to find it.
+        </p>
+
+        {/* The wall now has a number. "Named" was doing the work of "counted",
+            and a ceiling a reader cannot compute against is a mood, not a
+            limit. Source: vidra-core/docs/operations.md, "Connection budget —
+            the thing that breaks first". */}
+        <h3 className="text-sub mt-10">The number is the connection budget.</h3>
+        <p className="text-body mt-3 max-w-[66ch] text-onpaper-2">
+          Every process opens its own pool of up to{" "}
+          <code className="text-mono text-onpaper">DB_MAX_CONNS</code>{" "}
+          connections — 10 by default — and PostgreSQL&apos;s{" "}
+          <code className="text-mono text-onpaper">max_connections</code> is
+          server-wide. What has to fit is{" "}
+          <code className="text-mono text-onpaper">DB_MAX_CONNS</code> ×
+          processes, and processes means api replicas plus worker replicas.
+          One all-in-one process wants 10 of a stock server&apos;s 100. Three
+          api replicas and three workers want 60, and a managed plan capped at
+          25 or 40 is past its limit well before that.
+        </p>
+        <p className="text-body mt-4 max-w-[66ch] text-onpaper-2">
+          It does not degrade on the way there. It is{" "}
+          <code className="text-mono text-onpaper">
+            FATAL: sorry, too many clients already
+          </code>{" "}
+          on whichever process connects last — which in a rolling deploy is the
+          new one. The deployment that fails is the one you just started, and
+          the instance still serving looks fine. Lower{" "}
+          <code className="text-mono text-onpaper">DB_MAX_CONNS</code> per
+          process rather than chasing a{" "}
+          <code className="text-mono text-onpaper">max_connections</code> you
+          probably cannot move.
         </p>
       </Section>
 

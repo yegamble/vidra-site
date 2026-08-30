@@ -42,7 +42,7 @@ const GROUPS: Group[] = [
         // "down from 8" overstated the source, which says "up to 8" — the old
         // path read the source between one and eight times depending on the
         // ladder, and the new one reads it once regardless.
-        detail: `A full-ladder job reads the source once, down from up to ${SCALE.readsBefore}, and decodes it in full ${SCALE.decodesAfter} times, down from ${SCALE.decodesBefore}. Peak scratch computes to about ${SCALE.scratchAfterGb} GB, from about ${SCALE.scratchBeforeGb}.`,
+        detail: `On the worked example — a 2 GB, 30-minute 1080p source on the default ladder — a full-ladder job reads the source once, down from up to ${SCALE.readsBefore}, and decodes it in full ${SCALE.decodesAfter} times, down from ${SCALE.decodesBefore}. The read and decode counts are exact; peak scratch computes to about ${SCALE.scratchAfterGb} GB from about ${SCALE.scratchBeforeGb}, off the ladder's bitrate table rather than a stopwatch.`,
       },
       {
         feature: "Upload from a URL",
