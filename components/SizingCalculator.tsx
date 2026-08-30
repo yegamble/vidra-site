@@ -4,7 +4,13 @@ import { useState } from "react";
 import { PROFILES } from "@/lib/site";
 
 /**
- * Nobody publishes sizing for a self-hosted video platform, so this does.
+ * What a Vidra instance costs to run, with the working shown.
+ *
+ * (This used to open "Nobody publishes sizing for a self-hosted video
+ * platform, so this does." The claim about everybody else was killed on the
+ * record in the 2026-08-30 review — it is unscoped, unfalsifiable and false
+ * one click away — and the comment goes with the headline it justified, so
+ * nobody restores the line from here.)
  *
  * It is arithmetic, not a model. The two profiles in `lib/site.ts` are the
  * measured anchors from the deploy guide; everything between them is derived
@@ -39,6 +45,15 @@ function size(jobs: number, hours: number, live: boolean, clam: boolean) {
   const cost = Math.round(profile.droplet + extra * PROFILES.blockStoragePerGb);
 
   return { profile, vcpu, ram, disk, extra, cost };
+}
+
+/**
+ * Thousands separators, done here rather than with `toLocaleString()`: this is
+ * a client component that also prerenders, and the two runtimes do not have to
+ * agree on a locale. A hydration mismatch on a price is not a place to find out.
+ */
+function thousands(n: number) {
+  return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
 function Toggle({
@@ -183,6 +198,28 @@ export function SizingCalculator() {
           </div>
         </dl>
         <p className="text-small mt-5 text-onink-2">{costNote}</p>
+        {/* The axis that makes video different from every other thing you
+            self-host, and the one the figure above does not contain. It is
+            stated rather than modelled: how much anyone watches is the
+            reader's number, not ours, so the calculator hands over the
+            allowance and the rate and lets them do it. */}
+        <div className="mt-5 border-t border-ink-hairline pt-4">
+          <p className="text-micro uppercase text-onink-2">
+            Transfer, on top
+          </p>
+          <p className="text-small mt-2 text-onink-2">
+            {thousands(profile.transfer)} GiB a month comes with the plan —
+            pooled across every droplet on the team and accruing per second
+            over a 28-day month, so it is never a per-box allowance. Inbound
+            costs nothing. Past the pool, outbound is $
+            {PROFILES.egressPerGb.toFixed(2)} a GiB, which is the number a CDN
+            in front of your HLS is spent against.
+          </p>
+        </div>
+        <p className="text-small mt-4 text-onink-2">
+          Droplet, volume and bandwidth prices are DigitalOcean list prices,
+          checked 2026-08-30.
+        </p>
       </div>
     </div>
   );

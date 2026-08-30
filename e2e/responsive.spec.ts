@@ -372,6 +372,40 @@ test.describe("sizing calculator", () => {
     await expect(cost).toContainText("$168");
     await expect(result).toContainText("Its 100 GiB of disk is enough here");
   });
+
+  test(`the transfer allowance is per profile, pooled and priced at ${PHONE.name}`, async ({
+    page,
+  }) => {
+    // Egress is the axis that makes video different from everything else a
+    // reader self-hosts, and the monthly figure above does not contain it.
+    // The card hands over the allowance and the overage rate so the reader
+    // can do the arithmetic with their own viewing numbers.
+    await page.setViewportSize({ width: PHONE.width, height: PHONE.height });
+    await page.goto("/");
+
+    const result = page.getByTestId("calc-result");
+    await expect(result).toContainText("5,000 GiB a month comes with the plan");
+    await expect(result).toContainText("$0.01 a GiB");
+    // Pooled at the team, never per droplet — the allowance is not a
+    // property of the box the calculator just sized.
+    await expect(result).toContainText("pooled across every droplet on the team");
+    await expect(result).toContainText("Inbound costs nothing");
+    await expect(result).toContainText("checked 2026-08-30");
+
+    // The larger plan carries a larger pool, so it moves with the profile.
+    await page.getByLabel(/Concurrent transcode jobs/).fill("2");
+    await expect(result).toContainText("6,000 GiB a month comes with the plan");
+  });
+
+  test("the sizing heading claims nothing about anyone else", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    const heading = page
+      .locator("#calculator")
+      .getByRole("heading", { level: 2 });
+    await expect(heading).toHaveText("Check our arithmetic.");
+  });
 });
 
 test.describe("mobile install bar", () => {

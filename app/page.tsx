@@ -208,7 +208,13 @@ export default function HomePage() {
       {/* 3 — Sizing. Ink. */}
       <Section ground="ink" id="calculator" className="scroll-mt-18">
         <Eyebrow ground="ink">Sizing</Eyebrow>
-        <Head className="mt-3">Nobody publishes this. So here it is.</Head>
+        {/* The previous heading — "Nobody publishes this. So here it is." —
+            was a claim about everyone else, and it was false one click away:
+            hosted video platforms publish price pages, and the calculator
+            underneath it is not the only sizing guidance in the world. A
+            claim about the reader's own next action costs nothing to check
+            and cannot age into a lie. */}
+        <Head className="mt-3">Check our arithmetic.</Head>
         <Standfirst ground="ink" className="mt-4">
           Move the sliders and the box changes. The two profiles come from the
           deploy guide; everything between them is arithmetic you can check.
