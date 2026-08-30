@@ -1,4 +1,4 @@
-import { pageMetadata } from "@/lib/metadata";
+import { OG_CARD_PEERTUBE, pageMetadata } from "@/lib/metadata";
 import { Button, TextLink } from "@/components/Button";
 import { Comparison, type ComparisonRow } from "@/components/Comparison";
 import { Eyebrow, Head, Section, Standfirst } from "@/components/Section";
@@ -10,6 +10,7 @@ export const metadata = pageMetadata({
   // Vidra", which reads as a typo in every search result and every tab.
   absoluteTitle: "Vidra vs PeerTube — self-hosted video, compared",
   path: "/compare/peertube",
+  card: OG_CARD_PEERTUBE,
   description:
     "Vidra and PeerTube, compared honestly: federation, Bluesky sign-in, direct messages, uploads, operability, scaling, in-player P2P — checked against PeerTube 8.2.4, August 2026 — where PeerTube wins, when to pick it, and the one-way migration path.",
 });

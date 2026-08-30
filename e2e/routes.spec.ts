@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { OG_CARD } from "../lib/metadata";
+import { OG_CARD, OG_CARD_IPFS, OG_CARD_PEERTUBE } from "../lib/metadata";
 import { ROUTES } from "./routes";
 
 /**
@@ -110,7 +110,16 @@ test.describe("every route owns its share card", () => {
       // siteName and the image come back with it, or the preview is a bare
       // link with no picture.
       expect(await content('meta[property="og:site_name"]')).toBe("Vidra");
-      expect(await content('meta[property="og:image"]')).toContain(OG_CARD.url);
+      const image = await content('meta[property="og:image"]');
+      expect(image).toContain("/brand/og-card");
+
+      // The two pages that actually get pasted into threads carry their own
+      // evidence rather than the install command.
+      const ownCard: Record<string, string> = {
+        "/compare/peertube": OG_CARD_PEERTUBE.url,
+        "/ipfs": OG_CARD_IPFS.url,
+      };
+      expect(image).toContain(ownCard[route] ?? OG_CARD.url);
 
       // Not the template collision the /compare page shipped, where "%s —
       // Vidra" turned "Vidra vs PeerTube" into "Vidra vs PeerTube — Vidra".

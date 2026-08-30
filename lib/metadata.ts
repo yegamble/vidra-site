@@ -33,6 +33,23 @@ export const OG_CARD = {
   alt: "Vidra — run your own video platform — above the one-line install command, curl piped to sh",
 } as const;
 
+/**
+ * Cards for the two pages that actually get pasted into threads, each
+ * carrying that page's own evidence rather than the install command. A page
+ * card is only worth making when it says something its neighbours do not.
+ */
+export const OG_CARD_PEERTUBE = {
+  ...OG_CARD,
+  url: "/brand/og-card-peertube.png",
+  alt: "Vidra — run your own video platform — above the line: PeerTube 8.2.4, every cell checked 2026-08-30",
+} as const;
+
+export const OG_CARD_IPFS = {
+  ...OG_CARD,
+  url: "/brand/og-card-ipfs.png",
+  alt: "Vidra — run your own video platform — above the line: every public video's CIDs are in the API, pin one yourself",
+} as const;
+
 type PageMeta = {
   /** The `<title>`, which the root layout's template suffixes with "— Vidra". */
   title: string;
@@ -45,6 +62,8 @@ type PageMeta = {
   description: string;
   /** This route, so `og:url` points at the page that was actually shared. */
   path: string;
+  /** Overrides the install-command card with one carrying this page's own evidence. */
+  card?: { url: string; width: number; height: number; alt: string };
 };
 
 export function pageMetadata({
@@ -52,6 +71,7 @@ export function pageMetadata({
   absoluteTitle,
   description,
   path,
+  card = OG_CARD,
 }: PageMeta): Metadata {
   const shareTitle = absoluteTitle ?? `${title} — Vidra`;
 
@@ -64,13 +84,13 @@ export function pageMetadata({
       title: shareTitle,
       description,
       url: path,
-      images: [OG_CARD],
+      images: [card],
     },
     twitter: {
       card: "summary_large_image",
       title: shareTitle,
       description,
-      images: [OG_CARD.url],
+      images: [card.url],
     },
   };
 }

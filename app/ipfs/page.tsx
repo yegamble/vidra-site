@@ -1,4 +1,4 @@
-import { pageMetadata } from "@/lib/metadata";
+import { OG_CARD_IPFS, pageMetadata } from "@/lib/metadata";
 import { Button } from "@/components/Button";
 import { IpfsFigure } from "@/components/IpfsFigure";
 import { Eyebrow, Head, Section, Standfirst } from "@/components/Section";
@@ -7,6 +7,7 @@ import { DOCS, INSTALL_ANCHOR } from "@/lib/site";
 export const metadata = pageMetadata({
   title: "How Vidra uses IPFS",
   path: "/ipfs",
+  card: OG_CARD_IPFS,
   description:
     "Vidra can mirror public media to IPFS for gateway delivery, and replicate private media across a swarm-keyed private tier. Every public video's CIDs are in the API, so anyone can pin a copy — each pinned copy is an independent source that outlives the origin. What IPFS does not do here: automatic hosting by others, speed, permanence.",
 });

@@ -34,11 +34,27 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { chromium } from "@playwright/test";
 
-// A filename of its own, deliberately. `og-card.png` is the canon's card and
+// Filenames of their own, deliberately. `og-card.png` is the canon's card and
 // vidra-branding's generator writes it; overwriting it here would fork the
 // canon at the same path, so the next person to run the canonical command
 // would silently revert the evidence without ever seeing a conflict.
-const out = resolve(process.argv[2] ?? "public/brand/og-card-install.png");
+//
+// `line: null` means the install command, read from the fact table. The two
+// page cards carry that page's own evidence instead — a card is only worth
+// making per page when it says something that page says and its neighbours do
+// not, and these two are the pages that actually get pasted into threads.
+const CARDS = [
+  { out: "public/brand/og-card-install.png", line: null },
+  {
+    out: "public/brand/og-card-peertube.png",
+    line: "PeerTube 8.2.4 · every cell checked 2026-08-30",
+  },
+  {
+    out: "public/brand/og-card-ipfs.png",
+    line: "every public video's CIDs are in the API · pin one yourself",
+  },
+];
+
 const bannerPath = resolve("public/brand/banner.svg");
 
 const banner = readFileSync(bannerPath, "utf8");
@@ -87,7 +103,7 @@ const html = `<!doctype html>
   .prompt { color: #8fb4c9; }
 </style></head><body>
   <div class="banner">${banner}</div>
-  <div class="command"><span class="prompt">$ </span>${command}</div>
+  <div class="command">__LINE__</div>
 </body></html>`;
 
 const browser = await chromium.launch();
@@ -95,7 +111,18 @@ const page = await browser.newPage({
   viewport: { width: 1200, height: 630 },
   deviceScaleFactor: 1,
 });
-await page.setContent(html, { waitUntil: "networkidle" });
-await page.screenshot({ path: out });
+
+for (const card of CARDS) {
+  // The prompt glyph belongs to the command; an evidence line is not
+  // something you type, so it does not wear a `$`.
+  const body = card.line
+    ? card.line
+    : `<span class="prompt">$ </span>${command}`;
+  await page.setContent(html.replace("__LINE__", body), {
+    waitUntil: "networkidle",
+  });
+  await page.screenshot({ path: resolve(card.out) });
+  console.log(`wrote ${card.out} (1200×630) — ${card.line ?? command}`);
+}
+
 await browser.close();
-console.log(`wrote ${out} (1200×630) with: ${command}`);
