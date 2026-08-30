@@ -83,7 +83,7 @@ const ROWS: ComparisonRow[] = [
     label: "What it costs to run",
     cells: [
       "Depends on your instance — check your own numbers.",
-      "Two published profiles with prices — about $63/mo (4 vCPU, 8 GB) and about $168/mo (8 vCPU, 16 GB) — and a calculator that shows its arithmetic.",
+      "Two published profiles with prices — $56/mo (4 vCPU, 8 GB) and $168/mo (8 vCPU, 16 GB on dedicated cores) — and a calculator that shows its arithmetic, block storage and transfer allowance included.",
     ],
   },
   {

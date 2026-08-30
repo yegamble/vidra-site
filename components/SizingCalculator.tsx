@@ -14,12 +14,18 @@ import { PROFILES } from "@/lib/site";
  *   - ClamAV costs 2 GB of RAM and no cores
  *   - disk is the HLS ladder (an assumed 2 GB an hour — an estimate, labelled
  *     as such in the UI; see the gbPerHour note in lib/site.ts) plus transcode
- *     scratch plus the instance itself, rounded up to the next 20 GB and
- *     floored at the 160 GB that comes with the droplet
- *   - cost is the droplet list price plus block storage past that 160 GB
+ *     scratch plus the instance itself, rounded up to the next 20 GiB and
+ *     floored at the disk that particular plan includes
+ *   - cost is the plan's list price plus block storage past that disk
  *
- * The default state (1 job, 50 hours) derives exactly the small profile's ~$63,
- * so the first number the reader checks agrees with the hero's quoted number.
+ * The included-disk floor is per profile, not one number for both. The two
+ * plans do not carry the same disk: the small box ships 160 GiB and the
+ * launch box ships 100 GiB, and pretending otherwise under-priced the launch
+ * profile by hiding the block storage it needs on day one.
+ *
+ * The default state (1 job, 50 hours) derives exactly the small profile's
+ * $56, so the first number the reader checks agrees with the first number the
+ * site claims.
  */
 
 function size(jobs: number, hours: number, live: boolean, clam: boolean) {
@@ -28,11 +34,11 @@ function size(jobs: number, hours: number, live: boolean, clam: boolean) {
   const ram = profile.ram + (clam ? PROFILES.clamavRamGb : 0);
   const raw =
     hours * PROFILES.gbPerHour + jobs * PROFILES.scratchGbPerJob + 40;
-  const disk = Math.max(PROFILES.small.disk, Math.ceil(raw / 20) * 20);
-  const extra = Math.max(0, disk - PROFILES.small.disk);
+  const disk = Math.max(profile.disk, Math.ceil(raw / 20) * 20);
+  const extra = Math.max(0, disk - profile.disk);
   const cost = Math.round(profile.droplet + extra * PROFILES.blockStoragePerGb);
 
-  return { vcpu, ram, disk, extra, cost };
+  return { profile, vcpu, ram, disk, extra, cost };
 }
 
 function Toggle({
@@ -64,18 +70,29 @@ export function SizingCalculator() {
   const [live, setLive] = useState(false);
   const [clam, setClam] = useState(false);
 
-  const { vcpu, ram, disk, extra, cost } = size(jobs, hours, live, clam);
+  const { profile, vcpu, ram, disk, extra, cost } = size(
+    jobs,
+    hours,
+    live,
+    clam,
+  );
 
   const profileName =
     vcpu === PROFILES.launch.vcpu
-      ? "Public launch profile — live or concurrent transcodes need the larger box."
+      ? "Public launch profile — live or concurrent transcodes need dedicated cores."
       : "Small, private profile — a channel or two and a handful of viewers.";
 
+  // The class is named because it is the difference that costs money: the
+  // launch profile is priced on dedicated cores, and a shared-core box of the
+  // same shape is cheaper and wrong for a transcode queue.
   const costNote =
-    `Droplet list price for ${vcpu} vCPU / ${ram} GB` +
+    `${profile.class} list price for the ${profile.vcpu} vCPU / ${profile.ram} GB plan` +
     (extra > 0
-      ? `, plus ${extra} GB of block storage at $0.10 a GB — DigitalOcean volume list pricing.`
-      : `. ${PROFILES.small.disk} GB is included with the droplet.`);
+      ? `, plus ${extra} GiB of block storage at $0.10 a GiB — DigitalOcean volume list pricing. The plan itself includes ${profile.disk} GiB.`
+      : `. Its ${profile.disk} GiB of disk is enough here.`) +
+    (ram > profile.ram
+      ? ` ClamAV wants ${PROFILES.clamavRamGb} GB beyond what the plan carries, so take the next size up if you turn it on.`
+      : "");
 
   return (
     <div className="grid gap-5 md:grid-cols-2">
@@ -162,7 +179,7 @@ export function SizingCalculator() {
           </div>
           <div>
             <dt className="text-micro uppercase text-onink-2">Disk</dt>
-            <dd className="mt-1 text-sub tabular-nums text-onink">{disk} GB</dd>
+            <dd className="mt-1 text-sub tabular-nums text-onink">{disk} GiB</dd>
           </div>
         </dl>
         <p className="text-small mt-5 text-onink-2">{costNote}</p>

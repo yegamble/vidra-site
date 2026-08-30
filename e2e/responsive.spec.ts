@@ -342,7 +342,7 @@ test.describe("sizing calculator", () => {
     await expect(result).toContainText("Small, private profile");
     // The default state must derive the hero's quoted number: the first thing
     // the reader checks has to agree with the first thing the site claims.
-    await expect(cost).toContainText("$63");
+    await expect(cost).toContainText("$56");
     const before = (await cost.textContent())?.trim();
 
     // One job fits the 4 vCPU box; two do not.
@@ -353,18 +353,24 @@ test.describe("sizing calculator", () => {
     const after = (await cost.textContent())?.trim();
     expect(after, "the cost must move with the profile").not.toBe(before);
     await expect(result).toContainText("8 vCPU / 16 GB");
+    // The class is named, because it is the difference that costs money.
+    await expect(result).toContainText("CPU-Optimized");
 
-    // Stored video past what the included disk holds prices block storage on
-    // top of the droplet — the headline figure is $168 plus the disk, not a
-    // flat $168.
+    // The included-disk floor is per plan. The launch box ships 100 GiB, not
+    // the small box's 160, so at the launch profile's own baseline it is
+    // already buying block storage: $168 + $6, not a flat $168.
+    await expect(cost).toContainText("$174");
+    await expect(result).toContainText("block storage at $0.10 a GiB");
+
+    // Stored video pushes it further, and the arithmetic stays visible.
     await page.getByLabel(/Hours of video stored/).fill("200");
-    await expect(result).toContainText("block storage at $0.10 a GB");
+    await expect(result).toContainText("block storage at $0.10 a GiB");
 
-    // With nothing stored, the disk that comes with the droplet is enough and
-    // the figure lands exactly on the deploy guide's public-launch price.
+    // With nothing stored, the plan's own disk is enough and the figure lands
+    // exactly on the published launch price.
     await page.getByLabel(/Hours of video stored/).fill("0");
     await expect(cost).toContainText("$168");
-    await expect(result).toContainText("160 GB is included with the droplet");
+    await expect(result).toContainText("Its 100 GiB of disk is enough here");
   });
 });
 

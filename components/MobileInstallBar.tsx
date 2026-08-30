@@ -18,7 +18,7 @@ export function MobileInstallBar() {
       className="glass-chrome glass-chrome-bar sticky bottom-0 z-40 flex items-center gap-3 border-t border-slate/60 px-6 py-3 md:hidden"
     >
       <p className="text-small min-w-0 flex-1 text-onink-2">
-        One command. 4 vCPU. About $63 a month.
+        One command. 4 vCPU. $56 a month.
       </p>
       <Link
         href={INSTALL_ANCHOR}

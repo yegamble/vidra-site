@@ -60,22 +60,68 @@ export const NAV = [
 ] as const;
 
 /**
- * The two sizing profiles from deploy/README, and the droplet list prices they
- * were measured on. The sizing calculator interpolates between them: it is the
- * only thing on the site that derives numbers rather than quoting them, so the
- * two anchors it derives from live here where they can be checked.
+ * The two sizing profiles from deploy/README, and the droplet plans they are
+ * bought on. The sizing calculator interpolates between them: it is the only
+ * thing on the site that derives numbers rather than quoting them, so the two
+ * anchors it derives from live here where they can be checked.
+ *
+ * Every figure below is a DigitalOcean list price or a DigitalOcean plan
+ * specification, checked 2026-08-30 against the provider's own pricing page —
+ * the same discipline `blockStoragePerGb` has always carried. They are not
+ * deploy/ figures: deploy/README names the shape of each box, and the plan
+ * that sells that shape is looked up here.
+ *
+ * The previous values were wrong in two ways and both are corrected here. The
+ * small profile was priced at $63, which is no plan; the plan that carries
+ * 4 vCPU and 8 GB is Premium AMD at $56.00. The launch profile was labelled
+ * with a shared-core class and a copied 160 GiB disk; the box deploy/README
+ * actually asks for — dedicated cores, because sustained ffmpeg is the whole
+ * point of it — is the CPU-Optimized c-8, which ships 100 GiB of disk, not
+ * 160. That is the more expensive correction: a launch instance now prices
+ * block storage sooner rather than later.
+ *
+ * Recorded as the defensible alternative NOT chosen: a shared-core 8 vCPU /
+ * 16 GB / 320 GiB box at $112.00/mo. It is cheaper and has more disk, and it
+ * shares its cores — which is exactly the thing a transcode queue cannot
+ * afford.
  */
 export const PROFILES = {
-  small: { vcpu: 4, ram: 8, disk: 160, droplet: 63 },
-  launch: { vcpu: 8, ram: 16, disk: 160, droplet: 168 },
+  small: {
+    vcpu: 4,
+    ram: 8,
+    /** GiB of SSD included with the plan. */
+    disk: 160,
+    droplet: 56,
+    /** GiB of outbound transfer included per month. */
+    transfer: 5000,
+    class: "Premium AMD",
+    slug: "s-4vcpu-8gb-amd",
+  },
+  launch: {
+    vcpu: 8,
+    ram: 16,
+    disk: 100,
+    droplet: 168,
+    transfer: 6000,
+    class: "CPU-Optimized",
+    slug: "c-8",
+  },
   /** ClamAV costs RAM, not cores. */
   clamavRamGb: 2,
   /**
-   * Block storage beyond the droplet's included 160 GB. Source: DigitalOcean
-   * volume list pricing, $0.10/GiB-month (verified July 2026) — a provider
+   * Block storage beyond the disk the plan includes. Source: DigitalOcean
+   * volume list pricing, $0.10/GiB-month (checked 2026-08-30) — a provider
    * price, not a deploy/ figure.
    */
   blockStoragePerGb: 0.1,
+  /**
+   * Outbound transfer past the pooled monthly allowance, $0.01/GiB. The
+   * allowance pools across every droplet on the team and accrues per second
+   * over a 28-day month, so it is never a per-droplet number; inbound
+   * transfer is free. Source: docs.digitalocean.com/platform/billing/bandwidth
+   * (checked 2026-08-30).
+   */
+  egressPerGb: 0.01,
   /**
    * ASSUMPTION, not a measured figure. No repository pins a GB-per-hour number
    * for the full HLS ladder; anything derived from this must be labelled an

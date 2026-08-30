@@ -27,7 +27,7 @@ export const metadata: Metadata = {
 const STEPS = [
   {
     title: "Start on one box",
-    body: `The default role runs everything in one core process: it serves viewers and runs all ${SCALE.workers} background workers, video encoding included. The published profiles start at about $${PROFILES.small.droplet} a month.`,
+    body: `The default role runs everything in one core process: it serves viewers and runs all ${SCALE.workers} background workers, video encoding included. The published profiles start at $${PROFILES.small.droplet} a month.`,
   },
   {
     title: "The library grows",
@@ -92,7 +92,7 @@ export default function ScalePage() {
             From one box to a fleet.
           </Head>
           <Standfirst ground="ink" className="mt-5">
-            A one-person instance on a box that costs about $
+            A one-person instance on a box that costs $
             {PROFILES.small.droplet} a month and a replica fleet behind a load
             balancer run the same Vidra — the same image, one variable apart.
           </Standfirst>

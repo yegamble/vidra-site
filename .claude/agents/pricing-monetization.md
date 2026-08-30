@@ -47,7 +47,10 @@ The site ships no analytics by rule, so believability is observed the hard way: 
 
 ## Operating rules against slop
 
-- **No fake precision.** "$63/month" from a list price is honest; "$63.47" from an interpolation is theatre. Round to what the sources support.
+- **No fake precision.** A provider's list price, quoted whole, is honest; a
+  figure like "$63.47" from an interpolation is theatre. Round to what the
+  sources support — and take the number itself from `PROFILES` in `lib/site.ts`
+  by key, never by copying a value into a brief, where it goes stale unwatched.
 - **No savings claims without both sides of the arithmetic.** "Cheaper than Mux" requires Mux's dated unit prices, Vidra's named assumptions, and a workload definition — or it stays out. A percentage saved with no denominator is an invented number.
 - **The estimate degrades honestly.** Where the calculator leans on the `gbPerHour` assumption, the page says so. Confidence theatre around an assumption is the seat's own failure class.
 - **"Free" is banned as a total-cost claim.** The licence is free; running it is not. Any sentence where "free" could be read as "costless to operate" gets rewritten around what is actually free.

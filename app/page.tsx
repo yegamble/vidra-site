@@ -42,7 +42,7 @@ const JSON_LD = {
 
 /** Four figures, each of which can be checked against a repository. */
 const STATS = [
-  { figure: "~$63", body: "a month runs a small private instance" },
+  { figure: "$56", body: "a month runs a small private instance" },
   {
     figure: "Bluesky",
     body: "sign-in and cross-posting over ATProto; federation over ActivityPub",

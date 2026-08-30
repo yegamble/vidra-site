@@ -13,7 +13,7 @@ import { DOCS, INSTALL_ANCHOR } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Use cases",
   description:
-    "Who runs Vidra and on what: an independent creator, a community, a newsroom, a course archive, an organisation outgrowing one box — the features each one leans on, and what the server costs, from about $63 a month.",
+    "Who runs Vidra and on what: an independent creator, a community, a newsroom, a course archive, an organisation outgrowing one box — the features each one leans on, and what the server costs, from $56 a month.",
 };
 
 type UseCase = {
@@ -55,7 +55,7 @@ const CASES: UseCase[] = [
         why: "A 90-minute master over a domestic connection resumes instead of restarting.",
       },
     ],
-    sizing: "Small, private: 4 vCPU, 8 GB, 160 GB — around $63 a month.",
+    sizing: "Small, private: 4 vCPU, 8 GB, 160 GiB — $56 a month.",
     docs: { href: DOCS.quickstart, label: "Read the quickstart →" },
   },
   {
@@ -116,7 +116,8 @@ const CASES: UseCase[] = [
         why: "Change instance behaviour during an event without a redeploy.",
       },
     ],
-    sizing: "Public launch: 8 vCPU, 16 GB, 160 GB — around $168 a month.",
+    sizing:
+      "Public launch: 8 vCPU, 16 GB on dedicated cores — $168 a month, plus block storage past the plan's 100 GiB.",
     docs: { href: DOCS.videoPipeline, label: "The pipeline, live to VOD →" },
   },
   {
