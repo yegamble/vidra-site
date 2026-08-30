@@ -18,16 +18,21 @@ export function SiteHeader() {
   return (
     <header className="glass-chrome on-ink sticky top-0 z-50 border-b border-slate/60">
       <div className="measure-media relative flex h-16 items-center justify-between gap-6">
-        {/* h-11 is the 44px hit-target floor, not decoration: the lockup itself
-            is 32–40px tall, which is a comfortable read and an uncomfortable tap. */}
         <Link
           href="/"
           aria-label="Vidra, home"
           className="flex h-11 items-center"
         >
           {/* Reversed logotype on Ink. The mark's own nine fills are untouched. */}
-          {/* rem-sized so it follows the reader's font-size setting; larger on phones */}
-          <Lockup wordmark="#F5F5F7" className="h-10 w-auto md:h-8" />
+          {/* h-11 fills the 44px hit target exactly, and the size is canon, not
+              taste: the lockup's viewBox holds the otter's 24-grid frame at 75%
+              of rendered height and the drawn wordmark's cap height at ~37%. At
+              the old md:h-8 the mark sat at the brand's 24px UI *minimum* and
+              "Vidra" read at ~12px — smaller than the 15px nav labels beside it.
+              At 44px the mark frame is 33px and the wordmark ~16px: the brand
+              name outranks the nav. rem-sized so the reader's font-size setting
+              scales it. */}
+          <Lockup wordmark="#F5F5F7" className="h-11 w-auto" />
         </Link>
 
         <nav aria-label="Main" className="hidden md:block">

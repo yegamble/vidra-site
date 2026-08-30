@@ -51,7 +51,10 @@ export function SiteFooter() {
       <div className="measure-media py-12 md:py-16">
         <div className="grid gap-10 md:grid-cols-[minmax(0,1.1fr)_repeat(4,minmax(0,1fr))]">
           <div>
-            <Lockup wordmark="#F5F5F7" className="h-8 w-auto" />
+            {/* h-9: the mark's 24-grid frame renders at 27px, clear of the
+                brand's 24px UI minimum — quieter than the h-11 header lockup
+                on purpose; the footer is a signature, not a masthead. */}
+            <Lockup wordmark="#F5F5F7" className="h-9 w-auto" />
           </div>
 
           {columns.map((column) => (

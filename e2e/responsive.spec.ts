@@ -78,13 +78,17 @@ test.describe("header lockup", () => {
 
       const box = await lockup.boundingBox();
       expect(box, "the header lockup has no box").not.toBeNull();
-      // 30px is the floor, not the target: below it the drawn logotype stops
-      // reading as words. The phone header renders it larger than the desktop
-      // one for exactly this reason.
+      // 40px floor, raised from 30 as a recorded decision (2026-08): the old
+      // md:h-8 header put the otter's 24-grid frame at exactly the brand
+      // canon's 24px UI minimum and the drawn wordmark at ~12px — smaller
+      // than the 15px nav labels beside it, and the owner read it as small.
+      // The header now renders the lockup at h-11 (44px) at every viewport:
+      // mark frame 33px, wordmark ~16px. The floor sits under that with only
+      // subpixel slack, so a regression to the minimum-size lockup fails here.
       expect(
         box!.height,
         `header lockup is ${box!.height}px tall at ${vp.name}`,
-      ).toBeGreaterThanOrEqual(30);
+      ).toBeGreaterThanOrEqual(40);
       expect(box!.width).toBeGreaterThan(0);
     });
   }
