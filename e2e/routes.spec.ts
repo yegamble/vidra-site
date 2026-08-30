@@ -55,27 +55,28 @@ for (const route of ROUTES) {
       ).toContainText(/Captured|Same instance:/);
     }
 
-    // And every figure image must actually load — a deleted or renamed asset
-    // renders alt text over an empty Ink box and no other gate notices.
-    const broken = await page.evaluate(async () => {
-      const imgs = [
-        ...document.querySelectorAll<HTMLImageElement>("figure img"),
-      ];
-      await Promise.all(
-        imgs.map((img) =>
-          img.complete
-            ? Promise.resolve()
-            : new Promise((r) => {
-                img.addEventListener("load", r, { once: true });
-                img.addEventListener("error", r, { once: true });
-              }),
-        ),
-      );
-      return imgs
-        .filter((img) => img.naturalWidth === 0)
-        .map((img) => img.currentSrc || img.src);
-    });
-    expect(broken, `${route}: figure images that failed to load`).toEqual([]);
+    // And every figure image must actually exist — a deleted or renamed
+    // asset renders alt text over an empty Ink box and no other gate
+    // notices. Checked over HTTP rather than by waiting on element load
+    // events: lazy images below the fold never fire load in headless CI,
+    // and a gate that hangs on that is testing the scheduler, not the site.
+    const sources = await page.evaluate(() =>
+      [...document.querySelectorAll<HTMLImageElement>("figure img")].flatMap(
+        (img) => {
+          const urls = [img.src];
+          const source = img
+            .closest("picture")
+            ?.querySelector("source")
+            ?.getAttribute("srcset");
+          if (source) urls.push(source);
+          return urls;
+        },
+      ),
+    );
+    for (const src of sources) {
+      const res = await page.request.get(src);
+      expect(res.status(), `${route}: figure asset ${src}`).toBe(200);
+    }
   });
 }
 
