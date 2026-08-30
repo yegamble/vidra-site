@@ -61,7 +61,10 @@ export default function DemoPage() {
         </div>
         {/* No narrow source here, deliberately: the paragraph above claims
             the quality menu, so the figure must show it at every width — and
-            band 6 already gives the phone capture its own moment. */}
+            band 6 already gives the phone capture its own moment. The cropped
+            phone capture (watch-crop-780, used by the home player band) does
+            not qualify either: its quality control reads closed, and the
+            claim is the open menu. */}
         <ScreenFigure
           className="mt-8"
           eager

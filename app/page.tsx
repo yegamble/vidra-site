@@ -256,14 +256,24 @@ export default function HomePage() {
             instance itself ingested and transcoded to four renditions.
           </Standfirst>
         </div>
+        {/* The narrow source is a top-anchored crop of the full-page phone
+            capture (watch-780), cut in the whitespace above the description
+            card: player, title, actions, tags — the region that proves "the
+            player, running". The full 780×1688 capture rendered ~740px tall
+            in a 342px column, so a phone reader landed mid-page-chrome with
+            the player scrolled clean off; /demo band 6 keeps the full-page
+            original because reflow of the whole page IS that band's claim.
+            The alt is true of both sources: the rendition list is only open
+            in the wide capture, so the list lives in the standfirst, not
+            here. */}
         <ScreenFigure
           className="mt-10"
           ground="ink"
           src="/product/watch-quality-2464.jpg"
           width={2464}
           height={1540}
-          narrow={{ src: "/product/watch-780.jpg", width: 780, height: 1688 }}
-          alt="The Vidra watch page mid-playback with selectable quality: Auto plus 1080p, 720p, 480p and 360p, transcoded by the instance."
+          narrow={{ src: "/product/watch-crop-780.jpg", width: 780, height: 1000 }}
+          alt="The Vidra watch page mid-playback: the player with its quality control on Auto, then the video's title, view count and follow button."
           provenance="Captured 2026-08-29 from Vidra v0.5.0 running locally via docker compose — all four repositories at the v0.5.0 release tags. The video shown was uploaded through the studio and transcoded by the instance itself."
         />
         <p className="mt-6">
