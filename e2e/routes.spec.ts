@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { OG_CARD } from "../lib/metadata";
 import { ROUTES } from "./routes";
 
 /**
@@ -109,9 +110,7 @@ test.describe("every route owns its share card", () => {
       // siteName and the image come back with it, or the preview is a bare
       // link with no picture.
       expect(await content('meta[property="og:site_name"]')).toBe("Vidra");
-      expect(await content('meta[property="og:image"]')).toContain(
-        "/brand/og-card.png",
-      );
+      expect(await content('meta[property="og:image"]')).toContain(OG_CARD.url);
 
       // Not the template collision the /compare page shipped, where "%s —
       // Vidra" turned "Vidra vs PeerTube" into "Vidra vs PeerTube — Vidra".
