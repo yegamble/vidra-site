@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/metadata";
 import { Button, TextLink } from "@/components/Button";
 import { Eyebrow, Head, Section, Standfirst } from "@/components/Section";
 import { StatusMark } from "@/components/StatusMark";
@@ -10,11 +10,12 @@ import {
   SCALE,
 } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Scale",
+  path: "/scale",
   description:
     "How a Vidra instance grows: one image from a one-person box to an api+worker fleet, one variable apart — with the soak numbers, the shipped floor, the published roadmap, and the honest ceiling.",
-};
+});
 
 /**
  * The page's discipline: every "proven" here means proven-in-validation, and

@@ -1,15 +1,16 @@
-import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/metadata";
 import { Comparison } from "@/components/Comparison";
 import { NotYet } from "@/components/NotYet";
 import { Button, TextLink } from "@/components/Button";
 import { Eyebrow, Head, Section, Standfirst } from "@/components/Section";
 import { DOCS, INSTALL_ANCHOR, MESSAGING, SCALE, VERSION } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Features",
+  path: "/features",
   description:
     "What Vidra ships: resumable uploads, HLS transcoding, live streaming with replay-to-VOD, Whisper captions, hybrid search, ActivityPub federation, Bluesky sign-in, direct messages with an end-to-end encrypted mode, moderation and the operator CLI — and what it does not do yet.",
-};
+});
 
 type Group = {
   name: string;

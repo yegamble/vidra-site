@@ -36,7 +36,12 @@ const JSON_LD = {
   softwareVersion: VERSION,
   url: "https://vidra.yosef.app",
   license: GITHUB.licence,
-  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  // `offers: { price: "0" }` told rich results the product was free, which
+  // Google renders as a price — on a project whose whole argument is that it
+  // costs a server. The software is free; running it is not, and an Offer is
+  // the wrong vocabulary for the difference. isAccessibleForFree says the one
+  // true thing, beside the licence that already says it in prose.
+  isAccessibleForFree: true,
   sameAs: [GITHUB.meta, GITHUB.core, GITHUB.user, GITHUB.search],
 };
 

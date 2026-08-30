@@ -1,14 +1,18 @@
-import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/metadata";
 import { Button, TextLink } from "@/components/Button";
 import { Comparison, type ComparisonRow } from "@/components/Comparison";
 import { Eyebrow, Head, Section, Standfirst } from "@/components/Section";
 import { DOCS, INSTALL_ANCHOR, MESSAGING, SCALE, VERSION } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Vidra vs PeerTube",
+  // The layout's "%s — Vidra" template rendered this as "Vidra vs PeerTube —
+  // Vidra", which reads as a typo in every search result and every tab.
+  absoluteTitle: "Vidra vs PeerTube — self-hosted video, compared",
+  path: "/compare/peertube",
   description:
-    "Vidra and PeerTube, compared honestly: federation, Bluesky sign-in, direct messages, uploads, operability, scaling, in-player P2P — checked against PeerTube 8.2 — and the one-way migration path.",
-};
+    "Vidra and PeerTube, compared honestly: federation, Bluesky sign-in, direct messages, uploads, operability, scaling, in-player P2P — checked against PeerTube 8.2.4, August 2026 — where PeerTube wins, when to pick it, and the one-way migration path.",
+});
 
 /**
  * The PeerTube column is checked against PeerTube's own documentation and

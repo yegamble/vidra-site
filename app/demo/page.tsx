@@ -1,15 +1,16 @@
-import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/metadata";
 import { AnnotatedScreen } from "@/components/AnnotatedScreen";
 import { Button, TextLink } from "@/components/Button";
 import { ScreenFigure } from "@/components/ScreenFigure";
 import { Eyebrow, Head, Section, Standfirst } from "@/components/Section";
 import { DOCS, INSTALL_ANCHOR, MESSAGING } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "See it running",
+  path: "/demo",
   description:
     "Captures of Vidra v0.5.0 running locally — the player, the upload sheet, the jobs view, the admin console, search results that survive a typo, and an opt-in end-to-end encrypted conversation — with pressable markers explaining each frame. No public demo instance yet; this page is the evidence in the meantime.",
-};
+});
 
 /**
  * Every version string on this page is a frozen literal, like the provenance

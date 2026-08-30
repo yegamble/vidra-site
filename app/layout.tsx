@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { OG_CARD } from "@/lib/metadata";
 import { MobileInstallBar } from "@/components/MobileInstallBar";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -31,17 +32,17 @@ export const metadata: Metadata = {
     description: DESCRIPTION,
     url: "/",
     // A PNG, deliberately: X, Slack and older LinkedIn drop SVG cards.
-    // Regenerate from the canonical template when the banner changes:
-    // node ../vidra-branding/assets/social/og-card.mjs public/brand/og-card.png
-    images: [
-      { url: "/brand/og-card.png", width: 1200, height: 630, alt: "Vidra" },
-    ],
+    // The card and its regeneration live in lib/metadata.ts and
+    // scripts/og-card.mjs. Every other route builds its own object through the
+    // same helper, because Next replaces this whole object rather than
+    // merging into it.
+    images: [OG_CARD],
   },
   twitter: {
     card: "summary_large_image",
     title: "Vidra — self-hosted, federated video platform",
     description: DESCRIPTION,
-    images: ["/brand/og-card.png"],
+    images: [OG_CARD.url],
   },
 };
 

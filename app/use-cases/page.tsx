@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/metadata";
 import { Button, TextLink } from "@/components/Button";
 import {
   BookOpenIcon,
@@ -10,11 +10,12 @@ import {
 import { Eyebrow, Head, Section, Standfirst } from "@/components/Section";
 import { DOCS, INSTALL_ANCHOR } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Use cases",
+  path: "/use-cases",
   description:
     "Who runs Vidra and on what: an independent creator, a community, a newsroom, a course archive, an organisation outgrowing one box — the features each one leans on, and what the server costs, from $56 a month.",
-};
+});
 
 type UseCase = {
   id: string;
