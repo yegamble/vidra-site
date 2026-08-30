@@ -333,6 +333,15 @@ export default function HomePage() {
         <div className="mt-7">
           <FederationFigure />
         </div>
+        {/* The limit that belongs beside the promise. Federating is a
+            capability; being read is a decision other people make. Stated
+            once, factually, with the dated receipt — not as a warning. */}
+        <p className="text-small mt-6 max-w-[70ch] text-onpaper-2">
+          Federating is not the same as being read. Reach depends on other
+          instances choosing to accept you, and that choice is getting easier
+          to make in bulk: PeerTube 8.3.0-rc.1, tagged 25 August 2026, added
+          blocklists an admin can subscribe to.
+        </p>
         <p className="mt-5">
           <TextLink href={DOCS.federation} external>
             How federation works, in the docs →
