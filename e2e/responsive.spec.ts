@@ -314,6 +314,32 @@ test.describe("install command block", () => {
     );
   });
 
+  test("the homepage ends with the command, not an anchor back up it", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    const closing = page.locator("main > section").last();
+
+    await expect(
+      closing.getByRole("button", { name: /Copy install command/ }),
+    ).toBeVisible();
+
+    // No same-page anchor as the site's last ask: the reader who reached the
+    // bottom should not be sent back to the top of the page they just read.
+    const upward = await closing
+      .getByRole("link")
+      .evaluateAll((links) =>
+        links
+          .map((a) => a.getAttribute("href") ?? "")
+          .filter((href) => href.startsWith("#") || href.startsWith("/#")),
+      );
+    expect(upward, "same-page anchors in the closing band").toEqual([]);
+
+    await expect(
+      closing.getByRole("link", { name: "Read the docs" }),
+    ).toBeVisible();
+  });
+
   test("a refused clipboard is stated, not swallowed", async ({ page }) => {
     // The clipboard can be refused: an insecure origin, a permissions policy,
     // a browser with no async clipboard. The old catch reset the button to

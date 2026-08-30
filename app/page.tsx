@@ -16,7 +16,6 @@ import { SizingCalculator } from "@/components/SizingCalculator";
 import {
   DOCS,
   GITHUB,
-  INSTALL_ANCHOR,
   INSTALL_COMMAND,
   LICENCE,
   VERSION,
@@ -467,13 +466,17 @@ export default function HomePage() {
         </div>
       </Section>
 
-      {/* 9 — Final CTA. Ink. */}
+      {/* 9 — Final CTA. Ink. The band said "Start with one command." over a
+          "Get started" button that scrolled the reader back up the page they
+          had just finished — a same-page anchor as the last thing the site
+          asks for. The command is the thing, so the band ends with the
+          command itself: the reader who got this far can copy it here. */}
       <Section ground="ink">
         <Head>Start with one command.</Head>
-        <div className="mt-6 flex flex-wrap gap-3">
-          <Button href={INSTALL_ANCHOR} variant="vidra" size="large">
-            Get started
-          </Button>
+        <div className="mt-6 max-w-[820px]">
+          <CommandBlock command={INSTALL_COMMAND} ground="ink" />
+        </div>
+        <div className="mt-4 flex flex-wrap gap-3">
           <Button href={DOCS.root} external variant="ice-outline" size="large">
             Read the docs
           </Button>
