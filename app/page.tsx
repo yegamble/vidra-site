@@ -18,6 +18,7 @@ import {
   GITHUB,
   INSTALL_COMMAND,
   LICENCE,
+  P2P_DECISION_URL,
   VERSION,
 } from "@/lib/site";
 
@@ -419,13 +420,26 @@ export default function HomePage() {
           </div>
           <div>
             <h3 className="text-card">PeerTube</h3>
+            {/* In-player peer-to-peer used to sit inside this deficit
+                list, between two real deficits. Every other surface had
+                already stopped framing it that way — lib/site.ts NOT_YET,
+                /compare/peertube and /ipfs all record it as a decision with
+                published reasoning — and this was the last sentence on the
+                site still reading it as an absence. Maturity and the plugin
+                system are things Vidra lacks; peer-to-peer is a thing Vidra
+                declined, and the two do not belong in one clause. */}
             <p className="text-body mt-3 max-w-[60ch] text-onpaper-2">
-              PeerTube is the established choice, with years of maturity, a
-              plugin ecosystem and in-player P2P that Vidra does not have.
-              Vidra is a clean-room alternative that trades that head start for
-              operability — a one-command install, a doctor, scripted backup
-              and rollback — viewers who can sign in with Bluesky, and direct
-              messages, which PeerTube does not have.
+              PeerTube is the established choice, with years of maturity and a
+              plugin ecosystem Vidra does not have. Vidra is a clean-room
+              alternative that trades that head start for operability — a
+              one-command install, a doctor, scripted backup and rollback —
+              viewers who can sign in with Bluesky, and direct messages, which
+              PeerTube does not have. PeerTube also has in-player
+              peer-to-peer; that one Vidra declined rather than missed, and{" "}
+              <TextLink href={P2P_DECISION_URL} external>
+                the reasoning is published
+              </TextLink>
+              .
             </p>
             <p className="mt-4">
               <TextLink href="/compare/peertube">
