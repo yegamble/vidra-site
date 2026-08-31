@@ -20,6 +20,19 @@ export const GITHUB = {
   search: "https://github.com/yegamble/vidra-search",
   branding: "https://github.com/yegamble/vidra-branding",
   licence: "https://github.com/yegamble/vidra/blob/main/LICENSE",
+  /**
+   * Where the version can actually be checked. The meta repository publishes
+   * **no** GitHub Releases: /releases returns 200 and renders "There aren't
+   * any releases", and /releases/latest 200s only by redirecting to that empty
+   * index — so a reader sent to look for a release finds nothing and concludes
+   * the number is unverifiable. /tags carries all eight tags with v0.5.0 at
+   * the top. Both checked against the GitHub API on 2026-08-31.
+   *
+   * Publishing releases on the meta repository would make /releases the better
+   * link; that is repo-side work, not site-side. Until then, every version the
+   * site asserts points here.
+   */
+  tags: "https://github.com/yegamble/vidra/tags",
 } as const;
 
 /**

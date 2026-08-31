@@ -445,13 +445,24 @@ export default function HomePage() {
         {/* "Nothing behind it" is a claim that needs a name attached, or the
             reader is being asked to run a stranger's install script on their
             own server on the strength of an anonymous website. One person
-            maintains this, in public, and the page says who. */}
+            maintains this, in public, and the page says who.
+
+            "The release tags" carries its own link because the profile page
+            does not have any. A reader who follows a sentence promising tags
+            and lands on a list of repositories has been sent somewhere that
+            does not answer, and the meta repository publishes no Releases for
+            them to find either (see GITHUB.tags). Every route this site offers
+            for checking the version now lands on a page showing it. */}
         <Standfirst className="mt-4">
           Vidra is written and maintained by Yosef Gamble, in public, at{" "}
           <TextLink href={GITHUB.profile} external>
             github.com/yegamble
           </TextLink>{" "}
-          — where the commits, the issues and the release tags are.
+          — where the commits, the issues and{" "}
+          <TextLink href={GITHUB.tags} external>
+            the release tags
+          </TextLink>{" "}
+          are.
         </Standfirst>
         <div className="mt-7 grid gap-6 sm:grid-cols-2 md:grid-cols-4">
           {PROJECT.map((item) => (
@@ -481,7 +492,11 @@ export default function HomePage() {
               asserted here — that one goes false on the first merged PR with
               no tag to announce it. */}
           <p className="text-body mt-3 text-onpaper-2">
-            Vidra is at {VERSION}, and its first commit landed on 19 June 2026.
+            Vidra is at{" "}
+            <TextLink href={GITHUB.tags} external>
+              {VERSION}
+            </TextLink>
+            , and its first commit landed on 19 June 2026.
             The feature set is still growing, and three things it does not do
             are listed below. What is already fixed is the discipline it is
             built with: upgrading is reversible, because the previous release
