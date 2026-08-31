@@ -24,15 +24,23 @@ import { INSTALL_ANCHOR } from "@/lib/site";
  * on the first frame if the hero command is already in view. The state only
  * ever changes from the observer's callback — a route with no command block
  * never touches it, which is why it needs no effect-body default.
+ *
+ * The anchors are re-read on every DOM change, not collected once. Collecting
+ * once is what made this a dead control on the homepage: the Install band's
+ * command lives inside a tab panel, that wrapper unmounts on the "From
+ * PeerTube" tab, which has no command to copy, and a list built in an effect
+ * with `[]` deps can never observe a node mounted after it ran. The bar then
+ * sat over the live command with its button pointing at the section the reader
+ * was already standing in, which is the exact failure the yielding above was
+ * written to avoid.
  */
 export function MobileInstallBar() {
   const [suppressed, setSuppressed] = useState(false);
 
   useEffect(() => {
-    const anchors = [...document.querySelectorAll("[data-command-anchor]")];
-    if (anchors.length === 0) return;
-
     const visible = new Set<Element>();
+    const observed = new Set<Element>();
+
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
@@ -44,8 +52,48 @@ export function MobileInstallBar() {
       // Half of it, so the bar does not flicker back as a block scrolls out.
       { threshold: 0.5 },
     );
-    for (const anchor of anchors) observer.observe(anchor);
-    return () => observer.disconnect();
+
+    const sync = () => {
+      const anchors = new Set<Element>([
+        ...document.querySelectorAll("[data-command-anchor]"),
+      ]);
+
+      for (const anchor of anchors) {
+        if (observed.has(anchor)) continue;
+        observed.add(anchor);
+        observer.observe(anchor);
+      }
+
+      for (const anchor of observed) {
+        if (anchors.has(anchor)) continue;
+        observed.delete(anchor);
+        observer.unobserve(anchor);
+        // An unobserved node reports nothing ever again, so its last verdict
+        // would otherwise outlive it and pin the bar off the screen for good.
+        if (visible.delete(anchor)) setSuppressed(visible.size > 0);
+      }
+    };
+
+    // Coalesced to a frame: the sliders and the tablist can mutate the tree
+    // many times in a row, and each pass is a fresh querySelectorAll.
+    let frame = 0;
+    const schedule = () => {
+      if (frame) return;
+      frame = requestAnimationFrame(() => {
+        frame = 0;
+        sync();
+      });
+    };
+
+    sync();
+    const mutations = new MutationObserver(schedule);
+    mutations.observe(document.body, { childList: true, subtree: true });
+
+    return () => {
+      if (frame) cancelAnimationFrame(frame);
+      mutations.disconnect();
+      observer.disconnect();
+    };
   }, []);
 
   return (

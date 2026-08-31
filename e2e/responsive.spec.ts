@@ -529,6 +529,38 @@ test.describe("mobile install bar", () => {
     await page.locator("main > section").last().scrollIntoViewIfNeeded();
     await expect(bar).toBeHidden();
   });
+
+  test(`yields to the install band's command, on every tab, at ${PHONE.name}`, async ({
+    page,
+  }) => {
+    // The Install band's command carried no anchor at all, so the bar
+    // rendered on top of it with its button pointing at the section the
+    // reader was already standing in — a control that does nothing, covering
+    // ~60px of the copy under it.
+    //
+    // The attribute alone does not fix it: the wrapper unmounts on the "From
+    // PeerTube" tab, and a list of anchors built once can never observe a node
+    // mounted later. So the round trip through a tab with no command is the
+    // part of this test that matters.
+    await page.setViewportSize({ width: PHONE.width, height: PHONE.height });
+    await page.goto("/");
+
+    const bar = page.getByTestId("mobile-install-bar");
+    const tablist = page.getByTestId("install-tablist");
+    const command = page.locator("#get-started [data-command-anchor]");
+
+    await command.scrollIntoViewIfNeeded();
+    await expect(bar).toBeHidden();
+
+    // No command to copy on this tab, so the bar is the install control again.
+    await tablist.getByRole("tab", { name: "From PeerTube" }).click();
+    await expect(bar).toBeVisible();
+
+    // Mounted after the effect ran, and still observed.
+    await tablist.getByRole("tab", { name: "Production" }).click();
+    await command.scrollIntoViewIfNeeded();
+    await expect(bar).toBeHidden();
+  });
 });
 
 test.describe("mobile menu", () => {

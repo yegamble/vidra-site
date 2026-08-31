@@ -207,8 +207,15 @@ export function InstallTabs() {
       >
         <p className="text-body max-w-[66ch] text-onpaper-2">{tab.intro}</p>
 
+        {/* `data-command-anchor` is what tells the phone's sticky install bar
+            to stand down: without it the bar rendered on top of this command
+            with its button pointing at the section the reader was already in.
+            The attribute alone is not the fix — this wrapper unmounts on the
+            "From PeerTube" tab, which has no command, so the bar's observer
+            has to re-register when the DOM changes rather than build its list
+            once. See MobileInstallBar. */}
         {tab.command ? (
-          <div className="mt-4">
+          <div className="mt-4" data-command-anchor>
             <CommandBlock command={tab.command} />
           </div>
         ) : null}
