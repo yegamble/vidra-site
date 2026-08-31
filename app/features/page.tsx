@@ -3,7 +3,7 @@ import { Comparison } from "@/components/Comparison";
 import { NotYet } from "@/components/NotYet";
 import { Button, TextLink } from "@/components/Button";
 import { Eyebrow, Head, Section, Standfirst } from "@/components/Section";
-import { DOCS, INSTALL_ANCHOR, MESSAGING, SCALE, VERSION } from "@/lib/site";
+import { DOCS, INSTALL_ANCHOR, MESSAGING, SCALE } from "@/lib/site";
 
 export const metadata = pageMetadata({
   title: "Features",
@@ -287,8 +287,14 @@ export default function FeaturesPage() {
       <section className="on-ink bg-ink text-onink">
         <div className="measure-text py-12 md:py-24">
           <Eyebrow ground="ink">Features</Eyebrow>
+          {/* "Everything in v0.5.0" is a completeness claim, and the version
+              was the thing bounding it. Deleting the version alone would leave
+              "Everything Vidra does" — unbounded, and less accurate than what
+              it replaced. So the bound is replaced rather than removed: the
+              exhaustiveness claim goes, and what is left is a description of
+              the page that the page can satisfy at every release. */}
           <Head as="h1" className="mt-3">
-            Everything in {VERSION}, in the order you meet it.
+            What Vidra does, in the order you meet it.
           </Head>
           <Standfirst ground="ink" className="mt-5">
             Grouped by lifecycle rather than by marketing category. Every line
