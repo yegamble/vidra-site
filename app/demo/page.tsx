@@ -35,8 +35,16 @@ export default function DemoPage() {
       <section className="on-ink bg-ink text-onink">
         <div className="measure-text py-16 md:py-24">
           <Eyebrow ground="ink">Demo</Eyebrow>
+          {/* Grammar, not deletion — the literal is frozen like the
+              provenance sentences and stays exactly as it is. What changed is
+              what the sentence is about. With the interpolated mentions gone
+              from the hero, the install band and /features, this page's frozen
+              literals make it the only place on the site carrying a version,
+              and "Vidra v0.5.0, running." met that reader as a statement about
+              the product with nothing else on the page to date it. It is now a
+              statement about the capture, which is what it always was. */}
           <Head as="h1" className="mt-3">
-            Vidra v0.5.0, running.
+            Captures of Vidra v0.5.0, running.
           </Head>
           <Standfirst ground="ink" className="mt-6">
             There is no public instance to click around yet. There is a running
