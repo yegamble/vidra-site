@@ -530,36 +530,36 @@ test.describe("mobile install bar", () => {
     await expect(bar).toBeHidden();
   });
 
-  test(`yields to the install band's command, on every tab, at ${PHONE.name}`, async ({
+  test(`yields to the install band itself, on every tab, at ${PHONE.name}`, async ({
     page,
   }) => {
-    // The Install band's command carried no anchor at all, so the bar
-    // rendered on top of it with its button pointing at the section the
-    // reader was already standing in — a control that does nothing, covering
-    // ~60px of the copy under it.
-    //
-    // The attribute alone does not fix it: the wrapper unmounts on the "From
-    // PeerTube" tab, and a list of anchors built once can never observe a node
-    // mounted later. So the round trip through a tab with no command is the
-    // part of this test that matters.
+    // The bar's button scrolls to the install band, so inside that band it is
+    // a control that does nothing — whichever tab is selected. Measuring a
+    // rendered command instead of the band is what put the bar back over the
+    // band on "From PeerTube", the one tab with no command to copy.
     await page.setViewportSize({ width: PHONE.width, height: PHONE.height });
-    await page.goto("/");
+    await page.goto("/#get-started");
 
     const bar = page.getByTestId("mobile-install-bar");
     const tablist = page.getByTestId("install-tablist");
     const command = page.locator("#get-started [data-command-anchor]");
 
-    await command.scrollIntoViewIfNeeded();
+    await tablist.scrollIntoViewIfNeeded();
     await expect(bar).toBeHidden();
 
-    // No command to copy on this tab, so the bar is the install control again.
+    // The tab whose command wrapper unmounts. The band is still on screen, so
+    // the bar still has nowhere to send anyone.
     await tablist.getByRole("tab", { name: "From PeerTube" }).click();
-    await expect(bar).toBeVisible();
-
-    // Mounted after the effect ran, and still observed.
-    await tablist.getByRole("tab", { name: "Production" }).click();
-    await command.scrollIntoViewIfNeeded();
+    await expect(command).toHaveCount(0);
     await expect(bar).toBeHidden();
+
+    // And back to a tab whose command mounts after the effect ran.
+    await tablist.getByRole("tab", { name: "Production" }).click();
+    await expect(bar).toBeHidden();
+
+    // Two bands above it, the bar is the install control again.
+    await page.locator("#use-cases").scrollIntoViewIfNeeded();
+    await expect(bar).toBeVisible();
   });
 });
 

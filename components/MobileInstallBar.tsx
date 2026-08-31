@@ -14,57 +14,88 @@ import { INSTALL_ANCHOR } from "@/lib/site";
  * last line finishes above it rather than behind it. It traps nothing and
  * covers nothing.
  *
- * And it yields. While a real command block is on screen — the hero's, or the
- * one that closes the homepage — the bar was a second, smaller copy of the
- * call to action sitting under the actual one, covering the bottom of a
- * 390-wide screen to advertise what the reader was already looking at.
+ * And it yields, to two things. While a real command block is on screen — the
+ * hero's, or the one that closes the homepage — the bar was a second, smaller
+ * copy of the call to action sitting under the actual one, covering the bottom
+ * of a 390-wide screen to advertise what the reader was already looking at.
+ * And while the install band is on screen, the button is a no-op: its whole
+ * job is to carry the reader to that band, so a reader already standing in it
+ * gets nothing from pressing it.
  *
- * Whether a command block is on screen is a fact about the viewport, so it is
- * only knowable on the client: the bar renders, and the observer takes it away
- * on the first frame if the hero command is already in view. The state only
- * ever changes from the observer's callback — a route with no command block
- * never touches it, which is why it needs no effect-body default.
+ * The band is the honest measure, and the command was not. A command block
+ * that happens to be rendered is a proxy for "the reader has arrived", and the
+ * proxy broke on the one Install tab with nothing to copy: "From PeerTube"
+ * unmounts the command wrapper, and the bar came back over the very band it
+ * points at. So the band is observed directly, whichever tab is selected. The
+ * destination comes from INSTALL_ANCHOR rather than a second copy of the id,
+ * so moving the anchor moves the yielding with it.
+ *
+ * Whether either is on screen is a fact about the viewport, so it is only
+ * knowable on the client: the bar renders, and the observers take it away on
+ * the first frame if the hero command is already in view. The state only ever
+ * changes from an observer callback — a route with neither a command block nor
+ * the band never touches it, which is why it needs no effect-body default.
+ *
+ * Two observers, because the two want different measures. Half of a command
+ * block on screen is a command block on screen; half of the install band never
+ * happens on a phone, where the band runs several viewports tall, so a
+ * fraction of that element can never cross the same threshold.
  *
  * The anchors are re-read on every DOM change, not collected once. Collecting
  * once is what made this a dead control on the homepage: the Install band's
- * command lives inside a tab panel, that wrapper unmounts on the "From
- * PeerTube" tab, which has no command to copy, and a list built in an effect
- * with `[]` deps can never observe a node mounted after it ran. The bar then
- * sat over the live command with its button pointing at the section the reader
- * was already standing in, which is the exact failure the yielding above was
- * written to avoid.
+ * command lives inside a tab panel whose wrapper unmounts, and a list built in
+ * an effect with `[]` deps can never observe a node mounted after it ran.
  */
+
+/** The bar's own destination. It yields to the band it would scroll to. */
+const INSTALL_BAND_ID = INSTALL_ANCHOR.split("#")[1] ?? "";
+
 export function MobileInstallBar() {
   const [suppressed, setSuppressed] = useState(false);
 
   useEffect(() => {
     const visible = new Set<Element>();
-    const observed = new Set<Element>();
+    const observed = new Map<Element, IntersectionObserver>();
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) visible.add(entry.target);
-          else visible.delete(entry.target);
-        }
-        setSuppressed(visible.size > 0);
-      },
-      // Half of it, so the bar does not flicker back as a block scrolls out.
-      { threshold: 0.5 },
-    );
+    const record: IntersectionObserverCallback = (entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) visible.add(entry.target);
+        else visible.delete(entry.target);
+      }
+      setSuppressed(visible.size > 0);
+    };
+
+    // Half of it, so the bar does not flicker back as a block scrolls out.
+    const commands = new IntersectionObserver(record, { threshold: 0.5 });
+
+    // The band is taller than the phone it is read on, so half of it is a
+    // threshold it can never cross. Any of it counts — once it has reached
+    // the top four fifths of the screen, which is arrival rather than a
+    // sliver appearing at the bottom edge.
+    const bands = new IntersectionObserver(record, {
+      threshold: 0,
+      rootMargin: "0px 0px -20% 0px",
+    });
 
     const sync = () => {
-      const anchors = new Set<Element>([
-        ...document.querySelectorAll("[data-command-anchor]"),
-      ]);
+      const anchors = new Map<Element, IntersectionObserver>();
 
-      for (const anchor of anchors) {
+      for (const anchor of document.querySelectorAll("[data-command-anchor]")) {
+        anchors.set(anchor, commands);
+      }
+
+      const band = INSTALL_BAND_ID
+        ? document.getElementById(INSTALL_BAND_ID)
+        : null;
+      if (band) anchors.set(band, bands);
+
+      for (const [anchor, observer] of anchors) {
         if (observed.has(anchor)) continue;
-        observed.add(anchor);
+        observed.set(anchor, observer);
         observer.observe(anchor);
       }
 
-      for (const anchor of observed) {
+      for (const [anchor, observer] of observed) {
         if (anchors.has(anchor)) continue;
         observed.delete(anchor);
         observer.unobserve(anchor);
@@ -92,7 +123,8 @@ export function MobileInstallBar() {
     return () => {
       if (frame) cancelAnimationFrame(frame);
       mutations.disconnect();
-      observer.disconnect();
+      commands.disconnect();
+      bands.disconnect();
     };
   }, []);
 
