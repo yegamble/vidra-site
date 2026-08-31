@@ -2,7 +2,14 @@ import { OG_CARD_PEERTUBE, pageMetadata } from "@/lib/metadata";
 import { Button, TextLink } from "@/components/Button";
 import { Comparison, type ComparisonRow } from "@/components/Comparison";
 import { Eyebrow, Head, Section, Standfirst } from "@/components/Section";
-import { DOCS, INSTALL_ANCHOR, MESSAGING, SCALE, VERSION } from "@/lib/site";
+import {
+  DOCS,
+  INSTALL_ANCHOR,
+  MESSAGING,
+  P2P_DECISION_URL,
+  SCALE,
+  VERSION,
+} from "@/lib/site";
 
 export const metadata = pageMetadata({
   title: "Vidra vs PeerTube",
@@ -72,10 +79,17 @@ const ROWS: ComparisonRow[] = [
     ],
   },
   {
+    // Both cells are the projects' own configuration, not an inference. The
+    // PeerTube side is `p2p.webapp.enabled: true` and `p2p.embed.enabled:
+    // true` in config/default.yaml at v8.2.4, with its own comment "Can be
+    // enabled/disabled by anonymous users and logged in users" (checked
+    // 2026-08-31). The Vidra side is the published decision. Neither cell
+    // says anything about what either default does to a viewer's privacy on
+    // PeerTube — that is PeerTube's claim to make, not this page's.
     label: "In-player P2P",
     cells: [
-      "Built in: playback shares bandwidth between viewers over WebRTC, and a viewer can turn it off.",
-      `None in ${VERSION}. On the roadmap — do not size your bandwidth around it.`,
+      "Built in, on by default in both the web app and the embed: playback shares bandwidth between viewers over WebRTC, and a viewer can turn it off.",
+      "None, and not planned: Vidra decided against browser peer-to-peer so that watching a video never exposes a viewer's IP address to other viewers, and published the reasoning.",
     ],
   },
   {
@@ -204,8 +218,12 @@ export default function ComparePeerTubePage() {
             PeerTube is the mature choice: years in production, a plugin
             system, a large ecosystem of instances, and in-player peer-to-peer
             that shares playback bandwidth between viewers. Vidra has none of
-            those — it is at {VERSION}, it has no plugin system, and P2P is on
-            the roadmap, not in the release.
+            those — it is at {VERSION}, it has no plugin system, and it does
+            not do browser peer-to-peer, which is{" "}
+            <TextLink href={P2P_DECISION_URL} external>
+              a published decision
+            </TextLink>{" "}
+            rather than a roadmap item.
           </p>
           <p>
             What Vidra offers instead is the operator&apos;s path: one command

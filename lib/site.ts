@@ -197,6 +197,19 @@ export const ROADMAP_URL =
   "https://github.com/yegamble/vidra/tree/main/docs/productionization";
 
 /**
+ * The published peer-to-peer decision. In-player P2P is **not** a roadmap
+ * item, and copy that says it is contradicts the repositories:
+ * `docs/productionization/p2p-delivery-decision.md` (Decided 2026-08-22) rules
+ * "DEFER. Do not build P2P in phase 4", records that "the build half is not
+ * scheduled", reserves the name only, and names DON'T BUILD as the correct
+ * final state if its trigger never fires. `phase-4-delivery.md` marks item 6
+ * closed. The site's /ipfs page has always framed it as a decision; every
+ * other surface now says the same. URL checked 2026-08-31.
+ */
+export const P2P_DECISION_URL =
+  "https://github.com/yegamble/vidra/blob/main/docs/productionization/p2p-delivery-decision.md";
+
+/**
  * The three things the site must never let itself imply are shipping.
  *
  * `surfaced` marks the one that does not go behind a disclosure. DRM is the
@@ -209,7 +222,10 @@ export const ROADMAP_URL =
 export const NOT_YET = [
   {
     title: "In-player peer-to-peer",
-    body: `On the roadmap, not in ${VERSION}. Do not size your bandwidth around it.`,
+    // A decision, not a gap — see P2P_DECISION_URL above. This entry stays in
+    // NOT_YET because the feature does not ship; what changed is the claim
+    // class, from PLANNED to a published decision.
+    body: "A decision, not a gap: Vidra adds no peer-to-peer in the player, so watching a video never exposes a viewer's IP address to other viewers. The reasoning is published. Size your bandwidth for every byte the instance serves.",
     surfaced: false,
   },
   {
