@@ -270,9 +270,18 @@ export default function HomePage() {
       <Section ground="paper" id="get-started" className="scroll-mt-18">
         <Eyebrow>Install</Eyebrow>
         <Head className="mt-3">Four ways in. Pick your box.</Head>
+        {/* The four tabs do not share a destination, and the sentence that
+            said they did was false twice over. The Compose clone is
+            `git clone && make dev` off main — its own intro calls it "the
+            development path, not the production one" — so it ends on no
+            release tag at all; and install.sh resolves
+            vidra-core/releases/latest at runtime rather than a pinned tag, so
+            naming a version here self-falsifies at the next release with no
+            code change and no deploy. What the tabs actually differ by is the
+            box, which is what the head asks the reader to pick. */}
         <Standfirst className="mt-4">
-          All four end in the same place: a running instance on {VERSION} with an
-          owner account you claimed yourself.
+          Two paths for a server, one for a laptop, and one for migrating off
+          PeerTube.
         </Standfirst>
         <div className="mt-7">
           <InstallTabs />
