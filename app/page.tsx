@@ -481,11 +481,19 @@ export default function HomePage() {
               the project has not scoped.
 
               The date replaces it because a date in the past is the one fact
-              here that never needs editing. 19 June 2026 is the first commit
-              on the meta repository — "Initial Ralph project setup",
+              here that never needs editing. The sentence names the repository
+              it refers to rather than blurring four start dates into one
+              unsourced claim: 19 June 2026 is the first commit in
+              yegamble/vidra — "Initial Ralph project setup",
               2026-06-19T16:18:25Z, read from the GitHub commits API on
-              2026-08-31; vidra-core, vidra-user and vidra-search all start
-              later. It stays at band depth deliberately: the precedent runs
+              2026-08-31. It is also the earliest across all four repositories
+              (vidra-core and vidra-user start 2026-07-01, vidra-search
+              2026-07-13), so it is the defensible answer to "when did this
+              project start" rather than an arbitrary pick — and it is the same
+              repository the version beside it links to, so both facts in this
+              sentence are checkable in one place.
+
+              It stays at band depth deliberately: the precedent runs
               the other way round (PocketBase puts the version on the homepage
               and the confession one click deep), and the maintainer is already
               named in this band's standfirst, so no count of maintainers is
@@ -496,7 +504,7 @@ export default function HomePage() {
             <TextLink href={GITHUB.tags} external>
               {VERSION}
             </TextLink>
-            , and its first commit landed on 19 June 2026.
+            , and the first commit in yegamble/vidra landed on 19 June 2026.
             The feature set is still growing, and three things it does not do
             are listed below. What is already fixed is the discipline it is
             built with: upgrading is reversible, because the previous release
