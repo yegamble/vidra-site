@@ -48,6 +48,18 @@ const COLUMNS = ["PeerTube", "Vidra"];
 
 const ROWS: ComparisonRow[] = [
   {
+    /**
+     * The version stays HERE and only here. This is the one cell whose
+     * PeerTube side carries a version of its own, so the two numbers sit
+     * opposite each other and removing one side would be advantage-taking on
+     * a page whose entire authority comes from not doing that. The rule the
+     * rest of this page follows: a comparison cell is dated on both sides or
+     * on neither.
+     *
+     * It is not a decoration and it is not a fence — it is a coordinate, and
+     * coordinates do not move because a marketing sweep found the number
+     * unflattering.
+     */
     label: "Lineage",
     cells: [
       "The established ActivityPub video platform; current stable v8.2.4 (August 2026).",
@@ -215,11 +227,11 @@ export default function ComparePeerTubePage() {
         <Eyebrow>The short answer</Eyebrow>
         <div className="text-body mt-5 flex max-w-[66ch] flex-col gap-4 text-onpaper-2">
           <p>
-            PeerTube is the mature choice: years in production, a plugin
-            system, a large ecosystem of instances, and in-player peer-to-peer
-            that shares playback bandwidth between viewers. Vidra has none of
-            those — it is at {VERSION}, it has no plugin system, and it does
-            not do browser peer-to-peer, which is{" "}
+            PeerTube is the mature choice: years in production, a plugin system,
+            a large ecosystem of instances, and in-player peer-to-peer that
+            shares playback bandwidth between viewers. Vidra has none of those —
+            it has no plugin system, and it does not do browser peer-to-peer,
+            which is{" "}
             <TextLink href={P2P_DECISION_URL} external>
               a published decision
             </TextLink>{" "}
@@ -229,18 +241,17 @@ export default function ComparePeerTubePage() {
             What Vidra offers instead is the operator&apos;s path: one command
             installs it, vidra doctor runs 26 checks and names the failure, and
             deploy, rollback, backup and restore are scripted, with published
-            sizing that carries prices. It also speaks ATProto: viewers can
-            sign in with Bluesky or any PDS, and public videos can cross-post
-            to Bluesky — PeerTube federates over ActivityPub only. Vidra also
-            ships direct messages — including an end-to-end encrypted mode
-            with disappearing timers — where PeerTube has no user-to-user
-            messaging at all.
+            sizing that carries prices. It also speaks ATProto: viewers can sign
+            in with Bluesky or any PDS, and public videos can cross-post to
+            Bluesky — PeerTube federates over ActivityPub only. Vidra also ships
+            direct messages — including an end-to-end encrypted mode with
+            disappearing timers — where PeerTube has no user-to-user messaging
+            at all.
           </p>
           <p>
             If you run PeerTube happily, keep running it. If operations are the
-            pain, or your audience lives on Bluesky, Vidra was built for
-            exactly that — and a one-way importer moves an existing instance
-            across.
+            pain, or your audience lives on Bluesky, Vidra was built for exactly
+            that — and a one-way importer moves an existing instance across.
           </p>
         </div>
 
@@ -267,10 +278,10 @@ export default function ComparePeerTubePage() {
             <strong className="font-bold text-onpaper">
               You want a production record.
             </strong>{" "}
-            PeerTube is at 8.2.4 with years of public instances behind it.
-            Vidra is at {VERSION}, and no instance outside the author&apos;s is
-            known to be running it. That gap is real and no amount of test
-            coverage substitutes for it.
+            PeerTube is at 8.2.4 with years of public instances behind it. No
+            instance of Vidra outside the author&apos;s is known to be running
+            it. That gap is real and no amount of test coverage substitutes for
+            it.
           </li>
         </ul>
       </Section>
@@ -323,7 +334,12 @@ export default function ComparePeerTubePage() {
           <Button href={INSTALL_ANCHOR} variant="vidra" size="large">
             Install Vidra
           </Button>
-          <Button href={DOCS.migration} external variant="ice-outline" size="large">
+          <Button
+            href={DOCS.migration}
+            external
+            variant="ice-outline"
+            size="large"
+          >
             Read the migration overview
           </Button>
         </div>
