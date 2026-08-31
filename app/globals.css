@@ -225,17 +225,12 @@
   }
 }
 
-/* Motion vocabulary. All three are neutralised by the global
-   prefers-reduced-motion reset above; components never branch on it. */
-@keyframes vd-pulse {
-  0%,
-  100% {
-    opacity: 0.35;
-  }
-  50% {
-    opacity: 1;
-  }
-}
+/* Motion vocabulary. Both are neutralised by the global
+   prefers-reduced-motion reset above; components never branch on it.
+
+   `vd-pulse` and its `animate-pulse-dot` utility were deleted with the hero
+   version pill they existed for: the pill now carries the licence alone, and
+   a licence does not pulse. Design-system exception 5 is struck in place. */
 
 /* The one infinite animation on the site. It is a documented exception to the
    300ms cap: on the federation figure it is the thing that says which way the
@@ -255,10 +250,6 @@
     opacity: 1;
     transform: none;
   }
-}
-
-@utility animate-pulse-dot {
-  animation: vd-pulse 2.4s ease-in-out infinite;
 }
 
 @utility animate-flow {

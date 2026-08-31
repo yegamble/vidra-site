@@ -148,12 +148,16 @@ export default function HomePage() {
           className="hero-grid pointer-events-none absolute inset-0 -z-10"
         />
         <div className="measure-text pt-12 pb-14 md:pt-22 md:pb-24">
-          <p className="text-micro inline-flex items-center gap-2 rounded-full bg-ink-surface px-3 py-2 uppercase text-onink-2 ring-1 ring-inset ring-ink-hairline">
-            <span
-              aria-hidden="true"
-              className="animate-pulse-dot h-2 w-2 rounded-full bg-vidra"
-            />
-            {VERSION} · {LICENCE}
+          {/* The version is out of the first text on the site. "v0.5.0 · AGPL
+              v3" swaps to "v8.2.4 · AGPL v3" under a competitor's name with
+              two characters changed, which is the kill test for category
+              wallpaper, and it spent the highest-attention position on the
+              page on a number no reader acts on. The licence stays: it is a
+              legal fact a reader does act on. The pulse went with the version
+              — it was the "live" idiom on a static string, and a licence does
+              not pulse. */}
+          <p className="text-micro inline-flex items-center rounded-full bg-ink-surface px-3 py-2 uppercase text-onink-2 ring-1 ring-inset ring-ink-hairline">
+            {LICENCE}
           </p>
           {/* Two authored segments so the break never lands mid-claim: the
               canonical positioning line, then the mechanism in Vidra Cyan.

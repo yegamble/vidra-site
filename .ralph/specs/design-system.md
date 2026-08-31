@@ -338,9 +338,21 @@ The only sanctioned departures. Anything else is a defect.
    are never recoloured) and `FederationFigure.tsx` (SVG `fill`/`stroke`, which
    cannot read Tailwind tokens). Both are drawings, not styled components;
    every hex in them is a palette value.
-5. **The pulse on the hero version pill** — `vd-pulse`, a 2.4s opacity loop on
-   a 8px dot. Ambient, `aria-hidden`, and the only thing it says is "this is
-   the current release".
+5. ~~**The pulse on the hero version pill** — `vd-pulse`, a 2.4s opacity loop
+   on a 8px dot. Ambient, `aria-hidden`, and the only thing it says is "this is
+   the current release".~~
+   **Struck 2026-08-31.** The version left the hero pill (war-room cycle 2,
+   P1.1: the first text above the H1 should be something a reader can act on,
+   and "v0.5.0 · AGPL v3" swaps to "v8.2.4 · AGPL v3" under a competitor's name
+   with two characters changed). The dot went with it — the exception was
+   granted for a loop whose *only* content was "this is the current release",
+   so with the release gone there is nothing left for it to say, and a pulse on
+   a licence would be decorative motion, which the anti-slop gates ban.
+   `vd-pulse` and `animate-pulse-dot` are deleted from `app/globals.css` rather
+   than left dead: a documented exception with no call site is an invitation to
+   re-introduce it. **The rule this exception carved out of is unchanged** —
+   ambient looping motion needs its case made in writing first, and a new pulse
+   would need a new entry here, not this one restored.
 6. **The travelling dash on the federation and IPFS figures** — `vd-dash`, a
    1.1s linear `stroke-dashoffset` loop on the active wires. This is an
    **infinite animation and a deliberate exception to the 300ms cap**: each
