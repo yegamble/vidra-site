@@ -463,11 +463,30 @@ export default function HomePage() {
         </div>
         <div className="mt-10 max-w-[66ch]">
           <h3 className="text-sub">Is this ready?</h3>
+          {/* "Pre-1.0, and honest about it" was the weak part of this
+              sentence, not the version. 1.0 in this market is a
+              compatibility-and-support promise (Terraform 1.0, Immich v2.0.0),
+              not a feature milestone, so "pre-1.0" was promise-shaped in a way
+              the project has not scoped.
+
+              The date replaces it because a date in the past is the one fact
+              here that never needs editing. 19 June 2026 is the first commit
+              on the meta repository — "Initial Ralph project setup",
+              2026-06-19T16:18:25Z, read from the GitHub commits API on
+              2026-08-31; vidra-core, vidra-user and vidra-search all start
+              later. It stays at band depth deliberately: the precedent runs
+              the other way round (PocketBase puts the version on the homepage
+              and the confession one click deep), and the maintainer is already
+              named in this band's standfirst, so no count of maintainers is
+              asserted here — that one goes false on the first merged PR with
+              no tag to announce it. */}
           <p className="text-body mt-3 text-onpaper-2">
-            Vidra is at {VERSION} — pre-1.0, and honest about it: the feature
-            set is still growing, and three things it does not do are listed
-            below. What is already fixed is the discipline it is built with.
-            These gates run on every change, in every repository.
+            Vidra is at {VERSION}, and its first commit landed on 19 June 2026.
+            The feature set is still growing, and three things it does not do
+            are listed below. What is already fixed is the discipline it is
+            built with: upgrading is reversible, because the previous release
+            is proved to run on the new schema before the new one ships. These
+            gates run on every change, in every repository.
           </p>
           <dl className="mt-5 grid gap-x-9 gap-y-6 sm:grid-cols-3">
             <div>
