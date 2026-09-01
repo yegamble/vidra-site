@@ -201,6 +201,35 @@ test("a rendered page names who maintains this and where to reach them", async (
   ).toHaveAttribute("href", "https://github.com/yegamble");
 });
 
+test("the version the site asserts links to the release that proves it", async ({
+  page,
+}) => {
+  // A version number is only worth printing if the reader can check it. It
+  // pointed at /tags until 2026-09-01, because the meta repository published
+  // no Releases at all and /releases rendered "There aren't any releases";
+  // all eight tags are published releases now, so it points at
+  // /releases/latest.
+  //
+  // The number itself is deliberately not asserted. Matching "v0.5.0" here
+  // would put the version in a second place and hand the next bump a test to
+  // edit — the exact drift lib/site.ts exists to prevent. So the shape is
+  // what is gated: whatever semver-shaped link the homepage carries has to
+  // land where a release is. That still fails if the link is re-pointed or
+  // dropped, and it never needs editing.
+  await page.goto("/");
+  const version = await page
+    .getByRole("link", { name: /^v\d+\.\d+\.\d+$/ })
+    .all();
+
+  expect(version.length, "the version is a link at all").toBeGreaterThan(0);
+  for (const link of version) {
+    await expect(link).toHaveAttribute(
+      "href",
+      "https://github.com/yegamble/vidra/releases/latest",
+    );
+  }
+});
+
 test("the encryption claim names its mechanism and its status", async ({
   page,
 }) => {
