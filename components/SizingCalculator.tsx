@@ -51,12 +51,23 @@ import {
  * launch box ships 100 GiB, and pretending otherwise under-priced the launch
  * profile by hiding the block storage it needs on day one.
  *
- * The default state (1 job, 5 hours, no originals entered) derives exactly the
- * small profile's $56, so the first number the reader checks agrees with the
- * first number the site claims. Five hours is the default because five hours
- * is what $56 buys: the plan's own 160 GiB holds about six source hours on the
- * shipped ladder, and the panel says so at every position of the slider rather
- * than leaving the reader to discover it at 50.
+ * THE DEFAULT OF 5 HOURS IS RATIFIED ON CAPACITY, and the reasoning matters
+ * because the first version of it was wrong. 112 GiB remain of the small
+ * plan's 160 once the instance (40) and one job's scratch (8) are out, and
+ * 112 / 17.4344 = 6.42 — the box genuinely carries about six source hours, so
+ * a default of 5 shows a configuration that fits the plan. That is the reason.
+ *
+ * The reason first given was that every existing Playwright assertion still
+ * passed at 5 and not at 50. That is not evidence: those assertions were
+ * pinned to the 2 GB figure this same change proved wrong by 8.7x, and a test
+ * that passes because an input was moved until it passed proves nothing about
+ * the input. Recorded because the failure was not the number — 50 hours is
+ * $132, which is fine to print — it was choosing the default with the price
+ * in view and then reaching for a reason that sounded structural.
+ *
+ * So the price no longer travels without what it buys: the carry sits under
+ * the headline figure, derived from the SIZED disk, true at every position of
+ * every control rather than only at the default.
  */
 
 function size(
