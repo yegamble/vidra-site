@@ -152,16 +152,102 @@ export const PROFILES = {
    * (checked 2026-08-30).
    */
   egressPerGb: 0.01,
-  /**
-   * ASSUMPTION, not a measured figure. No repository pins a GB-per-hour number
-   * for the full HLS ladder; anything derived from this must be labelled an
-   * estimate in the UI. Durable fix: measure a real encode corpus, document the
-   * figure in deploy/README, then re-pin and drop the label.
-   */
-  gbPerHour: 2,
   /** Scratch space a concurrent transcode job wants, at a 2 GB upload limit. */
   scratchGbPerJob: 8,
+  /** What the instance itself wants before any video: OS, images, database. */
+  baseDiskGib: 40,
 } as const;
+
+/**
+ * The shipped HLS ladder, read from vidra-core at the v0.6.0 tag:
+ * `hlsRungBitrates` (internal/media/hls.go:52-61) keyed by
+ * `DefaultHLSResolutionHeights` (:201), which is [1080, 720, 480, 360].
+ *
+ * Kbps, and the table is a ~30fps budget — hls.go says so in the comment above
+ * it, and a high-frame-rate source is scaled up at planning time, so a 60fps
+ * catalogue costs more than what is derived below, not less.
+ *
+ * The ladder is an operator setting (`transcoding_resolutions`), which is why
+ * the calculator shows the rungs rather than one lump: dropping the 1080p rung
+ * takes half the video bytes with it.
+ */
+export const LADDER = [
+  { height: 1080, videoKbps: 5000, audioKbps: 160 },
+  { height: 720, videoKbps: 2800, audioKbps: 128 },
+  { height: 480, videoKbps: 1400, audioKbps: 128 },
+  { height: 360, videoKbps: 800, audioKbps: 96 },
+] as const;
+
+/** One hour at `kbps`, in GiB. The site prices disk in GiB, so this is GiB. */
+function gibPerHour(kbps: number) {
+  return (kbps * 1000 * 3600) / 8 / 1024 ** 3;
+}
+
+const LADDER_VIDEO_KBPS = LADDER.reduce((n, r) => n + r.videoKbps, 0);
+/**
+ * CMAF stores ONE shared audio representation for the whole tree, and it is the
+ * top rung's budget — `ladderPlan.audioBitrateKbps()`,
+ * vidra-core/internal/media/packager.go:208-215. Which is also why every rung's
+ * progressive MP4 carries 160 kbps of audio rather than its own rung's rate
+ * (internal/media/web_video.go:104-135 says this about itself).
+ */
+const SHARED_AUDIO_KBPS = LADDER[0].audioKbps;
+
+/**
+ * What an instance RETAINS per source hour, DERIVED from the ladder above —
+ * not assumed. This replaces a "2 GB an hour" assumption whose own note in this
+ * file said "no repository pins a GB-per-hour number for the full HLS ladder".
+ * The repository pins it: the ladder is a table of bitrates, and bitrate times
+ * duration is bytes. Copy says "computes to", per the verb rule this file
+ * already carries for the scratch figures.
+ *
+ * Shipped defaults only: CMAF packaging (`DefaultTranscodingPackager = "cmaf"`,
+ * internal/config/config.go:2181) and H.264 alone — VP9, HEVC and AV1 all
+ * default false at config.go:1061, 1065, 1066. Turning any of them on adds a
+ * whole second set of representations.
+ *
+ * Persistence, so none of these five is scratch that gets swept: cmaf.go:530
+ * stores each rung's tree and :534 removes only the local copy;
+ * packager.go:486-489 describes the two progressive MP4s per rung;
+ * web_video.go:165 PUTs the duplicate under its own prefix (:181).
+ *
+ * TWO THINGS ARE DELIBERATELY NOT IN THIS TOTAL:
+ *   - The retained original. Vidra keeps the file it ingested and no
+ *     configuration setting deletes it, but its size is the reader's own
+ *     footage, so the calculator takes it as an input rather than inventing a
+ *     figure for it.
+ *   - Trick-play. One dense all-IDR rendition per rung, encoded at `-crf 28`
+ *     with no rate target (`trickPlayEncodeArgs`, hls.go:831-847), so there is
+ *     no bitrate to multiply and nothing to derive. It stays unknown and named
+ *     as unknown rather than being folded into a point estimate.
+ */
+export const RETAINED = {
+  perSourceHourGib: [
+    {
+      label: "CMAF segments — four video representations, one shared audio",
+      gib: gibPerHour(LADDER_VIDEO_KBPS + SHARED_AUDIO_KBPS),
+    },
+    {
+      label: "video.mp4 per rung, remuxed from those segments",
+      gib: gibPerHour(LADDER_VIDEO_KBPS + LADDER.length * SHARED_AUDIO_KBPS),
+    },
+    {
+      label: "video-only.mp4 per rung, beside it",
+      gib: gibPerHour(LADDER_VIDEO_KBPS),
+    },
+    {
+      label: "A second copy of each video.mp4, which nothing serves",
+      gib: gibPerHour(LADDER_VIDEO_KBPS + LADDER.length * SHARED_AUDIO_KBPS),
+    },
+    { label: "audio.m4a", gib: gibPerHour(SHARED_AUDIO_KBPS) },
+  ],
+} as const;
+
+/** The sum of the five: what one source hour costs in derivatives, in GiB. */
+export const DERIVATIVES_GIB_PER_HOUR = RETAINED.perSourceHourGib.reduce(
+  (n, row) => n + row.gib,
+  0,
+);
 
 /**
  * Scale and pipeline figures. Each one is pinned to a source; the counts-drift

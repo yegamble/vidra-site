@@ -476,6 +476,43 @@ test.describe("sizing calculator", () => {
     await expect(result).toContainText("6,000 GiB a month comes with the plan");
   });
 
+  test(`the storage working sums to its own total at ${PHONE.name}`, async ({
+    page,
+  }) => {
+    // "Check our arithmetic" is the band's heading, so the arithmetic has to
+    // survive a reader doing it. The panel prints five per-source-hour
+    // components and a total; this adds the five up and checks the total is
+    // what they come to, which fails if a component is edited without the
+    // total, or if the ladder in lib/site.ts stops being the source of both.
+    await page.setViewportSize({ width: PHONE.width, height: PHONE.height });
+    await page.goto("/");
+
+    const working = page.getByTestId("calc-working");
+    const values = await working.locator("dd").allInnerTexts();
+    const gib = values
+      .map((v) => v.match(/^([\d.]+) GiB$/)?.[1])
+      .filter((v): v is string => Boolean(v))
+      .map(Number);
+
+    // Five components, then the total they add up to.
+    expect(gib.length, "five components and a total").toBe(6);
+    const sum = gib.slice(0, 5).reduce((a, b) => a + b, 0);
+    expect(Math.abs(sum - gib[5])).toBeLessThan(0.05);
+
+    // The two figures that are deliberately NOT in the total say so in words
+    // rather than being folded into it: an unknown inside a point estimate is
+    // the thing the old "2 GB an hour" assumption did.
+    await expect(working).toContainText("Trick-play");
+    await expect(working).toContainText("not derivable");
+    await expect(working).toContainText("Your originals, which Vidra keeps");
+
+    // The original is a reader input, and it has to move the bill.
+    const result = page.getByTestId("calc-result");
+    await expect(result).toContainText("Its 160 GiB of disk is enough here");
+    await page.getByLabel(/Your originals/).fill("10");
+    await expect(result).toContainText("block storage at $0.10 a GiB");
+  });
+
   test("the sizing heading claims nothing about anyone else", async ({
     page,
   }) => {
