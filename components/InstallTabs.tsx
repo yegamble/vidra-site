@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import { CommandBlock } from "@/components/CommandBlock";
 import { TextLink } from "@/components/Button";
-import { DOCS, GITHUB, INSTALL_COMMAND } from "@/lib/site";
+import { COUNTS, DOCS, GITHUB, INSTALL_COMMAND } from "@/lib/site";
 
 /**
  * Four ways into an instance, one panel. Every tab ends in the same place, so
@@ -101,10 +101,11 @@ const TABS: Tab[] = [
     link: { label: "Deployment guide", href: DOCS.production, external: true },
     steps: [
       "Check the Compose version first. Below 2.24, Compose silently publishes PostgreSQL and Redis on 0.0.0.0.",
-      // 26 is the length of the `checks` slice in
-      // vidra-core/internal/doctor/doctor.go. The meta-repo README still says
-      // 18; the code is the source, not the README.
-      "vidra doctor runs 26 checks against the running instance and names the failure.",
+      // The length of the `checks` slice in
+      // vidra-core/internal/doctor/doctor.go, derived by
+      // scripts/envelope-sync.mjs. The meta-repo README still says 18; the
+      // code is the source, not the README.
+      `vidra doctor runs ${COUNTS.doctorChecks} checks against the running instance and names the failure.`,
       "vidra deploy, rollback, backup and restore are scripted.",
     ],
   },

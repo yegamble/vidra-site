@@ -3,8 +3,22 @@
  * number taken from the Vidra repositories. If a value cannot be pointed at a
  * source, it does not belong in this file.
  */
+import envelope from "./envelope.json";
 
-export const VERSION = "v0.6.0";
+/**
+ * The release the installer installs, and every count derived from that same
+ * tag's source. Both come out of `lib/envelope.json`, which
+ * `scripts/envelope-sync.mjs` writes and `npm run ci` re-derives on every run
+ * — so a count that drifts upstream, or a version that falls behind
+ * vidra-core's latest release, turns CI red before a reader finds it.
+ *
+ * Nothing here is hand-typed, and nothing here should be. The version and the
+ * counts moving together is the point: v0.5.0 -> v0.6.0 left every count on
+ * this site wrong on the same day, which is how the mechanism came to exist.
+ * Read `scripts/envelope-sync.mjs` before changing any of it.
+ */
+export const VERSION = envelope.tag;
+export const COUNTS = envelope.counts;
 export const LICENCE = "AGPL v3";
 
 export const INSTALL_COMMAND =
@@ -255,9 +269,10 @@ export const DERIVATIVES_GIB_PER_HOUR = RETAINED.perSourceHourGib.reduce(
  * change the value.
  */
 export const SCALE = {
-  /** 25 `jobloop.Loop{` registrations in vidra-core/cmd/api/main.go, counted
-   *  at the v0.6.0 tag. It was 24 at v0.5.0: one release moved it. */
-  workers: 25,
+  /** `jobloop.Loop{` registrations in vidra-core/cmd/api/main.go. 24 at
+   *  v0.5.0, 25 at v0.6.0 — one release moved it, which is why it is derived
+   *  rather than typed. See COUNTS above. */
+  workers: COUNTS.jobLoops,
   /**
    * Two-replica soak: 406 deliveries for 406 unique events, zero duplicates,
    * draining 400 outbox events concurrently against one PostgreSQL.

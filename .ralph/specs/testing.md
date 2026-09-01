@@ -10,6 +10,7 @@ page looking wrong on a screen nobody developed on.
 |---|---|---|
 | Lint | `npm run lint` | ESLint + `eslint-config-next`, type-aware rules |
 | Brand gate | `npm run check:brand` (`scripts/brand-check.mjs`) | banned hype words, emoji/dingbats, indigo hexes in `app/`, `components/`, `lib/` |
+| Envelope gate | `npm run check:envelope` (`scripts/envelope-sync.mjs`) | a count in `lib/envelope.json` that no longer matches vidra-core's source at the pinned tag, and a pin that has fallen behind vidra-core's latest release |
 | Build | `npm run build` | compile **and** the TypeScript check — `next build` type-checks everything `tsconfig.json` includes, `e2e/` included |
 | Route smoke | `e2e/routes.spec.ts` | every route 200s and renders an `h1`; `/get-started` is a 308 to `/#get-started`; an unknown route is a real 404 |
 | Responsive | `e2e/responsive.spec.ts` | horizontal overflow, elements past the right edge, lockup height, the glass header's ground, hero headline + CTA, the eight-node architecture explorer, the install tablist, the sizing calculator's profile flip, the mobile install bar and menu overlay, the federation walkthrough, the comparison's stacked/table swap on `/features`, the Ink/Paper/Mist rhythm |
@@ -24,7 +25,8 @@ rendering-engine comparisons.
 ## How to run
 
 ```bash
-npm run ci          # the canonical gate — lint, brand, build, e2e
+npm run ci          # the canonical gate — lint, brand, envelope, build, e2e
+npm run sync:envelope  # re-derive lib/envelope.json at vidra-core's latest release
 npm run test:e2e    # Playwright alone (needs a build: run `npm run build` first)
 npx playwright test e2e/a11y.spec.ts --headed     # watch one suite
 npx playwright test -g "390"                      # one viewport
@@ -42,6 +44,15 @@ The Playwright `webServer` starts `npm run start`, which serves the **build**
   nothing else** (`.github/workflows/ci.yml` installs Chromium, then runs
   `npm run ci`). CI parity is the point: a green check must mean what it means.
   If you add a check, add it to `npm run ci`, not to the workflow.
+- **The envelope gate needs the network**, and it is the only layer here that
+  does: it re-derives every count from vidra-core's source at the pinned tag
+  rather than trusting the committed JSON. It has no skip flag, because a gate
+  with one is not a gate. It also has no way to go red on somebody else's
+  behalf: the only rate-limited call it makes falls through to jsDelivr's
+  listing of the same tag when GitHub answers 403 or 429, and says so.
+  A day-of-release red run is the gate working, not the gate flaking — it
+  means vidra-core has shipped and the site has not caught up. Run
+  `npm run sync:envelope`, read the diff, and sweep the copy.
 - **A feature is not complete if it only passes at 1440px.** Phone first — 390
   is a supported width, not a degraded one.
 - **No screenshot baselines.** No committed PNGs, no pixel diffs. Every

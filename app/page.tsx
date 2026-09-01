@@ -14,6 +14,7 @@ import { NotYet } from "@/components/NotYet";
 import { Eyebrow, Head, Section, Standfirst } from "@/components/Section";
 import { SizingCalculator } from "@/components/SizingCalculator";
 import {
+  COUNTS,
   DOCS,
   GITHUB,
   INSTALL_COMMAND,
@@ -60,10 +61,11 @@ const STATS = [
     body: "from a one-person box to an api+worker fleet — one variable apart",
   },
   {
-    // 26 is the length of the `checks` slice in
-    // vidra-core/internal/doctor/doctor.go. The meta-repo README still says
-    // 18; the code is the source, not the README.
-    figure: "26",
+    // The length of the `checks` slice in
+    // vidra-core/internal/doctor/doctor.go, derived by
+    // scripts/envelope-sync.mjs. The meta-repo README still says 18; the code
+    // is the source, not the README.
+    figure: String(COUNTS.doctorChecks),
     body: "checks vidra doctor runs against a live instance, each naming its own failure",
   },
 ];

@@ -13,7 +13,8 @@ npm run ci
 ```
 
 One command, and it is the whole gate: `lint` → `check:brand`
-(`scripts/brand-check.mjs`) → `build` (which type-checks) → `test:e2e`
+(`scripts/brand-check.mjs`) → `check:envelope` (`scripts/envelope-sync.mjs`)
+→ `build` (which type-checks) → `test:e2e`
 (Playwright: `routes`, `responsive`, `a11y`, `touch-targets`).
 `.github/workflows/ci.yml` runs exactly this after installing Chromium, so a
 green check means what it means. First run on a new machine needs
@@ -41,6 +42,13 @@ never claim a suite passed that you did not run.
    repositories** — `lib/site.ts` holds the ones that repeat. **Never invent a
    count, and never copy one from a README**: the meta-repo README says
    `vidra doctor` runs 18 checks; the code has 26. Cite code, or stay unpinned.
+   **Counts are not hand-typed any more.** `lib/envelope.json` holds a
+   vidra-core tag and every count derived from that tag's source;
+   `scripts/envelope-sync.mjs` writes it (`npm run sync:envelope`) and
+   `npm run ci` re-derives it, failing both when a count disagrees and when
+   vidra-core publishes a newer release than the pin. `VERSION` reads out of
+   the same file, so the version and the counts can only move together. Do
+   not edit `lib/envelope.json` by hand, and do not retype a number it holds.
 6. **Sentence case, always.** All caps is reserved for 11px micro-labels.
 7. Do not bump dependencies, do not touch `.github/workflows` unless that is the
    task, never commit secrets or `.env` files.
@@ -62,7 +70,11 @@ never claim a suite passed that you did not run.
   a fixed light tile. A fixed-ground tile flips the asset with it, or inlines it
   and drives the colour explicitly (`Lockup.tsx`).
 - **Counts drift** (hard rule 5) — and a count sweep greps the whole repo, not
-  the pages you remember.
+  the pages you remember. v0.5.0 → v0.6.0 moved OpenAPI paths 228 → 230,
+  jobloop registrations 24 → 25 and migrations 120 → 123 in one release, while
+  not one compiled constant moved. That is why `check:envelope` exists, and
+  why the first sweep of that release still missed two pages: the count in
+  `ArchitectureExplorer`'s Postgres node is not on a page you were editing.
 - **The diagram was unreadable at 390px three times, and then stopped being a
   diagram.** Scroll container, then a portrait variant, then eight buttons and
   a detail panel (`ArchitectureExplorer.tsx`). If a drawing needs a second

@@ -12,6 +12,7 @@ import {
   Share2Icon,
   ZapIcon,
 } from "@/components/icons";
+import { COUNTS } from "@/lib/site";
 
 /**
  * The eight containers in the shipped compose file, as buttons rather than as
@@ -67,7 +68,7 @@ const NODES: Node[] = [
     // The queue count is deliberately unpinned. An earlier draft said "13
     // durable queues"; that number is not checkable against the tree, and a
     // count on this site cites code or stays unpinned.
-    body: "The Go backend. 230 OpenAPI paths, durable queues, the transcode pipeline, federation and the admin console behind it.",
+    body: `The Go backend. ${COUNTS.openapiPaths} OpenAPI paths, durable queues, the transcode pipeline, federation and the admin console behind it.`,
     facts: ["Go 1.26", "Echo", "/healthz"],
   },
   {
@@ -85,8 +86,8 @@ const NODES: Node[] = [
     name: "postgres",
     sub: "Shared state",
     role: "Shared state",
-    body: "PostgreSQL 18 behind 121 versioned SQL migrations. Both vidra-core and vidra-search read from it.",
-    facts: ["PostgreSQL 18", "121 migrations"],
+    body: `PostgreSQL 18 behind ${COUNTS.migrations} versioned SQL migrations. Both vidra-core and vidra-search read from it.`,
+    facts: ["PostgreSQL 18", `${COUNTS.migrations} migrations`],
   },
   {
     id: "redis",

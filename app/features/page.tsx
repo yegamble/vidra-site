@@ -3,7 +3,7 @@ import { Comparison } from "@/components/Comparison";
 import { NotYet } from "@/components/NotYet";
 import { Button, TextLink } from "@/components/Button";
 import { Eyebrow, Head, Section, Standfirst } from "@/components/Section";
-import { DOCS, INSTALL_ANCHOR, MESSAGING, SCALE } from "@/lib/site";
+import { COUNTS, DOCS, INSTALL_ANCHOR, MESSAGING, SCALE } from "@/lib/site";
 
 export const metadata = pageMetadata({
   title: "Features",
@@ -236,11 +236,12 @@ const GROUPS: Group[] = [
           "setup, doctor, status, logs, deploy, rollback, backup and restore, all scripted.",
       },
       {
-        // 26 is the length of the `checks` slice in
-        // vidra-core/internal/doctor/doctor.go. The meta-repo README still
-        // says 18; the code is the source, not the README.
+        // The length of the `checks` slice in
+        // vidra-core/internal/doctor/doctor.go, derived by
+        // scripts/envelope-sync.mjs. The meta-repo README still says 18; the
+        // code is the source, not the README.
         feature: "vidra doctor",
-        detail: "26 checks against a running instance, with the failure named.",
+        detail: `${COUNTS.doctorChecks} checks against a running instance, with the failure named.`,
       },
       {
         feature: "Probes",
@@ -265,11 +266,11 @@ const GROUPS: Group[] = [
       },
       {
         feature: "Schema history",
-        detail: "123 SQL migrations, versioned with the code.",
+        detail: `${COUNTS.migrations} SQL migrations, versioned with the code.`,
       },
       {
         feature: "API surface",
-        detail: "230 paths under one OpenAPI contract.",
+        detail: `${COUNTS.openapiPaths} paths under one OpenAPI contract.`,
       },
       {
         feature: "Accessibility",
@@ -306,7 +307,7 @@ export default function FeaturesPage() {
 
       {/* 2 — Publish · Watch · Find. Paper, opened by the jump nav: a reader
           who arrived to check one thing should not have to scroll blind
-          through 38 rows. Non-sticky by design — glass and stickiness belong
+          through the whole list. Non-sticky by design — glass and stickiness belong
           to the navigation layer alone. */}
       <Section ground="paper">
         <nav aria-label="Feature groups">

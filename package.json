@@ -8,8 +8,10 @@
     "start": "next start",
     "lint": "eslint",
     "check:brand": "node scripts/brand-check.mjs",
+    "check:envelope": "node scripts/envelope-sync.mjs",
+    "sync:envelope": "node scripts/envelope-sync.mjs --write",
     "test:e2e": "playwright test",
-    "ci": "npm run lint && npm run check:brand && npm run build && npm run test:e2e",
+    "ci": "npm run lint && npm run check:brand && npm run check:envelope && npm run build && npm run test:e2e",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy"
   },
