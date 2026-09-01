@@ -61,8 +61,17 @@ const GROUPS: Group[] = [
       },
       {
         feature: "HLS ladder",
+        // "12 encode passes" was the PRE-LEAN cost — four rungs, four
+        // trick-play, four web-video re-encodes. vidra-core no longer runs it:
+        // internal/transcode/service.go:605 says "A full job runs ONE encode
+        // pass and derives both output classes from it", and web_video.go
+        // copies each rung's MP4 instead of re-encoding it. The old number was
+        // false by 12x in the direction that makes Vidra look more expensive
+        // to run, twenty lines under the row that sells the work which removed
+        // those passes. The duration clause is unchanged and verified against
+        // vidra/deploy/README.md:311.
         detail:
-          "H.264 and AAC. A 1080p TargetAll job runs 12 encode passes, about 1.5 to 2.5 times the source duration on 4 vCPU.",
+          "H.264 and AAC. A 1080p TargetAll job runs one encode pass and derives both output classes from it, about 1.5 to 2.5 times the source duration on 4 vCPU.",
       },
       {
         feature: "CMAF packaging and DASH",
