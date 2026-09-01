@@ -399,7 +399,7 @@ The only sanctioned departures. Anything else is a defect.
   carried the wrong count for another two commits. **A count on this site cites
   code, or it stays unpinned** ("a few dozen", "more than a hundred"), and a
   count sweep greps the whole repo, not the pages you remember. The same applies
-  to the 228-path OpenAPI contract and the 121 migrations — if you change one,
+  to the 230-path OpenAPI contract and the 123 migrations — if you change one,
   check the source, do not copy the neighbouring prose.
 - **A count came back in through a design file.** The 2026-08 redesign arrived
   as a finished HTML design whose copy said **"13 durable queues"** — once in

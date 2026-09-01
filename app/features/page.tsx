@@ -265,11 +265,11 @@ const GROUPS: Group[] = [
       },
       {
         feature: "Schema history",
-        detail: "121 SQL migrations, versioned with the code.",
+        detail: "123 SQL migrations, versioned with the code.",
       },
       {
         feature: "API surface",
-        detail: "228 paths under one OpenAPI contract.",
+        detail: "230 paths under one OpenAPI contract.",
       },
       {
         feature: "Accessibility",

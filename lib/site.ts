@@ -4,7 +4,7 @@
  * source, it does not belong in this file.
  */
 
-export const VERSION = "v0.5.0";
+export const VERSION = "v0.6.0";
 export const LICENCE = "AGPL v3";
 
 export const INSTALL_COMMAND =
@@ -166,8 +166,9 @@ export const PROFILES = {
  * change the value.
  */
 export const SCALE = {
-  /** 24 `jobloop.Loop{` registrations in vidra-core/cmd/api/main.go. */
-  workers: 24,
+  /** 25 `jobloop.Loop{` registrations in vidra-core/cmd/api/main.go, counted
+   *  at the v0.6.0 tag. It was 24 at v0.5.0: one release moved it. */
+  workers: 25,
   /**
    * Two-replica soak: 406 deliveries for 406 unique events, zero duplicates,
    * draining 400 outbox events concurrently against one PostgreSQL.

@@ -67,7 +67,7 @@ const NODES: Node[] = [
     // The queue count is deliberately unpinned. An earlier draft said "13
     // durable queues"; that number is not checkable against the tree, and a
     // count on this site cites code or stays unpinned.
-    body: "The Go backend. 228 OpenAPI paths, durable queues, the transcode pipeline, federation and the admin console behind it.",
+    body: "The Go backend. 230 OpenAPI paths, durable queues, the transcode pipeline, federation and the admin console behind it.",
     facts: ["Go 1.26", "Echo", "/healthz"],
   },
   {

@@ -53,7 +53,7 @@ const STATS = [
     body: "sign-in and cross-posting over ATProto; federation over ActivityPub",
   },
   {
-    // "228 API paths" was credibility-not-benefit here (round-1 diagnosis);
+    // "230 API paths" was credibility-not-benefit here (round-1 diagnosis);
     // the count keeps its home on /features. This stat carries the
     // dual-positioning mechanism instead.
     figure: "1 image",
