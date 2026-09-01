@@ -15,8 +15,15 @@ import {
 import { COUNTS } from "@/lib/site";
 
 /**
- * The eight containers in the shipped compose file, as buttons rather than as
- * a drawing.
+ * Eight containers a production install runs, as buttons rather than as a
+ * drawing.
+ *
+ * NOT an inventory, and the copy beside it must never say it is: this is a
+ * grouping of vidra/docker-compose.prod.yml's seventeen services, where
+ * vidra-core stands for api + worker + migrate and vidra-search for search +
+ * search-migrate. The eight left out — prep-volumes, migrate, search-migrate,
+ * clamav, whisper, otel-collector, jaeger, rtmp — are named in the standfirst
+ * on the homepage rather than quietly dropped.
  *
  * This replaces both variants of the old SVG topology. The drawing was true
  * but it was a drawing: at 390px it needed a portrait redraw of the same data

@@ -368,10 +368,21 @@ export default function HomePage() {
       {/* 7 — Architecture. Ink. */}
       <Section ground="ink" media>
         <Eyebrow ground="ink">Architecture</Eyebrow>
-        <Head className="mt-3">Eight containers. Tap one.</Head>
+        {/* This said "Eight containers. Tap one." over "This is the shipped
+            compose file, not an architecture sketch." The second sentence
+            invited the one check the claim cannot survive: docker-compose.prod.yml
+            carries SEVENTEEN services, and an operator running `docker compose
+            ps` sees fifteen of them up. The eight nodes are a grouping, not an
+            inventory — vidra-core is api + worker + migrate, vidra-search is
+            search + search-migrate — and grouping is the right call for an
+            explainer. Claiming it was the file was not. The count leaves the
+            headline, the standfirst names what is missing instead of implying
+            nothing is, and every node shown is still a real container. */}
+        <Head className="mt-3">Tap a container. Read what it does.</Head>
         <Standfirst ground="ink" className="mt-4">
-          This is the shipped compose file, not an architecture sketch. Each
-          container does one job; tap it to see which.
+          Eight of the containers a production install runs, each doing one
+          job. The compose file carries more: the migration steps, RTMP for
+          live, and the optional captions, scanning and tracing services.
         </Standfirst>
         <div className="mt-7">
           <ArchitectureExplorer />
