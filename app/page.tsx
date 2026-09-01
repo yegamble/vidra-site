@@ -461,20 +461,23 @@ export default function HomePage() {
             own server on the strength of an anonymous website. One person
             maintains this, in public, and the page says who.
 
-            "The release tags" carries its own link because the profile page
-            does not have any. A reader who follows a sentence promising tags
+            "The releases" carries its own link because the profile page does
+            not list them. A reader who follows a sentence promising releases
             and lands on a list of repositories has been sent somewhere that
-            does not answer, and the meta repository publishes no Releases for
-            them to find either (see GITHUB.tags). Every route this site offers
-            for checking the version now lands on a page showing it. */}
+            does not answer. Until 2026-08-31 this read "the release tags" and
+            pointed at /tags, because the meta repository published no Releases
+            at all; all eight tags are published releases now, so the sentence
+            says the plainer noun and points at them (see GITHUB.releases).
+            Every route this site offers for checking the version lands on a
+            page showing it. */}
         <Standfirst className="mt-4">
           Vidra is written and maintained by Yosef Gamble, in public, at{" "}
           <TextLink href={GITHUB.profile} external>
             github.com/yegamble
           </TextLink>{" "}
           — where the commits, the issues and{" "}
-          <TextLink href={GITHUB.tags} external>
-            the release tags
+          <TextLink href={GITHUB.releases} external>
+            the releases
           </TextLink>{" "}
           are.
         </Standfirst>
@@ -515,7 +518,7 @@ export default function HomePage() {
               no tag to announce it. */}
           <p className="text-body mt-3 text-onpaper-2">
             Vidra is at{" "}
-            <TextLink href={GITHUB.tags} external>
+            <TextLink href={GITHUB.latestRelease} external>
               {VERSION}
             </TextLink>
             , and the first commit in yegamble/vidra landed on 19 June 2026.
