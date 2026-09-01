@@ -21,32 +21,35 @@ export const GITHUB = {
   branding: "https://github.com/yegamble/vidra-branding",
   licence: "https://github.com/yegamble/vidra/blob/main/LICENSE",
   /**
-   * Where the version can actually be checked.
+   * Where the version can actually be checked — and it is vidra-core, not the
+   * meta repository.
    *
-   * Until 2026-08-31 the meta repository published **no** GitHub Releases:
-   * /releases returned 200 and rendered "There aren't any releases", and
-   * /releases/latest returned 200 only by redirecting to that empty index — so
-   * a reader sent to look for a release found nothing and concluded the number
-   * was unverifiable. /tags, which carried all eight tags with v0.5.0 at the
-   * top, was the only page that answered, and every version the site asserted
-   * pointed there. That note named its own trigger: publishing releases on the
-   * meta repository would make /releases the better link, and it was repo-side
-   * work. On 2026-09-01 the trigger fired.
+   * The installer never touches yegamble/vidra's releases. `install.sh:419`
+   * resolves `api.github.com/repos/${OWNER}/vidra-core/releases/latest`,
+   * `:604` builds its download base from
+   * `github.com/${OWNER}/vidra-core/releases/download/${TAG}`, and `:645`
+   * fetches SHA256SUMS from there. It then refuses at four separate points:
+   * no `sha256sum` binary on the host (`:601`), no SHA256SUMS on the release
+   * (`:653`), no line in it for the asset (`:679`), and a failed
+   * `sha256sum -c` (`:681`) — nothing is unpacked before the sum checks out.
    *
-   * All eight tags are now published releases — none draft, none prerelease,
-   * v0.5.0 marked latest. Checked on 2026-09-01 against the rendered pages
-   * rather than the API alone: /releases has no "There aren't any releases"
-   * left in it and carries v0.5.0, and /releases/latest resolves to
-   * /releases/tag/v0.5.0, titled "Release v0.5.0 · yegamble/vidra".
+   * So vidra-core's releases are what "the releases" and the version link
+   * have to point at: they carry the assets a reader can verify the claim
+   * against. Checked 2026-09-01 — v0.6.0 is latest, not draft, not
+   * prerelease; /releases/latest resolves to /releases/tag/v0.6.0, titled
+   * "Release v0.6.0 · yegamble/vidra-core"; and its six assets include
+   * SHA256SUMS (which lists vidra-bundle_v0.6.0.tar.gz and the four CLI
+   * binaries) and the bundle itself.
    *
-   * `releases` is the public-work link. `latestRelease` is the version link,
-   * where the number in the copy and the title of the page it lands on are the
-   * same string. /tags still lists all eight, and nothing on the site points
-   * at it any more: a release page carries notes and a date, a tag page
-   * carries a name.
+   * The meta repository's own eight releases were batch-published on
+   * 2026-09-01 in a fourteen-second window and carry ZERO assets, and its
+   * latest is now v0.5.0 — behind the components it ships. A reader sent
+   * there to check a checksum claim lands on a page that cannot answer it.
+   * That repository is still `meta` above: it is where the install command,
+   * the licence and the roadmap live.
    */
-  releases: "https://github.com/yegamble/vidra/releases",
-  latestRelease: "https://github.com/yegamble/vidra/releases/latest",
+  releases: "https://github.com/yegamble/vidra-core/releases",
+  latestRelease: "https://github.com/yegamble/vidra-core/releases/latest",
 } as const;
 
 /**

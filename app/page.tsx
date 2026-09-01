@@ -464,12 +464,12 @@ export default function HomePage() {
             "The releases" carries its own link because the profile page does
             not list them. A reader who follows a sentence promising releases
             and lands on a list of repositories has been sent somewhere that
-            does not answer. Until 2026-08-31 this read "the release tags" and
-            pointed at /tags, because the meta repository published no Releases
-            at all; all eight tags are published releases now, so the sentence
-            says the plainer noun and points at them (see GITHUB.releases).
-            Every route this site offers for checking the version lands on a
-            page showing it. */}
+            does not answer. It points at vidra-core, which is where the
+            releases a reader can check actually are: the installer resolves
+            vidra-core/releases/latest and verifies every download against
+            that release's SHA256SUMS, and the meta repository's own releases
+            carry no assets at all (see GITHUB.releases). Every route this
+            site offers for checking the version lands on a page showing it. */}
         <Standfirst className="mt-4">
           Vidra is written and maintained by Yosef Gamble, in public, at{" "}
           <TextLink href={GITHUB.profile} external>
@@ -506,9 +506,13 @@ export default function HomePage() {
               2026-08-31. It is also the earliest across all four repositories
               (vidra-core and vidra-user start 2026-07-01, vidra-search
               2026-07-13), so it is the defensible answer to "when did this
-              project start" rather than an arbitrary pick — and it is the same
-              repository the version beside it links to, so both facts in this
-              sentence are checkable in one place.
+              project start" rather than an arbitrary pick. The two facts in
+              this sentence are checked in two different repositories, and
+              that is deliberate: the commit date is a property of
+              yegamble/vidra, and the version is a property of vidra-core,
+              which is the release the installer resolves and the only one
+              carrying assets to verify. Each link lands where its own fact
+              lives.
 
               It stays at band depth deliberately: the precedent runs
               the other way round (PocketBase puts the version on the homepage

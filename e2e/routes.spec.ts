@@ -205,10 +205,10 @@ test("the version the site asserts links to the release that proves it", async (
   page,
 }) => {
   // A version number is only worth printing if the reader can check it. It
-  // pointed at /tags until 2026-09-01, because the meta repository published
-  // no Releases at all and /releases rendered "There aren't any releases";
-  // all eight tags are published releases now, so it points at
-  // /releases/latest.
+  // points at vidra-core/releases/latest, which is the release the installer
+  // itself resolves (install.sh:419) and verifies its downloads against
+  // (SHA256SUMS, install.sh:645). The meta repository's releases carry no
+  // assets, so a reader sent there cannot check anything.
   //
   // The number itself is deliberately not asserted. Matching "v0.5.0" here
   // would put the version in a second place and hand the next bump a test to
@@ -225,7 +225,7 @@ test("the version the site asserts links to the release that proves it", async (
   for (const link of version) {
     await expect(link).toHaveAttribute(
       "href",
-      "https://github.com/yegamble/vidra/releases/latest",
+      "https://github.com/yegamble/vidra-core/releases/latest",
     );
   }
 });
