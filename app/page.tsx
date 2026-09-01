@@ -534,19 +534,26 @@ export default function HomePage() {
             vidra-core runs the previous release&apos;s own integration suite
             against every new schema before it merges.
           </p>
-          {/* Four items in two columns rather than three in three. The
-              schema-compat gate was inside "Gates in every repo" and is not
-              in every repo: schema-compat.yml exists in vidra-core alone, and
-              vidra-search returns 404 for it. It gets its own line, and that
-              line names the repository. Race detection is scoped for the same
-              reason — `-race` is a Go flag, and vidra-user is a Next.js
-              frontend, so the Go services are what run it. */}
+          {/* "Gates in every repo" was a heading that claimed universal
+              coverage over a list that did not have it, which is the exact
+              error this row exists to correct — so the heading goes too, not
+              just the item under it. Checked across all four repositories on
+              2026-09-01: OpenAPI drift runs in vidra-core (openapi.yml),
+              vidra-search (openapi.yml) and vidra-user (contract-ci.yml);
+              Postgres+Redis integration in all three
+              (backend-integration.yml, search-integration.yml,
+              frontend-e2e-backed.yml); `-race` in vidra-core and
+              vidra-search only, because it is a Go flag and vidra-user is a
+              Next.js frontend. schema-compat.yml exists in vidra-core alone
+              — vidra-search 404s for it — so it gets its own line, naming the
+              repository. Each clause now carries its own scope. */}
           <dl className="mt-5 grid gap-x-9 gap-y-6 sm:grid-cols-2">
             <div>
-              <dt className="text-body font-bold">Gates in every repo</dt>
+              <dt className="text-body font-bold">Gates, and where they run</dt>
               <dd className="text-small mt-1 text-onpaper-2">
-                Race-detected tests in the Go services, OpenAPI drift checks,
-                and integration suites against real Postgres and Redis.
+                OpenAPI drift checks and integration suites against real
+                Postgres and Redis run in all three services. Race detection
+                runs in the two Go ones; vidra-user is a Next.js frontend.
               </dd>
             </div>
             <div>
