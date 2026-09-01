@@ -84,7 +84,16 @@ function size(
     Math.floor((profile.disk - PROFILES.baseDiskGib - scratch) / perHour),
   );
 
-  return { profile, vcpu, ram, disk, extra, cost, perHour, included };
+  // What the SIZED box carries — the disk the reader is being quoted for,
+  // block storage included. It is `included` while the plan's own disk is
+  // enough and tracks the slider once the reader is paying for storage, so
+  // the same sentence is true at every position of every control.
+  const carries = Math.max(
+    0,
+    Math.floor((disk - PROFILES.baseDiskGib - scratch) / perHour),
+  );
+
+  return { profile, vcpu, ram, disk, extra, cost, perHour, included, carries };
 }
 
 /**
@@ -157,7 +166,7 @@ export function SizingCalculator() {
   const [live, setLive] = useState(false);
   const [clam, setClam] = useState(false);
 
-  const { profile, vcpu, ram, disk, extra, cost, included } = size(
+  const { profile, vcpu, ram, disk, extra, cost, included, carries } = size(
     jobs,
     hours,
     originalGib,
@@ -299,6 +308,21 @@ export function SizingCalculator() {
         <p data-testid="calc-cost" className="text-head mt-2 tabular-nums">
           ~${thousands(cost)}
           <span className="text-small font-semibold text-onink-2"> / month</span>
+        </p>
+        {/* The price and what it buys, as ONE fact. The bound used to live
+            only in the slider caption in the other column — text-small, below
+            the fold on a phone — so a reader met "$56" on one screen and
+            "about six hours" on another, which is the arithmetic this band
+            invites them to check falling apart across a scroll. It is
+            derived from the SIZED disk, not the plan's, so it tracks every
+            control instead of being true only at the default. Semibold on
+            the body colour: part of the answer, not a footnote to it. */}
+        <p
+          data-testid="calc-carries"
+          className="text-small mt-1 font-semibold text-onink"
+        >
+          About {carries} {carries === 1 ? "hour" : "hours"} of video, on the
+          shipped ladder.
         </p>
         <p className="text-small mt-2 text-onink-2">{profileName}</p>
         <dl className="mt-5 grid grid-cols-3 gap-4">

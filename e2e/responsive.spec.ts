@@ -513,6 +513,29 @@ test.describe("sizing calculator", () => {
     await expect(result).toContainText("block storage at $0.10 a GiB");
   });
 
+  test(`the price says what it buys at ${PHONE.name}`, async ({ page }) => {
+    // The bound used to live only in the slider caption in the other column,
+    // which on a phone is a different screen from the price. A reader met
+    // "$56" and "about six hours" without ever seeing them together, so the
+    // arithmetic the band invites them to check did not survive the scroll.
+    // Price and carry are now adjacent, and the carry is derived from the
+    // SIZED disk, so it has to track the slider rather than being true only
+    // at the default.
+    await page.setViewportSize({ width: PHONE.width, height: PHONE.height });
+    await page.goto("/");
+
+    const cost = page.getByTestId("calc-cost");
+    const carries = page.getByTestId("calc-carries");
+
+    await expect(cost).toContainText("$56");
+    await expect(carries).toContainText("About 6 hours");
+
+    // Store fifty hours and both halves of the fact move together.
+    await page.getByLabel(/Hours of video stored/).fill("50");
+    await expect(cost).toContainText("$132");
+    await expect(carries).toContainText("About 50 hours");
+  });
+
   test("the sizing heading claims nothing about anyone else", async ({
     page,
   }) => {
