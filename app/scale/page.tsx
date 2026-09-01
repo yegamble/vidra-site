@@ -59,7 +59,7 @@ const SHIPPED = [
   },
   {
     title: "One-release rollback, enforced by CI",
-    body: "A schema-compat gate proves the previous release runs on the new schema before anything ships, and vidra update arms the rollback.",
+    body: "In vidra-core, every migration runs the previous release's own integration suite against the new schema before it merges, and vidra update puts the previous tags back if the deploy's health probes fail.",
   },
 ];
 

@@ -172,7 +172,7 @@ const CASES: UseCase[] = [
       },
       {
         feature: "One-release rollback, enforced by CI",
-        why: "A schema-compat gate proves the previous release runs on the new schema before anything ships, and vidra update arms the rollback.",
+        why: "In vidra-core, every migration runs the previous release's own integration suite against the new schema before it merges, and vidra update puts the previous tags back if the deploy's health probes fail.",
       },
       {
         feature: "Zero-downtime storage migration",

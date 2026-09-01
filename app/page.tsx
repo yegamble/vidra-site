@@ -528,18 +528,33 @@ export default function HomePage() {
             , and the first commit in yegamble/vidra landed on 19 June 2026.
             The feature set is still growing, and three things it does not do
             are listed below. What is already fixed is the discipline it is
-            built with: upgrading is reversible, because the previous release
-            is proved to run on the new schema before the new one ships. These
-            gates run on every change, in every repository.
+            built with: upgrading is reversible for one release, because
+            vidra-core runs the previous release&apos;s own integration suite
+            against every new schema before it merges.
           </p>
-          <dl className="mt-5 grid gap-x-9 gap-y-6 sm:grid-cols-3">
+          {/* Four items in two columns rather than three in three. The
+              schema-compat gate was inside "Gates in every repo" and is not
+              in every repo: schema-compat.yml exists in vidra-core alone, and
+              vidra-search returns 404 for it. It gets its own line, and that
+              line names the repository. Race detection is scoped for the same
+              reason — `-race` is a Go flag, and vidra-user is a Next.js
+              frontend, so the Go services are what run it. */}
+          <dl className="mt-5 grid gap-x-9 gap-y-6 sm:grid-cols-2">
             <div>
               <dt className="text-body font-bold">Gates in every repo</dt>
               <dd className="text-small mt-1 text-onpaper-2">
-                Race-detected tests, OpenAPI drift checks and integration
-                suites against real Postgres and Redis — and a schema-compat
-                gate proves the previous release runs on the new schema, so
-                rollback is tested, not hoped for.
+                Race-detected tests in the Go services, OpenAPI drift checks,
+                and integration suites against real Postgres and Redis.
+              </dd>
+            </div>
+            <div>
+              <dt className="text-body font-bold">
+                Rollback, proved in vidra-core
+              </dt>
+              <dd className="text-small mt-1 text-onpaper-2">
+                Every migration runs the previous release&apos;s own
+                integration suite against the new schema before it merges, so
+                the one-release rollback is tested, not hoped for.
               </dd>
             </div>
             <div>
