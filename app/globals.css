@@ -2,260 +2,70 @@
 @import "./brand.css";
 
 @theme inline {
-  /* Grounds */
-  --color-ink: var(--brand-ink);
   --color-paper: var(--brand-paper);
-  --color-mist: var(--brand-mist);
-  --color-ice: var(--brand-ice);
-
-  /* Cyans */
-  --color-vidra: var(--brand-vidra-cyan);
-  --color-deep: var(--brand-deep-cyan);
-  --color-action: var(--brand-action-cyan);
-
-  /* Structure and secondary */
-  --color-slate: var(--brand-slate);
+  --color-ink: var(--brand-ink);
   --color-muted: var(--brand-muted);
-
-  /* Safe text pairs */
-  --color-onpaper: var(--brand-on-paper);
-  --color-onpaper-2: var(--brand-on-paper-secondary);
-  --color-label: var(--brand-on-paper-label);
-  --color-link: var(--brand-on-paper-link);
-  --color-onink: var(--brand-on-ink);
-  --color-onink-2: var(--brand-on-ink-secondary);
-
-  /* Depth */
-  --color-ink-surface: var(--brand-ink-surface);
-  --color-ink-hairline: var(--brand-hairline-ink);
-  --color-paper-hairline: var(--brand-hairline);
-  --color-ink-chip: var(--brand-ink-chip);
-  --color-vidra-tint: var(--brand-vidra-tint);
-
-  /* Type */
+  --color-black: var(--brand-black);
   --font-sans: var(--brand-font-sans);
-  --font-mono: var(--brand-font-mono);
-
-  /* Scale. Bold and tight as it gets bigger; clamped down on small screens. */
-  --text-hero: clamp(2.375rem, 7.4vw, 4rem);
-  --text-hero--line-height: 1;
-  --text-hero--letter-spacing: -0.05em;
-  --text-hero--font-weight: 700;
-
-  --text-head: clamp(1.875rem, 4.6vw, 2.75rem);
-  --text-head--line-height: 1.09;
-  --text-head--letter-spacing: -0.04em;
-  --text-head--font-weight: 700;
-
-  --text-sub: clamp(1.25rem, 2.4vw, 1.5rem);
-  --text-sub--line-height: 1.25;
-  --text-sub--letter-spacing: -0.025em;
-  --text-sub--font-weight: 700;
-
-  --text-card: 1.25rem;
-  --text-card--line-height: 1.4;
-  --text-card--letter-spacing: -0.02em;
-  --text-card--font-weight: 700;
-
-  --text-standfirst: clamp(1.125rem, 2.1vw, 1.375rem);
-  --text-standfirst--line-height: 1.41;
-
-  --text-body: 1.0625rem;
-  --text-body--line-height: 1.53;
-
-  --text-small: 0.9375rem;
-  --text-small--line-height: 1.5;
-
-  --text-mono: 0.875rem;
-  --text-mono--line-height: 1.7;
-
-  /* All caps is reserved for 11px micro-labels. */
-  --text-micro: 0.6875rem;
-  --text-micro--line-height: 1.4;
-  --text-micro--letter-spacing: 0.14em;
-  --text-micro--font-weight: 700;
-
-  --radius-card: var(--brand-radius-card);
-  --radius-button: var(--brand-radius-button);
 }
 
 @layer base {
-  html {
-    scroll-behavior: smooth;
-    -webkit-text-size-adjust: 100%;
-  }
-
-  body {
-    background-color: var(--brand-paper);
-    color: var(--brand-on-paper);
-    font-family: var(--brand-font-sans);
-    font-size: 1.0625rem;
-    line-height: 1.53;
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
-  }
-
-  code,
-  kbd,
-  pre,
-  samp {
-    font-family: var(--brand-font-mono);
-  }
-
-  /* Visible focus everywhere: Action Cyan on Paper, Ice on Ink. */
-  :focus-visible {
-    outline: 2px solid var(--brand-action-cyan);
-    outline-offset: 3px;
-    border-radius: 4px;
-  }
-
-  .on-ink :focus-visible,
-  .on-ink:focus-visible {
-    outline-color: var(--brand-ice);
-  }
-
-  ::selection {
-    background-color: var(--brand-ice);
-    color: var(--brand-ink);
-  }
-
-  /* Range sliders. The native control is the right control here — it is
-     keyboard-operable, it announces its value, and it needs no JavaScript to
-     be one. The 44px height is the HIG hit target measured on the track, not
-     on the thumb, so a thumb lands anywhere in the row. */
-  input[type="range"] {
-    accent-color: var(--brand-action-cyan);
-    height: 44px;
-    width: 100%;
-    cursor: pointer;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    html {
-      scroll-behavior: auto;
-    }
-
-    *,
-    *::before,
-    *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-      scroll-behavior: auto !important;
-    }
-  }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--brand-paper); color: var(--brand-ink); font-family: var(--brand-font-sans); -webkit-font-smoothing: antialiased; }
+  * { box-sizing: border-box; }
+  a { color: inherit; }
+  :focus-visible { outline: 0.125rem solid var(--brand-ink); outline-offset: 0.375rem; }
+  ::selection { background: var(--brand-ink); color: var(--brand-paper); }
 }
 
-@utility measure-text {
-  max-width: var(--brand-measure-text);
-  margin-inline: auto;
-  padding-inline: 24px;
+.launch-shell { max-width: var(--brand-measure); min-height: 100svh; margin-inline: auto; padding: 2.25rem 3rem 1.75rem; display: flex; flex-direction: column; }
+.launch-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1.5rem; }
+.home-link { display: inline-flex; align-items: center; min-height: 3.25rem; }
+.brand-lockup { width: 10.5rem; height: 3.25rem; object-fit: contain; }
+.launch-status { display: inline-flex; align-items: center; gap: 0.75rem; font-size: 0.6875rem; line-height: 1.4; font-weight: 750; letter-spacing: 0.14em; text-transform: uppercase; white-space: nowrap; }
+.launch-status > span { width: 0.5625rem; height: 0.5625rem; background: var(--brand-ink); }
+main { flex: 1; display: flex; flex-direction: column; }
+.launch-hero { flex: 1; display: grid; grid-template-columns: 0.94fr 1.06fr; align-items: center; gap: 1rem; padding-block: 4rem; }
+.launch-copy { position: relative; z-index: 1; padding-block: 2rem; }
+.eyebrow { margin: 0 0 1.4rem; font-size: 0.9375rem; font-weight: 700; line-height: 1.5; }
+h1 { font-size: clamp(3rem, 5.4vw, 4.6rem); line-height: 1.025; letter-spacing: -0.055em; font-weight: 800; margin: 0; max-width: 13ch; text-wrap: balance; overflow-wrap: anywhere; }
+.standfirst { max-width: 29.5rem; margin: 1.75rem 0 0; font-size: 1.1875rem; line-height: 1.6; letter-spacing: -0.015em; color: var(--brand-muted); }
+h1 > span { display: block; }
+.waitlist-link { margin-top: 1.75rem; min-height: 3.5rem; width: 11.5rem; max-width: 100%; display: inline-flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 1.5rem; background: var(--brand-ink); color: var(--brand-white); text-decoration: none; font-size: 0.875rem; font-weight: 700; border: 0.0625rem solid var(--brand-ink); transition: background-color 150ms ease; }
+.waitlist-link:hover { background: var(--brand-black); }
+.waitlist-link svg { width: 1rem; height: 1rem; }
+.streaming-illustration { width: 100%; height: auto; display: block; overflow: visible; }
+.launch-footer { display: flex; align-items: center; justify-content: space-between; gap: 1rem; color: var(--brand-muted); font-size: 0.875rem; line-height: 1.5; }
+.launch-footer p { margin: 0; }
+.launch-footer a { min-height: 2.75rem; display: inline-flex; align-items: center; text-decoration: none; }
+.launch-footer a:hover { text-decoration: underline; text-underline-offset: 0.25rem; }
+.skip-link { position: absolute; width: 0.0625rem; height: 0.0625rem; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.skip-link:focus { top: 1rem; left: 1rem; z-index: 10; width: auto; height: auto; clip-path: none; padding: 0.875rem 1rem; background: var(--brand-ink); color: var(--brand-white); }
+.not-found { margin-block: auto; padding-block: 5rem; }
+.not-found p:not(.eyebrow) { color: var(--brand-muted); margin-top: 1.5rem; }
+
+@media (min-width: 100rem) {
+  .launch-shell { padding-inline: 0; }
 }
-
-@utility measure-media {
-  max-width: var(--brand-measure-media);
-  margin-inline: auto;
-  padding-inline: 24px;
+@media (max-width: 64rem) {
+  .launch-shell { padding: 2rem; }
+  .launch-hero { gap: 0; padding-block: 3rem; }
+  h1 { font-size: clamp(2.75rem, 5.6vw, 4rem); }
+  .standfirst { font-size: 1.0625rem; }
+  .streaming-illustration { width: 100%; margin-left: 0; }
 }
-
-/* Section padding: 96px desktop, 48px mobile. */
-@utility section-y {
-  padding-block: 48px;
-
-  @media (width >= 768px) {
-    padding-block: var(--brand-section-y);
-  }
+@media (max-width: 47.99rem) {
+  .launch-shell { padding: 1.5rem 1.5rem 1rem; }
+  .brand-lockup { width: 8.5rem; height: 2.75rem; }
+  .launch-status { gap: 0.5rem; letter-spacing: 0.09em; }
+  .launch-hero { grid-template-columns: minmax(0, 1fr); padding: 2.75rem 0 1.5rem; }
+  .launch-copy { padding: 0; }
+  h1 { max-width: 12ch; font-size: clamp(2.75rem, 10.8vw, 4rem); }
+  .eyebrow { margin-bottom: 1rem; }
+  .standfirst { max-width: 31rem; margin-top: 1.5rem; }
+  .streaming-illustration { width: 100%; margin: 1.5rem 0 0; }
+  .launch-footer { align-items: flex-start; flex-direction: column; gap: 0.25rem; font-size: 0.8125rem; }
 }
-
-/* The 72px graph-paper mask behind the home hero. Atmosphere on Ink, drawn in
-   Slate at 0.35 alpha and faded out by a radial mask — not a gradient fill on
-   an element. Documented exception in .ralph/specs/design-system.md. */
-@utility hero-grid {
-  background-image:
-    linear-gradient(var(--brand-hairline-ink) 1px, transparent 1px),
-    linear-gradient(90deg, var(--brand-hairline-ink) 1px, transparent 1px);
-  background-size: 72px 72px;
-  mask-image: radial-gradient(80% 60% at 70% 0%, #000, transparent 70%);
-  -webkit-mask-image: radial-gradient(80% 60% at 70% 0%, #000, transparent 70%);
-}
-
-/* ---------------------------------------------------------------------------
-   Glass, on the NAVIGATION layer only.
-   The "no glass anywhere" rule was overturned on 2026-08-28 (see
-   .ralph/specs/design-system.md, "Overturned rules"). Apple's HIG puts
-   materials on the navigation layer and nowhere else, and that is exactly the
-   scope here: the sticky header and the sticky mobile install bar. Never a
-   content section.
-
-   Three grounds, in order of precedence:
-     1. solid Ink            — the fallback, and what every unsupported or
-                               reduced-transparency reader gets
-     2. translucent + blur   — only inside @supports, so no browser ever gets
-                               a translucent ground it cannot blur (that is
-                               how text lands on a moving background)
-     3. solid Ink again      — forced back under prefers-reduced-transparency
-                               and prefers-contrast: more
-   These rules sit outside every cascade layer on purpose: the chrome ground is
-   not a utility to be overridden by one.
-   --------------------------------------------------------------------------- */
-.glass-chrome {
-  background-color: var(--brand-ink);
-}
-
-@supports (
-  (backdrop-filter: blur(14px)) or (-webkit-backdrop-filter: blur(14px))
-) {
-  .glass-chrome {
-    background-color: var(--brand-chrome-ink);
-    backdrop-filter: var(--brand-chrome-blur);
-    -webkit-backdrop-filter: var(--brand-chrome-blur);
-  }
-
-  .glass-chrome-bar {
-    background-color: var(--brand-chrome-ink-bar);
-  }
-}
-
-@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
-  .glass-chrome,
-  .glass-chrome-bar {
-    background-color: var(--brand-ink);
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-  }
-}
-
-/* Motion vocabulary. Both are neutralised by the global
-   prefers-reduced-motion reset above; components never branch on it.
-
-   `vd-pulse` and its `animate-pulse-dot` utility were deleted with the hero
-   version pill they existed for: the pill now carries the licence alone, and
-   a licence does not pulse. Design-system exception 5 is struck in place. */
-
-/* The one infinite animation on the site. It is a documented exception to the
-   300ms cap: on the federation figure it is the thing that says which way the
-   bytes travel, and a 300ms one-shot cannot say that. */
-@keyframes vd-dash {
-  to {
-    stroke-dashoffset: -24;
-  }
-}
-
-@keyframes vd-fade {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-@utility animate-flow {
-  animation: vd-dash 1.1s linear infinite;
-}
-
-@utility animate-panel-in {
-  animation: vd-fade 200ms ease-out;
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; scroll-behavior: auto !important; }
 }

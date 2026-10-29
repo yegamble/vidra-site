@@ -1,128 +1,84 @@
-#!/usr/bin/env node
 /**
- * The site's share card: the canonical banner, plus the install command.
+ * The canonical Vidra social card — one template for every surface.
  *
- * The base card was the positioning line and nothing else — a card any of a
- * dozen self-hosting projects could have posted, on a project that travels
- * almost entirely by pasted link. This one carries the artifact instead: the
- * command a reader runs, rendered the way the hero renders it, wrapped rather
- * than clipped. It is the one thing on the card that is checkably ours.
+ * Rasterises the README banner, centred on an Paper 1200×630 ground, to a PNG.
+ * Crawlers that matter (X, Slack, older LinkedIn) drop SVG cards, so each
+ * consuming repo commits the PNG and regenerates it from here whenever the
+ * banner changes: vidra-site's `public/brand/og-card.png` and the docs' social
+ * card both come from this script, not from per-repo exports. The artwork
+ * stays inside a centred ~1120×550 safe area for crop tolerance.
  *
- * The command is read out of `lib/site.ts` rather than typed here, so the card
- * cannot drift from the fact table without this script failing.
+ * The banner must not carry a `prefers-color-scheme` switch — the lockup
+ * failure class: an asset that flips with the OS mode renders unreadable artwork when
+ * rasterised onto a fixed Paper ground. The check below is mechanical and fails
+ * the run; if the banner ever grows a switch, render a fixed-ground variant
+ * instead. Never let the rasteriser pick a mode.
  *
- * Ink and the two type colours are literal here for the same reason
- * `Lockup.tsx` and `FederationFigure.tsx` carry literals: this is a rasteriser
- * template for a drawn asset, not a styled component. The values are the
- * palette's.
+ * Renders with Playwright Chromium and no other dependency. This repo does
+ * not ship one, so the loader also resolves Playwright from the *calling*
+ * repo — run it from any checkout that has Playwright installed (vidra-site
+ * does):
  *
- * The banner must not carry a `prefers-color-scheme` switch — the documented
- * lockup failure class: an asset that flips with the OS mode renders
- * Ink-on-Ink when rasterised onto a fixed Ink ground. The check below is
- * mechanical and fails the run, exactly as the canonical generator in
- * vidra-branding does.
+ *   node ../vidra-branding/assets/social/og-card.mjs public/brand/og-card.png
  *
- * Renders with the Playwright Chromium this repo already installs. Run it when
- * the banner or the command changes, and commit the PNG:
- *
- *   node scripts/og-card.mjs
- *
- * Upstream: the evidence-carrying card should be canonised in vidra-branding
- * beside `assets/social/og-card.mjs`, so the docs site gets it too.
+ * Usage: node og-card.mjs [output.png] [banner.svg]
+ *   output.png  where to write the card (default: ./og-card.png)
+ *   banner.svg  the artwork (default: this repo's assets/readme/banner.svg)
  */
 import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
-import { chromium } from "@playwright/test";
+import { createRequire } from "node:module";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
-// Filenames of their own, deliberately. `og-card.png` is the canon's card and
-// vidra-branding's generator writes it; overwriting it here would fork the
-// canon at the same path, so the next person to run the canonical command
-// would silently revert the evidence without ever seeing a conflict.
-//
-// `line: null` means the install command, read from the fact table. The two
-// page cards carry that page's own evidence instead — a card is only worth
-// making per page when it says something that page says and its neighbours do
-// not, and these two are the pages that actually get pasted into threads.
-const CARDS = [
-  { out: "public/brand/og-card-install.png", line: null },
-  {
-    out: "public/brand/og-card-peertube.png",
-    line: "PeerTube 8.2.4 · every cell checked 2026-08-30",
-  },
-  {
-    out: "public/brand/og-card-ipfs.png",
-    line: "every public video's CIDs are in the API · pin one yourself",
-  },
-];
+const here = dirname(fileURLToPath(import.meta.url));
+const out = resolve(process.argv[2] ?? "og-card.png");
+const banner = resolve(process.argv[3] ?? resolve(here, "../public/brand/banner.svg"));
 
-const bannerPath = resolve("public/brand/banner.svg");
-
-const banner = readFileSync(bannerPath, "utf8");
-if (banner.includes("prefers-color-scheme")) {
+const svg = readFileSync(banner, "utf8");
+if (svg.includes("prefers-color-scheme")) {
   console.error(
-    `${bannerPath} carries a prefers-color-scheme switch. On the card's fixed ` +
-      "Ink ground that renders Ink-on-Ink in one mode. Render a fixed-ground " +
+    `${banner} carries a prefers-color-scheme switch. On the card's fixed Paper ` +
+      "ground that renders unreadable artwork in one mode. Render a fixed-ground " +
       "variant of the artwork instead — never let the rasteriser pick a mode.",
   );
   process.exit(1);
 }
 
-const site = readFileSync(resolve("lib/site.ts"), "utf8");
-const command = site.match(/INSTALL_COMMAND\s*=\s*\n?\s*"([^"]+)"/)?.[1];
-if (!command) {
+async function loadChromium() {
+  const pick = (mod) => mod?.chromium ?? mod?.default?.chromium;
+  for (const pkg of ["@playwright/test", "playwright", "playwright-core"]) {
+    try {
+      const found = pick(await import(pkg));
+      if (found) return found;
+    } catch {}
+    try {
+      const req = createRequire(resolve(process.cwd(), "noop.js"));
+      const found = pick(await import(pathToFileURL(req.resolve(pkg)).href));
+      if (found) return found;
+    } catch {}
+  }
   console.error(
-    "Could not read INSTALL_COMMAND out of lib/site.ts. The card quotes the " +
-      "fact table rather than a copy of it; fix the read rather than typing " +
-      "the command in here.",
+    "No Playwright found next to this repo or the current directory. Run " +
+      "from a checkout that has it (vidra-site does), or `npm i --no-save " +
+      "playwright` here and `npx playwright install chromium`.",
   );
   process.exit(1);
 }
 
 const html = `<!doctype html>
-<html><head><meta charset="utf-8"><style>
-  html, body { margin: 0; width: 1200px; height: 630px; background: #0c2136; }
-  body {
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center; gap: 16px;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
-      "Helvetica Neue", Arial, sans-serif;
-  }
-  /* 1120px is the canonical card's safe area, so the mark lands at the size
-     it lands at on every other Vidra card. */
-  .banner { width: 1120px; height: auto; }
-  .banner svg { width: 100%; height: auto; display: block; }
-  .command {
-    width: 1040px; box-sizing: border-box;
-    padding: 28px 32px; border-radius: 16px;
-    background: rgb(29 70 106 / 0.32);
-    box-shadow: inset 0 0 0 1px rgb(29 70 106 / 0.6);
-    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    font-size: 30px; line-height: 1.5; letter-spacing: -0.01em;
-    color: #e6f6fa; white-space: pre-wrap; word-break: break-all;
-  }
-  .prompt { color: #8fb4c9; }
-</style></head><body>
-  <div class="banner">${banner}</div>
-  <div class="command">__LINE__</div>
-</body></html>`;
+<html><head><style>
+  html, body { margin: 0; width: 1200px; height: 630px; background: #f1e8df; }
+  body { display: flex; align-items: center; justify-content: center; }
+  svg { width: 1120px; height: auto; }
+</style></head><body>${svg}</body></html>`;
 
+const chromium = await loadChromium();
 const browser = await chromium.launch();
 const page = await browser.newPage({
   viewport: { width: 1200, height: 630 },
   deviceScaleFactor: 1,
 });
-
-for (const card of CARDS) {
-  // The prompt glyph belongs to the command; an evidence line is not
-  // something you type, so it does not wear a `$`.
-  const body = card.line
-    ? card.line
-    : `<span class="prompt">$ </span>${command}`;
-  await page.setContent(html.replace("__LINE__", body), {
-    waitUntil: "networkidle",
-  });
-  await page.screenshot({ path: resolve(card.out) });
-  console.log(`wrote ${card.out} (1200×630) — ${card.line ?? command}`);
-}
-
+await page.setContent(html, { waitUntil: "networkidle" });
+await page.screenshot({ path: out });
 await browser.close();
+console.log(`wrote ${out} (1200×630)`);

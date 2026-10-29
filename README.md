@@ -1,93 +1,29 @@
+<p align="center"><img src="public/brand/logo.svg" width="268" alt="Vidra"></p>
+
 # vidra-site
 
-The marketing site for [Vidra](https://github.com/yegamble/vidra), served at
-**vidra.yosef.app**. Next.js App Router, TypeScript, Tailwind v4, no UI library,
-no webfonts, no analytics.
+The coming-soon marketing site for [Vidra](https://vidra.yosef.app), built with Next.js App Router, TypeScript, and Tailwind v4. System fonts, custom components, no analytics.
 
-## Running it
+## Running and checking
 
-```bash
-npm install
-npm run dev      # http://localhost:3000
-npm run build
-npm run start
-npm run lint
-npm run ci       # the canonical gate: lint, brand check, build, Playwright
+```sh
+npm ci
+npm run dev
+npm run ci
 ```
 
-`npm run ci` is what GitHub Actions runs, and it is the only thing it runs. The
-Playwright suite needs a browser once: `npx playwright install --with-deps
-chromium`. What each layer covers is in `.ralph/specs/testing.md`; the design
-rules the e2e specs enforce are in `.ralph/specs/design-system.md`.
+The complete gate runs lint, brand check, release-envelope verification, production build, and Playwright. Install Chromium once with `npx playwright install --with-deps chromium`. See [.ralph/specs/testing.md](.ralph/specs/testing.md).
 
-## The docs are not in this repo
+## Marketing and assets
 
-`/docs/*` is a rewrite, not a route. It proxies to `DOCS_ORIGIN`, which defaults
-to `https://vidra-docs.pages.dev`. Set the variable to work against a preview
-build:
+[vidra-branding](https://github.com/yegamble/vidra-branding) owns the v2 guidelines, V/play vector logos, warm Paper/Navy palette, README assets, and social card. [Figma guidelines](https://www.figma.com/design/3UVHlVHh4MXHoBUdufD2n7). `app/brand.css` and `public/brand/` are copies of the canon. The streaming illustration is decorative concept artwork, not a product screenshot.
 
-```bash
-DOCS_ORIGIN=http://localhost:8788 npm run dev
-```
+The single launch page replaces the old marketing routes, which permanently redirect to `/`. Copy and email links live in `lib/marketing.ts`. **Join waitlist opens a prefilled email request** to support; the site does not collect addresses or confirm registration. The footer uses the same support mailbox.
 
-Because `/docs` is not a Next.js route, link to it with a plain `<a>` rather than
-`next/link` — a client-side navigation to a rewritten path has nothing to render.
+## Documentation
 
-## Brand
-
-The rules live in
-[vidra-branding](https://github.com/yegamble/vidra-branding). What this repo
-holds is a copy, and copies drift, so the boundaries are worth stating:
-
-- `app/brand.css` — the palette and the type scale as custom properties, wired
-  into Tailwind through `@theme inline` in `app/globals.css`. Header comment
-  records where it came from. The measured contrast ratios are in the file; the
-  two that catch people out are that Action Cyan fails as *text* on Paper
-  (4.26), and that Paper fails as text *on* Action Cyan (4.26). Buttons use
-  pure white. Small links use `#0A6B8C`.
-- `public/brand/` — the approved assets, copied verbatim. Do not edit them here;
-  edit them in vidra-branding and re-copy.
-- `components/Lockup.tsx` — the horizontal lockup inlined so the drawn logotype
-  can be reversed on Ink. The asset's own `.wm` class switches on the *operating
-  system's* colour scheme, which is the wrong signal for a permanently dark
-  header. The otter mark's nine fills are copied unchanged; only the logotype,
-  which is single-colour by nature, takes a colour prop.
-- No indigo anywhere. That is the one colour rule the brand treats as a
-  boundary: cyan outside the product, indigo inside it.
-
-Sections alternate Ink and Paper down the page and never repeat Ink. Mist
-(`#EEF7FB`) is the quiet third ground, used once, for the project section.
-
-Glass — blurred, translucent Ink — is permitted on the navigation layer only
-(the sticky header and the mobile install bar), always with a solid Ink
-fallback. That rule was overturned deliberately and the reasoning is recorded
-in `.ralph/specs/design-system.md`.
-
-## Imagery
-
-There is none, on purpose. The brand shows the product or shows nothing, and
-there are no screenshots yet. What carries the page instead is working
-interface rather than a picture of one:
-
-- `components/InstallTabs.tsx` — the four routes in, one panel, real commands.
-- `components/SizingCalculator.tsx` — two sliders and two toggles over the
-  deploy guide's measured profiles. Arithmetic you can check, not a model.
-- `components/FederationFigure.tsx` — the one drawing left, and everything it
-  says is repeated in the text beside it.
-- `components/ArchitectureExplorer.tsx` — the eight containers in the shipped
-  compose file, as buttons. Every port is the port the container listens on.
-
-When a real capture from a running instance exists, it replaces one of these.
-A mockup never does.
-
-## Copy
-
-Every number on this site comes from the Vidra repositories. `lib/site.ts` holds
-the ones that repeat, so a version bump is one edit. If a claim cannot be traced
-to a repository or a measurement, it does not go on the page — which is why
-there are no testimonials, no logo wall, and a `Not yet` block naming the three
-things Vidra does not do.
+`/docs/*` remains a rewrite to `DOCS_ORIGIN` (default `https://vidra-docs.pages.dev`). Link to it with a plain `<a>`; it is not a Next.js route.
 
 ## Licence
 
-Site content and code: see the Vidra project. Vidra itself is AGPL v3.
+See the Vidra project. Vidra itself is AGPL v3.
