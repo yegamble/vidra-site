@@ -35,6 +35,15 @@ h1 > span { display: block; }
 .waitlist-link:hover { background: var(--brand-black); }
 .waitlist-link svg { width: 1rem; height: 1rem; }
 .streaming-illustration { width: 100%; height: auto; display: block; overflow: visible; }
+/* The requested ambient float moves only the decorative artwork. Transform
+   keeps the laptop layout stable; reduced motion restores the static scene. */
+@keyframes streaming-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-0.625rem); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .streaming-illustration { animation: streaming-float 6s ease-in-out infinite; }
+}
 .launch-footer { display: flex; align-items: center; justify-content: space-between; gap: 1rem; color: var(--brand-muted); font-size: 0.875rem; line-height: 1.5; }
 .launch-footer p { margin: 0; }
 .launch-footer a { min-height: 2.75rem; display: inline-flex; align-items: center; text-decoration: none; }

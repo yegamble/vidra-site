@@ -65,8 +65,31 @@ test("brand ground and logo remain fixed in both OS appearances", async ({ page 
   }
 });
 
-test("reduced motion removes action transitions", async ({ page }) => {
+test("the illustration floats without changing page height", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.goto("/");
+  const movement = await page.locator(".streaming-illustration").evaluate(async (el) => {
+    const animation = el.getAnimations()[0];
+    await animation.ready;
+    animation.pause();
+    animation.currentTime = 0;
+    const start = el.getBoundingClientRect().y;
+    const pageHeight = document.documentElement.scrollHeight;
+    animation.currentTime = 3000;
+    return {
+      rise: start - el.getBoundingClientRect().y,
+      pageHeight,
+      floatedPageHeight: document.documentElement.scrollHeight,
+    };
+  });
+  expect(movement.rise).toBeGreaterThan(5);
+  expect(movement.rise).toBeLessThanOrEqual(16);
+  expect(movement.floatedPageHeight).toBe(movement.pageHeight);
+});
+
+test("reduced motion stops the illustration and action transitions", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");
   expect(await page.locator(".waitlist-link").evaluate(el => getComputedStyle(el).transitionDuration)).toBe("0s");
+  expect(await page.locator(".streaming-illustration").evaluate(el => el.getAnimations().length)).toBe(0);
 });
