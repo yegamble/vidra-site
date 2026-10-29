@@ -66,6 +66,20 @@ h1 > span { display: block; }
   .streaming-illustration { width: 100%; margin: 1.5rem 0 0; }
   .launch-footer { align-items: flex-start; flex-direction: column; gap: 0.25rem; font-size: 0.8125rem; }
 }
+/* Keep the complete launch composition within a laptop viewport. Readers
+   enlarging text can still scroll naturally; nothing is clipped or hidden. */
+@media (min-width: 48rem) {
+  .streaming-illustration { max-height: min(36rem, calc(100svh - 12rem)); }
+}
+@media (min-width: 48rem) and (max-height: 56rem) {
+  .launch-shell { padding-block: 1.75rem 1.25rem; }
+  .launch-hero { padding-block: 1rem; }
+  .launch-copy { padding-block: 0; }
+  h1 { font-size: clamp(3rem, min(5.4vw, 8.5svh), 4.6rem); }
+  .eyebrow { margin-bottom: 1rem; }
+  .standfirst { margin-top: 1.25rem; }
+  .waitlist-link { margin-top: 1.5rem; }
+}
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; scroll-behavior: auto !important; }
 }
