@@ -49,7 +49,7 @@ test("metadata and all launch assets use the new identity", async ({ page, reque
   await expect(page.locator('meta[property="og:site_name"]')).toHaveAttribute("content", "Vidra");
   await expect(page.locator('meta[property="og:url"]')).toHaveAttribute("content", "https://vidra.yosef.app");
   await expect(page.locator('meta[property="og:image"]')).toHaveAttribute("content", /\/brand\/og-card.png$/);
-  for (const asset of ["/brand/og-card.png", "/brand/vidra-lockup-horizontal.svg", "/icon.svg"]) {
+  for (const asset of ["/brand/og-card.png", "/brand/vidra-lockup-horizontal.svg", "/icon.svg", "/illustration/alpine-lake-poster.webp"]) {
     expect((await request.get(asset)).status(), asset).toBe(200);
   }
   const logo = await (await request.get("/brand/vidra-lockup-horizontal.svg")).text();

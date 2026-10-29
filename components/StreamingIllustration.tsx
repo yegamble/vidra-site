@@ -7,9 +7,21 @@ export function StreamingIllustration() {
           <feGaussianBlur stdDeviation="9" />
         </filter>
         <filter id="signal-glow" x="-50%" y="-50%" width="200%" height="200%" colorInterpolationFilters="sRGB">
-          <feGaussianBlur stdDeviation="3" result="glow" />
+          <feGaussianBlur in="SourceAlpha" stdDeviation="6" result="bloom" />
+          <feFlood floodColor="var(--brand-signal)" result="gold" />
+          <feComposite in="gold" in2="bloom" operator="in" result="wideGlow" />
+          <feGaussianBlur in="SourceAlpha" stdDeviation="1.8" result="nearBlur" />
+          <feComposite in="gold" in2="nearBlur" operator="in" result="nearGlow" />
+          <feMerge><feMergeNode in="wideGlow" /><feMergeNode in="nearGlow" /><feMergeNode in="SourceGraphic" /></feMerge>
+        </filter>
+        <filter id="floor-glow" x="-50%" y="-150%" width="200%" height="400%">
+          <feGaussianBlur stdDeviation="7" />
+        </filter>
+        <filter id="player-signal-glow" filterUnits="userSpaceOnUse" x="12" y="176" width="220" height="30">
+          <feGaussianBlur stdDeviation="2" result="glow" />
           <feMerge><feMergeNode in="glow" /><feMergeNode in="SourceGraphic" /></feMerge>
         </filter>
+        <clipPath id="player-poster"><rect x="12" y="12" width="285" height="158" rx="4" /></clipPath>
         <linearGradient id="player-ground" x1="0" y1="0" x2="1" y2="1">
           <stop stopColor="var(--brand-ink)" />
           <stop offset="1" stopColor="var(--brand-black)" />
@@ -23,6 +35,12 @@ export function StreamingIllustration() {
       <path d="m49 403 280-161 379 219-280 163Z" stroke="var(--brand-line)" strokeWidth="1.5" strokeDasharray="6 7" />
       <path d="m89 458 241-139 320 185-240 139Z" fill="var(--brand-surface)" opacity="0.45" />
       <path d="m162 446 200-109 254 154-198 113Z" fill="var(--brand-shadow)" filter="url(#scene-shadow)" />
+      <g fill="var(--brand-signal)" opacity="0.45" filter="url(#floor-glow)">
+        <ellipse cx="164" cy="510" rx="39" ry="12" />
+        <ellipse cx="341" cy="616" rx="39" ry="12" />
+        <ellipse cx="612" cy="574" rx="39" ry="12" />
+        <ellipse cx="451" cy="545" rx="50" ry="16" />
+      </g>
       <path d="M310 66v216M310 66l-147 85v237M310 66l151 87v233M516 135v213M516 135l134 77v236" stroke="var(--brand-line)" strokeWidth="1.5" strokeDasharray="6 7" />
       <g className="data-network" stroke="var(--brand-signal)" strokeLinecap="round" strokeLinejoin="round">
         {[
@@ -30,8 +48,10 @@ export function StreamingIllustration() {
           "M341 616 421 570 381 547 451 507V523",
           "M612 574 551 609 478 567 451 582V523",
         ].map((d, index) => <g key={d}>
-          <path className="data-wire" d={d} strokeWidth="1.7" opacity="0.55" />
-          <path className="data-packet" d={d} pathLength="1" strokeWidth="3" strokeDasharray="0.06 0.94" strokeDashoffset="0.75" filter="url(#signal-glow)" style={{ animationDelay: `${-index * 1.2}s` }} />
+          <path className="data-wire-halo" d={d} strokeWidth="8" opacity="0.45" filter="url(#signal-glow)" />
+          <path className="data-wire" d={d} strokeWidth="2.8" />
+          <path className="data-packet" d={d} pathLength="1" strokeWidth="6" strokeDasharray="0.08 0.253333" strokeDashoffset="0.75" filter="url(#signal-glow)" style={{ animationDelay: `${-index * 0.65}s` }} />
+          <path className="data-packet-head" d={d} pathLength="1" stroke="var(--brand-white)" strokeWidth="4.5" strokeDasharray="0.006 0.327333" strokeDashoffset="0.67" filter="url(#signal-glow)" style={{ animationDelay: `${-index * 0.65}s` }} />
         </g>)}
       </g>
 
@@ -68,9 +88,11 @@ export function StreamingIllustration() {
       <g transform="matrix(1 .577 0 1 241 163)">
         <rect x="7" y="-5" width="309" height="239" rx="8" fill="var(--brand-slate)" />
         <rect width="309" height="239" rx="8" fill="url(#player-ground)" stroke="var(--brand-ink)" />
+        <image href="/illustration/alpine-lake-poster.webp" x="12" y="12" width="285" height="158" preserveAspectRatio="xMidYMid slice" clipPath="url(#player-poster)" />
+        <circle cx="150" cy="94" r="35" fill="var(--brand-ink)" fillOpacity="0.22" stroke="var(--brand-white)" strokeOpacity="0.5" />
         <path d="M125 70c0-5 3-7 7-5l40 24c4 2 4 6 0 8l-40 23c-4 2-7 0-7-5Z" fill="var(--brand-white)" />
         <path d="M23 190h191" stroke="var(--brand-slate)" strokeWidth="5" strokeLinecap="round" />
-        <path className="video-signal" d="M23 190h48" stroke="var(--brand-signal)" strokeWidth="5" strokeLinecap="round" />
+        <path className="video-signal" d="M23 190h48" stroke="var(--brand-signal)" strokeWidth="5" strokeLinecap="round" filter="url(#player-signal-glow)" />
         <circle cx="73" cy="190" r="6" fill="var(--brand-signal)" />
         <g stroke="var(--brand-white)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
           <path d="m245 186-7 5h-5v8h5l7 5Zm6 3c4 3 4 9 0 12m5-16c7 6 7 14 0 20M278 190v-5h6m8 0h5v5m0 11v5h-5m-8 0h-6v-5" />
@@ -81,6 +103,7 @@ export function StreamingIllustration() {
         <rect width="139" height="211" rx="4" fill="url(#glass-ground)" stroke="var(--brand-white)" strokeWidth="2" />
         {[15, 81, 147].map((y) => <g key={y}>
           <rect x="12" y={y} width="58" height="45" rx="2" fill="var(--brand-ink)" />
+          <image href="/illustration/alpine-lake-poster.webp" x="12" y={y} width="58" height="45" preserveAspectRatio="xMidYMid slice" opacity="0.85" />
           <path d={`m37 ${y + 13} 15 9-15 9Z`} fill="var(--brand-white)" opacity="0.85" />
           <path d={`M81 ${y + 11}h45M81 ${y + 20}h39M81 ${y + 29}h29`} stroke="var(--brand-line)" strokeWidth="3" />
         </g>)}
@@ -89,31 +112,38 @@ export function StreamingIllustration() {
       <NetworkNode x={138} y={444} />
       <NetworkNode x={315} y={550} />
       <NetworkNode x={586} y={508} />
+      <GoldenRelay x={222} y={520} />
+      <GoldenRelay x={539} y={579} />
       <g className="data-receiver" filter="url(#signal-glow)">
-        <circle cx="451" cy="523" r="7" stroke="var(--brand-signal)" strokeWidth="1.5" />
-        <circle cx="451" cy="523" r="3" fill="var(--brand-signal)" />
+        <circle cx="451" cy="523" r="10" stroke="var(--brand-signal)" strokeWidth="2" />
+        <circle cx="451" cy="523" r="4" fill="var(--brand-white)" />
       </g>
     </svg>
   );
 }
 
 function NetworkNode({ x, y }: { x: number; y: number }) {
-  return <g className="network-node" transform={`translate(${x} ${y})`} stroke="var(--brand-signal)" strokeWidth="1.3" strokeLinejoin="round">
+  return <g className="network-node" transform={`translate(${x + 26} ${y + 66}) scale(1.25) translate(-26 -66)`} stroke="var(--brand-signal)" strokeWidth="1.8" strokeLinejoin="round">
     <path d="m0 15 26-15 26 15-26 15Z" fill="var(--brand-slate)" />
     <path d="M0 15v36l26 15V30Z" fill="var(--brand-ink)" />
     <path d="m26 30 26-15v36L26 66Z" fill="var(--brand-black)" />
     <path d="m35 39 10-6m-10 18 10-6" strokeWidth="2" strokeLinecap="round" />
     <path d="m8 31 11 12-11 2Z" fill="var(--brand-signal)" stroke="none" />
-    <circle cx="26" cy="66" r="2.5" fill="var(--brand-signal)" filter="url(#signal-glow)" />
+    <path d="m18 14 8-5 8 5-8 5Z" fill="none" strokeWidth="1" />
+    <path d="m0 51 26 15 26-15M26 30v36" fill="none" strokeWidth="2.5" filter="url(#signal-glow)" />
+    <circle cx="26" cy="66" r="3.5" fill="var(--brand-white)" filter="url(#signal-glow)" />
+  </g>;
+}
+
+function GoldenRelay({ x, y }: { x: number; y: number }) {
+  return <g className="network-relay" transform={`translate(${x} ${y})`} stroke="var(--brand-white)" strokeWidth="1" strokeLinejoin="round" filter="url(#signal-glow)">
+    <path d="m0 7 12-7 12 7-12 7Z" fill="var(--brand-signal)" fillOpacity="0.6" />
+    <path d="M0 7v16l12 7V14Zm12 7 12-7v16l-12 7Z" fill="var(--brand-signal)" fillOpacity="0.8" />
   </g>;
 }
 
 function Thumbnail({ x, y, width, height, variant = 0 }: { x: number; y: number; width: number; height: number; variant?: number }) {
   return <svg x={x} y={y} width={width} height={height} viewBox="0 0 120 90" preserveAspectRatio="none" overflow="hidden">
-    <rect width="120" height="90" rx="3" fill="var(--brand-surface)" />
-    <circle cx={variant ? 86 : 75} cy="22" r="10" fill="var(--brand-white)" />
-    <path d={variant ? "M0 31 23 43 45 38 80 60 96 47 120 63v27H0Z" : "M0 43 25 39 45 64 69 38 96 56 120 50v40H0Z"} fill="var(--brand-slate)" opacity="0.65" />
-    <path d="M0 55 18 43 39 57 56 53 79 75 99 68 120 81v9H0Z" fill="var(--brand-ink)" opacity="0.75" />
-    <path d="M0 68 14 59 32 66 48 61 71 78 94 73 120 89v1H0Z" fill="var(--brand-ink)" />
+    <image href="/illustration/alpine-lake-poster.webp" width="120" height="90" preserveAspectRatio={variant ? "xMaxYMid slice" : "xMinYMid slice"} />
   </svg>;
 }
