@@ -1,33 +1,15 @@
 import type { Metadata } from "next";
-import { Button } from "@/components/Button";
-import { Eyebrow, Head, Section } from "@/components/Section";
-import { DOCS } from "@/lib/site";
+import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Page not found",
-  description: "This page does not exist. The docs and the homepage do.",
+  title: "Page not found", robots: { index: false, follow: true },
 };
 
 export default function NotFound() {
-  return (
-    <Section ground="paper">
-      <div className="py-8 md:py-16">
-        <Eyebrow>404</Eyebrow>
-        <Head as="h1" className="mt-3">
-          This page does not exist.
-        </Head>
-        <p className="text-standfirst mt-6 max-w-[54ch] text-onpaper-2">
-          The docs and the homepage do.
-        </p>
-        <div className="mt-10 flex flex-wrap gap-3">
-          <Button href="/" variant="action">
-            Go to the homepage
-          </Button>
-          <Button href={DOCS.root} external variant="ink-outline">
-            Read the docs
-          </Button>
-        </div>
-      </div>
-    </Section>
-  );
+  return <section className="not-found">
+    <p className="eyebrow">404</p>
+    <h1>This page isn’t here.</h1>
+    <p>Vidra’s new home is taking shape.</p>
+    <Link className="waitlist-link" href="/">Back to Vidra <span aria-hidden="true">→</span></Link>
+  </section>;
 }

@@ -1,67 +1,35 @@
 import type { Metadata } from "next";
-import { OG_CARD } from "@/lib/metadata";
-import { MobileInstallBar } from "@/components/MobileInstallBar";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
+import { MARKETING } from "@/lib/marketing";
 import "./globals.css";
-
-/**
- * The brand paragraph, opened with the phrase people actually search for.
- * "Self-hosted alternative to YouTube" is the query; everything after it is the
- * brand paragraph doing its usual job.
- */
-const DESCRIPTION =
-  "Vidra is a self-hosted, federated alternative to YouTube, written in Go. You " +
-  "install it yourself, the way you would install WordPress: your domain, your " +
-  "storage, your rules, no ads. It federates over ActivityPub, speaks ATProto " +
-  "for Bluesky sign-in and cross-posting, mirrors public media to IPFS if you " +
-  "want it to, and it is free software under AGPL v3.";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://vidra.yosef.app"),
-  title: {
-    default: "Vidra — self-hosted, federated video platform",
-    template: "%s — Vidra",
-  },
-  description: DESCRIPTION,
+  title: { default: MARKETING.title, template: "%s — Vidra" },
+  description: MARKETING.description,
   applicationName: "Vidra",
+  alternates: { canonical: "/" },
   openGraph: {
-    type: "website",
-    siteName: "Vidra",
-    title: "Vidra — self-hosted, federated video platform",
-    description: DESCRIPTION,
-    url: "/",
-    // A PNG, deliberately: X, Slack and older LinkedIn drop SVG cards.
-    // The card and its regeneration live in lib/metadata.ts and
-    // scripts/og-card.mjs. Every other route builds its own object through the
-    // same helper, because Next replaces this whole object rather than
-    // merging into it.
-    images: [OG_CARD],
+    type: "website", siteName: "Vidra", title: MARKETING.title,
+    description: MARKETING.description, url: "/",
+    images: [{ url: "/brand/og-card.png", width: 1200, height: 630,
+      alt: "Vidra Beta — a new home for streaming is taking shape." }],
   },
-  twitter: {
-    card: "summary_large_image",
-    title: "Vidra — self-hosted, federated video platform",
-    description: DESCRIPTION,
-    images: [OG_CARD.url],
-  },
+  twitter: { card: "summary_large_image", title: MARKETING.title,
+    description: MARKETING.description, images: ["/brand/og-card.png"] },
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="h-full">
-      <body className="flex min-h-full flex-col bg-paper">
-        <a
-          href="#main"
-          className="sr-only rounded-button focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-[100] focus:bg-action focus:px-4 focus:py-2 focus:text-small focus:font-semibold focus:text-white"
-        >
-          Skip to content
-        </a>
-        <SiteHeader />
-        <main id="main" className="flex-1">
-          {children}
-        </main>
-        <SiteFooter />
-        <MobileInstallBar />
+    <html lang="en">
+      <body>
+        <a className="skip-link" href="#main">Skip to content</a>
+        <div className="launch-shell">
+          <SiteHeader />
+          <main id="main" tabIndex={-1}>{children}</main>
+          <SiteFooter />
+        </div>
       </body>
     </html>
   );

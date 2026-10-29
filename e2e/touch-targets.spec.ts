@@ -17,10 +17,9 @@ import { PHONE, ROUTES } from "./routes";
  *
  * Anything else that fails is a component to fix, not an entry to add here.
  *
- * The sweep is `a, button`, so `<input type="range">` is not measured here.
- * It does not need to be: `app/globals.css` gives every range input a 44px
- * track height, which is the number this file would have checked. Passing
- * beats exempting.
+ * The launch page has links only; the former mobile menu and range controls
+ * were explicitly retired with the technical marketing pages.
+
  */
 
 const FLOOR = 44;
@@ -81,33 +80,4 @@ test.describe(`hit targets at ${PHONE.name}`, () => {
     });
   }
 
-  test("the open mobile menu", async ({ page }) => {
-    await page.setViewportSize({ width: PHONE.width, height: PHONE.height });
-    await page.goto("/");
-
-    // The menu is the one surface whose targets only exist once it is open.
-    await page.getByRole("button", { name: "Open menu" }).click();
-    const panel = page.locator("#mobile-nav");
-    await expect(panel).toBeVisible();
-
-    const small = await panel.evaluate((root, floor) => {
-      const offenders: string[] = [];
-      for (const el of root.querySelectorAll("a, button")) {
-        const style = getComputedStyle(el);
-        if (style.display === "none" || style.visibility === "hidden") continue;
-        const rect = el.getBoundingClientRect();
-        if (rect.width === 0 || rect.height === 0) continue;
-        if (rect.width < floor || rect.height < floor) {
-          offenders.push(
-            `<${el.tagName.toLowerCase()}> "${(el.textContent ?? "").trim()}" ${Math.round(
-              rect.width,
-            )}x${Math.round(rect.height)}`,
-          );
-        }
-      }
-      return offenders;
-    }, FLOOR);
-
-    expect(small, small.join("\n")).toEqual([]);
-  });
 });

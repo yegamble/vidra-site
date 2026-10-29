@@ -28,26 +28,27 @@ never claim a suite passed that you did not run.
    guardrail, not a suggestion; the brand canon it copies lives in
    `vidra-branding` and wins where the two disagree.
 2. **Tokens only.** Colours come from `app/brand.css` via the Tailwind theme
-   (`bg-ink`, `text-onink-2`, `ring-paper-hairline`). A raw hex in a component
-   is a review defect, except inside vendored drawings (`Lockup.tsx`,
-   `FederationFigure.tsx`). **No indigo anywhere** — this is a brand
-   surface; indigo belongs to the product. No `dark:` variants: the site is
-   Ink/Paper by section, not mode-switched.
+   (`bg-ink`, `bg-paper`, `text-muted`). A raw hex in a component
+   is a review defect; canonical SVG assets live in `public/brand/`.
+   **No indigo anywhere** — this is a brand surface; indigo belongs to the
+   product. No `dark:` variants: the launch site uses a fixed warm Paper
+   ground, not mode-switched.
 3. **No webfonts, no emoji, no UI kit.** System stack only. Components here are
    custom; do not add a dependency to get a button.
 4. **44×44px** on every interactive control, and **`rem` sizing** on everything
    user-facing so the reader's own font-size setting scales the page. Both are
    gated by Playwright, not by eye.
 5. **Every claim in copy needs a number or a mechanism, sourced from the Vidra
-   repositories** — `lib/site.ts` holds the ones that repeat. **Never invent a
-   count, and never copy one from a README**: the meta-repo README says
-   `vidra doctor` runs 18 checks; the code has 26. Cite code, or stay unpinned.
+   repositories** — `lib/marketing.ts` holds the launch copy. **Never invent a
+   count, and never copy one from a README**: README totals can lag behind
+   the implementation. Cite code, or stay unpinned.
    **Counts are not hand-typed any more.** `lib/envelope.json` holds a
    vidra-core tag and every count derived from that tag's source;
    `scripts/envelope-sync.mjs` writes it (`npm run sync:envelope`) and
    `npm run ci` re-derives it, failing both when a count disagrees and when
-   vidra-core publishes a newer release than the pin. `VERSION` reads out of
-   the same file, so the version and the counts can only move together. Do
+   vidra-core publishes a newer release than the pin. The launch page prints
+   no release counts; future version/count copy must read the same file so
+   the version and counts can only move together. Do
    not edit `lib/envelope.json` by hand, and do not retype a number it holds.
 6. **Sentence case, always.** All caps is reserved for 11px micro-labels.
 7. Do not bump dependencies, do not touch `.github/workflows` unless that is the

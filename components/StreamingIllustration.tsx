@@ -1,0 +1,93 @@
+/** Decorative concept artwork, not a product capture or interactive player. */
+export function StreamingIllustration() {
+  return (
+    <svg className="streaming-illustration" viewBox="0 0 760 650" fill="none" aria-hidden="true" focusable="false">
+      <defs>
+        <filter id="scene-shadow" x="-30%" y="-30%" width="170%" height="180%">
+          <feGaussianBlur stdDeviation="9" />
+        </filter>
+        <linearGradient id="player-ground" x1="0" y1="0" x2="1" y2="1">
+          <stop stopColor="var(--brand-ink)" />
+          <stop offset="1" stopColor="var(--brand-black)" />
+        </linearGradient>
+        <linearGradient id="glass-ground" x1="0" y1="0" x2="0" y2="1">
+          <stop stopColor="var(--brand-white)" stopOpacity="0.72" />
+          <stop offset="1" stopColor="var(--brand-white)" stopOpacity="0.2" />
+        </linearGradient>
+      </defs>
+
+      <path d="m49 403 280-161 379 219-280 163Z" stroke="var(--brand-line)" strokeWidth="1.5" strokeDasharray="6 7" />
+      <path d="m89 458 241-139 320 185-240 139Z" fill="var(--brand-surface)" opacity="0.45" />
+      <path d="m162 446 200-109 254 154-198 113Z" fill="var(--brand-shadow)" filter="url(#scene-shadow)" />
+      <path d="M310 66v216M310 66l-147 85v237M310 66l151 87v233M516 135v213M516 135l134 77v236" stroke="var(--brand-line)" strokeWidth="1.5" strokeDasharray="6 7" />
+
+      <g transform="matrix(1 .577 0 1 355 88)">
+        <rect width="132" height="151" rx="5" fill="url(#glass-ground)" stroke="var(--brand-white)" strokeWidth="3" />
+        <Thumbnail x={5} y={10} width={122} height={91} />
+        <path d="M7 115h100M7 126h66M7 137h85" stroke="var(--brand-line)" strokeWidth="3" />
+      </g>
+      <g transform="matrix(1 .577 0 1 518 167)">
+        <rect width="123" height="148" rx="5" fill="url(#glass-ground)" stroke="var(--brand-white)" strokeWidth="2" />
+        <Thumbnail x={5} y={15} width={113} height={87} variant={1} />
+        <path d="M8 116h98M8 127h77M8 137h86" stroke="var(--brand-line)" strokeWidth="3" />
+      </g>
+
+      <g transform="matrix(1 -.577 0 1 130 167)">
+        <rect width="80" height="245" rx="5" fill="url(#glass-ground)" stroke="var(--brand-white)" strokeWidth="2" />
+        <path d="M5 0 80 0 80 245 5 245" stroke="var(--brand-white)" opacity="0.5" />
+      </g>
+      <g transform="matrix(1 .577 0 1 132 173)">
+        <rect width="65" height="235" rx="5" fill="url(#glass-ground)" stroke="var(--brand-white)" strokeWidth="2" />
+        <g fill="var(--brand-ink)">
+          <path d="m25 35 8-9 8 9v12h-6v-8h-4v8h-6Z" />
+          <rect x="11" y="63" width="43" height="38" rx="4" fill="var(--brand-surface)" />
+          <rect x="25" y="74" width="16" height="15" rx="1" />
+          <path d="m31 78 6 4-6 4Z" fill="var(--brand-white)" />
+          <path d="M25 119h6v7h-6Zm10 0h6v7h-6Zm-10 11h6v7h-6Zm10 0h6v7h-6Z" opacity="0.7" />
+          <path d="M33 159c-10-9-17 6 0 15 17-9 10-24 0-15Z" opacity="0.55" />
+          <circle cx="33" cy="199" r="8" opacity="0.4" />
+          <circle cx="33" cy="199" r="3" fill="var(--brand-white)" />
+        </g>
+      </g>
+
+      <g transform="matrix(1 .577 0 1 241 163)">
+        <rect x="7" y="-5" width="309" height="239" rx="8" fill="var(--brand-slate)" />
+        <rect width="309" height="239" rx="8" fill="url(#player-ground)" stroke="var(--brand-ink)" />
+        <path d="M125 70c0-5 3-7 7-5l40 24c4 2 4 6 0 8l-40 23c-4 2-7 0-7-5Z" fill="var(--brand-white)" />
+        <path d="M23 190h191" stroke="var(--brand-slate)" strokeWidth="5" strokeLinecap="round" />
+        <path d="M23 190h48" stroke="var(--brand-white)" strokeWidth="5" strokeLinecap="round" />
+        <circle cx="73" cy="190" r="6" fill="var(--brand-white)" />
+        <g stroke="var(--brand-white)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="m245 186-7 5h-5v8h5l7 5Zm6 3c4 3 4 9 0 12m5-16c7 6 7 14 0 20M278 190v-5h6m8 0h5v5m0 11v5h-5m-8 0h-6v-5" />
+        </g>
+      </g>
+
+      <g transform="matrix(1 .577 0 1 615 271)">
+        <rect width="139" height="211" rx="4" fill="url(#glass-ground)" stroke="var(--brand-white)" strokeWidth="2" />
+        {[15, 81, 147].map((y) => <g key={y}>
+          <rect x="12" y={y} width="58" height="45" rx="2" fill="var(--brand-ink)" />
+          <path d={`m37 ${y + 13} 15 9-15 9Z`} fill="var(--brand-white)" opacity="0.85" />
+          <path d={`M81 ${y + 11}h45M81 ${y + 20}h39M81 ${y + 29}h29`} stroke="var(--brand-line)" strokeWidth="3" />
+        </g>)}
+      </g>
+
+      <g transform="matrix(1 .577 0 1 191 395)">
+        <rect width="290" height="116" rx="3" fill="url(#glass-ground)" stroke="var(--brand-white)" strokeWidth="2" />
+        {[0, 1, 2].map((i) => <g key={i}>
+          <Thumbnail x={10 + i * 94} y={10} width={84} height={63} variant={i % 2} />
+          <path d={`M${10 + i * 94} 85h73m-73 10h48`} stroke="var(--brand-line)" strokeWidth="3" />
+        </g>)}
+      </g>
+    </svg>
+  );
+}
+
+function Thumbnail({ x, y, width, height, variant = 0 }: { x: number; y: number; width: number; height: number; variant?: number }) {
+  return <svg x={x} y={y} width={width} height={height} viewBox="0 0 120 90" preserveAspectRatio="none" overflow="hidden">
+    <rect width="120" height="90" rx="3" fill="var(--brand-surface)" />
+    <circle cx={variant ? 86 : 75} cy="22" r="10" fill="var(--brand-white)" />
+    <path d={variant ? "M0 31 23 43 45 38 80 60 96 47 120 63v27H0Z" : "M0 43 25 39 45 64 69 38 96 56 120 50v40H0Z"} fill="var(--brand-slate)" opacity="0.65" />
+    <path d="M0 55 18 43 39 57 56 53 79 75 99 68 120 81v9H0Z" fill="var(--brand-ink)" opacity="0.75" />
+    <path d="M0 68 14 59 32 66 48 61 71 78 94 73 120 89v1H0Z" fill="var(--brand-ink)" />
+  </svg>;
+}

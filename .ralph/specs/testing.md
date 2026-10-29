@@ -1,7 +1,7 @@
 # Vidra Site — Testing
 
 Status: living document. Tests serve the site; they are not busywork. This is a
-four-route marketing site, so the tests that matter are the ones that catch a
+single-page launch site, so the tests that matter are the ones that catch a
 page looking wrong on a screen nobody developed on.
 
 ## Layers
@@ -12,10 +12,10 @@ page looking wrong on a screen nobody developed on.
 | Brand gate | `npm run check:brand` (`scripts/brand-check.mjs`) | banned hype words, emoji/dingbats, indigo hexes in `app/`, `components/`, `lib/` |
 | Envelope gate | `npm run check:envelope` (`scripts/envelope-sync.mjs`) | a count in `lib/envelope.json` that no longer matches vidra-core's source at the pinned tag, and a pin that has fallen behind vidra-core's latest release |
 | Build | `npm run build` | compile **and** the TypeScript check — `next build` type-checks everything `tsconfig.json` includes, `e2e/` included |
-| Route smoke | `e2e/routes.spec.ts` | every route 200s and renders an `h1`; `/get-started` is a 308 to `/#get-started`; an unknown route is a real 404 |
-| Responsive | `e2e/responsive.spec.ts` | horizontal overflow, elements past the right edge, lockup height, the glass header's ground, hero headline + CTA, the eight-node architecture explorer, the install tablist, the sizing calculator's profile flip, the mobile install bar and menu overlay, the federation walkthrough, the comparison's stacked/table swap on `/features`, the Ink/Paper/Mist rhythm |
+| Route smoke | `e2e/routes.spec.ts` | the launch page, retired URLs redirecting to `/`, a real 404 with recovery, metadata and assets, keyboard traversal |
+| Responsive | `e2e/responsive.spec.ts` | horizontal overflow, elements past the right edge, lockup height, headline + email CTA, artwork reflow, reader font scaling, fixed appearance, reduced motion |
 | Accessibility | `e2e/a11y.spec.ts` | axe serious/critical on every route at 390 and 1440; one `<main>`; every `<nav>` named |
-| Hit targets | `e2e/touch-targets.spec.ts` | every visible `<a>`/`<button>` ≥ 44×44px at 390, incl. the open mobile menu |
+| Hit targets | `e2e/touch-targets.spec.ts` | every visible `<a>`/`<button>` ≥ 44×44px at 390, including the header logo, email action, and footer contact |
 
 Viewports are parameterised inside the specs (390×844, 768×1024, 1024×768,
 1440×900), not split into Playwright projects, so a failure names the width it
@@ -70,3 +70,7 @@ and executes exactly the local command (`npm run deploy` → OpenNext build +
 `wrangler deploy` to the vidra.yosef.app custom domain). It needs the
 `CLOUDFLARE_API_TOKEN` repo secret; while the secret is absent it skips with a
 notice rather than failing. Manual deploys remain `npm run deploy` locally.
+
+## Launch v2 scope change — 29 October 2026
+
+The user explicitly removed the former technical marketing pages and widgets. Their content-specific assertions were replaced with launch-copy, email-link, redirect, metadata, asset, and keyboard contracts. Responsive widths, reader scaling, 40px logo legibility floor, WCAG axe thresholds, and 44×44px target floors remain. The single launch route and unknown-route recovery are both checked.
