@@ -1,6 +1,23 @@
 import { expect, test } from "@playwright/test";
 import { VIEWPORTS } from "./routes";
 
+for (const viewport of [
+  { width: 1280, height: 720 },
+  { width: 1366, height: 768 },
+  { width: 1366, height: 640 },
+  { width: 1470, height: 843 },
+]) {
+  test(`entire launch page fits a ${viewport.width}x${viewport.height} laptop`, async ({ page }) => {
+    await page.setViewportSize(viewport);
+    await page.goto("/");
+    expect(await page.evaluate(() => document.documentElement.scrollHeight)).toBeLessThanOrEqual(viewport.height);
+    const footer = await page.locator("footer").boundingBox();
+    expect(footer!.y + footer!.height).toBeLessThanOrEqual(viewport.height);
+    await expect(page.getByRole("link", { name: "Join waitlist" })).toBeInViewport({ ratio: 1 });
+    await expect(page.locator("footer a")).toBeInViewport({ ratio: 1 });
+  });
+}
+
 for (const vp of VIEWPORTS) {
   test(`launch layout and target visibility at ${vp.name}`, async ({ page }) => {
     await page.setViewportSize(vp);
