@@ -42,17 +42,18 @@ h1 > span { display: block; }
   50% { transform: translateY(-0.625rem); }
 }
 @keyframes streaming-data {
-  from { stroke-dashoffset: 1; }
-  to { stroke-dashoffset: 0; }
+  from { stroke-dashoffset: var(--packet-start, 1); }
+  to { stroke-dashoffset: var(--packet-end, 0); }
 }
+.data-packet-head { --packet-start: 0.92; --packet-end: -0.08; }
 @keyframes streaming-receive {
   0%, 100% { opacity: 0.6; }
   50% { opacity: 1; }
 }
 @media (prefers-reduced-motion: no-preference) {
   .streaming-illustration { animation: streaming-float 6s ease-in-out infinite; }
-  .data-packet { animation: streaming-data 3.6s linear infinite; }
-  .data-receiver, .video-signal { animation: streaming-receive 3.6s ease-in-out infinite; }
+  .data-packet, .data-packet-head { animation: streaming-data 3s linear infinite; }
+  .data-receiver, .video-signal { animation: streaming-receive 3s ease-in-out infinite; }
 }
 .launch-footer { display: flex; align-items: center; justify-content: space-between; gap: 1rem; color: var(--brand-muted); font-size: 0.875rem; line-height: 1.5; }
 .launch-footer p { margin: 0; }
