@@ -2,7 +2,7 @@
 
 Status: marketing v2, approved 29 October 2026 from the user’s supplied coming-soon reference. This replaces the v1 cyan/otter marketing treatment, technical homepage, section rhythm, and widgets. Historical decisions remain in Git history.
 
-The canon is `vidra-branding/guidelines/brand-guidelines.md` v2.0 and `design-system/brand-tokens.css`. [Editable Figma guidelines](https://www.figma.com/design/3UVHlVHh4MXHoBUdufD2n7).
+The canon is `vidra-branding/guidelines/brand-guidelines.md` v2.1 and `design-system/brand-tokens.css`. [Editable Figma guidelines](https://www.figma.com/design/3UVHlVHh4MXHoBUdufD2n7).
 
 ## Identity and layout
 
@@ -14,7 +14,7 @@ Desktop uses two columns. Mobile stacks copy, action, artwork, and footer natura
 
 `app/brand.css` copies the canonical brand tokens; components reference them. No raw component hexes, cyan marketing accents, product indigo, theme switching, webfonts, emoji, or UI kit. System sans type; heavy tightly tracked H1; comfortable supporting text. Sentence case, with uppercase reserved for the 0.6875rem status label.
 
-Keep WCAG 2.2 AA contrast, visible focus, a skip link, one H1 and main landmark, and 2.75rem interactive target floors. Honor reduced motion. Logo SVGs contain outlined lettering with fixed fills. The concept illustration is decorative and does not pretend to be a product capture or expose fake player controls.
+Keep WCAG 2.2 AA contrast, visible focus, a skip link, one H1 and main landmark, and 2.75rem interactive target floors. Honor reduced motion. Logo SVGs contain outlined lettering with fixed fills. Signal Yellow (`--brand-signal`) is reserved for decorative network wires, packets, node edges and the player receipt. It is not a button, text or status color. The atproto tag uses the current official `at://` mark. The concept illustration is decorative and does not pretend to be a product capture or expose fake player controls.
 
 ## Copy and conversion
 

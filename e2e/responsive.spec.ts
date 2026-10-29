@@ -91,5 +91,36 @@ test("reduced motion stops the illustration and action transitions", async ({ pa
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");
   expect(await page.locator(".waitlist-link").evaluate(el => getComputedStyle(el).transitionDuration)).toBe("0s");
-  expect(await page.locator(".streaming-illustration").evaluate(el => el.getAnimations().length)).toBe(0);
+  expect(await page.locator(".streaming-illustration").evaluate(el => el.getAnimations({ subtree: true }).length)).toBe(0);
+});
+
+
+test("glowing data packets travel toward a shared player connection", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.goto("/");
+  await expect(page.locator(".atproto-tag")).toContainText("at://");
+  await expect(page.locator(".atproto-tag")).toContainText("atproto");
+  await expect(page.locator(".network-node")).toHaveCount(3);
+  const wires = page.locator(".data-wire");
+  await expect(wires).toHaveCount(3);
+  const endpoints = await wires.evaluateAll(nodes => nodes.map(node => {
+    const path = node as SVGPathElement;
+    const end = path.getPointAtLength(path.getTotalLength());
+    return { x: end.x, y: end.y };
+  }));
+  for (const point of endpoints) expect(point).toEqual(endpoints[0]);
+  const packet = page.locator(".data-packet").first();
+  const offsets = await packet.evaluate(async el => {
+    const animation = el.getAnimations()[0];
+    await animation.ready;
+    animation.pause();
+    animation.currentTime = 0;
+    const start = getComputedStyle(el).strokeDashoffset;
+    animation.currentTime = 1200;
+    return [start, getComputedStyle(el).strokeDashoffset];
+  });
+  expect(offsets[0]).not.toBe(offsets[1]);
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(wires.first()).toBeVisible();
+  await expect(page.locator(".atproto-tag")).toBeVisible();
 });
