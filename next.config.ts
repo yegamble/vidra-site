@@ -8,16 +8,11 @@ import type { NextConfig } from "next";
 const DOCS_ORIGIN = process.env.DOCS_ORIGIN ?? "https://vidra-docs.pages.dev";
 
 const nextConfig: NextConfig = {
-  /**
-   * The install flow used to be a page. It is now the `#get-started` section of
-   * the homepage, where the reader already is when they decide to install —
-   * so the old URL becomes a permanent redirect rather than a dead link in
-   * somebody's notes. 308, because a 302 would keep the old URL alive forever.
-   */
+  // Retired marketing URLs keep working without preserving the old pages.
   async redirects() {
-    return [
-      { source: "/get-started", destination: "/#get-started", permanent: true },
-    ];
+    return ["/get-started", "/features", "/use-cases", "/compare/peertube", "/scale", "/ipfs", "/demo"].map((source) => ({
+      source, destination: "/", permanent: true,
+    }));
   },
 
   async rewrites() {

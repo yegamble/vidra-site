@@ -6,7 +6,11 @@ export default function Home() {
     <section className="launch-hero" aria-labelledby="launch-title">
       <div className="launch-copy">
         <p className="eyebrow">Vidra Beta</p>
-        <h1 id="launch-title">A new home for streaming is taking shape.</h1>
+        <h1 id="launch-title">
+          <span>A new home for</span>{" "}
+          <span>streaming is</span>{" "}
+          <span>taking shape.</span>
+        </h1>
         <p className="standfirst">{MARKETING.description}</p>
         <a className="waitlist-link" href={MARKETING.waitlist}>
           Join waitlist
