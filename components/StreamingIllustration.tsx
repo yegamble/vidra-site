@@ -6,6 +6,10 @@ export function StreamingIllustration() {
         <filter id="scene-shadow" x="-30%" y="-30%" width="170%" height="180%">
           <feGaussianBlur stdDeviation="9" />
         </filter>
+        <filter id="signal-glow" x="-50%" y="-50%" width="200%" height="200%" colorInterpolationFilters="sRGB">
+          <feGaussianBlur stdDeviation="3" result="glow" />
+          <feMerge><feMergeNode in="glow" /><feMergeNode in="SourceGraphic" /></feMerge>
+        </filter>
         <linearGradient id="player-ground" x1="0" y1="0" x2="1" y2="1">
           <stop stopColor="var(--brand-ink)" />
           <stop offset="1" stopColor="var(--brand-black)" />
@@ -20,16 +24,27 @@ export function StreamingIllustration() {
       <path d="m89 458 241-139 320 185-240 139Z" fill="var(--brand-surface)" opacity="0.45" />
       <path d="m162 446 200-109 254 154-198 113Z" fill="var(--brand-shadow)" filter="url(#scene-shadow)" />
       <path d="M310 66v216M310 66l-147 85v237M310 66l151 87v233M516 135v213M516 135l134 77v236" stroke="var(--brand-line)" strokeWidth="1.5" strokeDasharray="6 7" />
+      <g className="data-network" stroke="var(--brand-signal)" strokeLinecap="round" strokeLinejoin="round">
+        {[
+          "M164 510 234 550 310 506 387 560 451 523",
+          "M341 616 421 570 381 547 451 507V523",
+          "M612 574 551 609 478 567 451 582V523",
+        ].map((d, index) => <g key={d}>
+          <path className="data-wire" d={d} strokeWidth="1.7" opacity="0.55" />
+          <path className="data-packet" d={d} pathLength="1" strokeWidth="3" strokeDasharray="0.06 0.94" strokeDashoffset="0.75" filter="url(#signal-glow)" style={{ animationDelay: `${-index * 1.2}s` }} />
+        </g>)}
+      </g>
 
       <g transform="matrix(1 .577 0 1 355 88)">
         <rect width="132" height="151" rx="5" fill="url(#glass-ground)" stroke="var(--brand-white)" strokeWidth="3" />
         <Thumbnail x={5} y={10} width={122} height={91} />
         <path d="M7 115h100M7 126h66M7 137h85" stroke="var(--brand-line)" strokeWidth="3" />
       </g>
-      <g transform="matrix(1 .577 0 1 518 167)">
-        <rect width="123" height="148" rx="5" fill="url(#glass-ground)" stroke="var(--brand-white)" strokeWidth="2" />
-        <Thumbnail x={5} y={15} width={113} height={87} variant={1} />
-        <path d="M8 116h98M8 127h77M8 137h86" stroke="var(--brand-line)" strokeWidth="3" />
+      <g className="atproto-tag" transform="matrix(1 .577 0 1 468 64)">
+        <rect width="230" height="86" rx="6" fill="url(#glass-ground)" stroke="var(--brand-white)" strokeWidth="2" />
+        {/* The current official atproto.com header mark is the monospace at://. */}
+        <text x="18" y="51" fill="var(--brand-black)" fontFamily="var(--brand-font-mono)" fontSize="24" fontWeight="800">at://</text>
+        <text x="112" y="51" fill="var(--brand-ink)" fontFamily="var(--brand-font-sans)" fontSize="25" fontWeight="600">atproto</text>
       </g>
 
       <g transform="matrix(1 -.577 0 1 130 167)">
@@ -55,8 +70,8 @@ export function StreamingIllustration() {
         <rect width="309" height="239" rx="8" fill="url(#player-ground)" stroke="var(--brand-ink)" />
         <path d="M125 70c0-5 3-7 7-5l40 24c4 2 4 6 0 8l-40 23c-4 2-7 0-7-5Z" fill="var(--brand-white)" />
         <path d="M23 190h191" stroke="var(--brand-slate)" strokeWidth="5" strokeLinecap="round" />
-        <path d="M23 190h48" stroke="var(--brand-white)" strokeWidth="5" strokeLinecap="round" />
-        <circle cx="73" cy="190" r="6" fill="var(--brand-white)" />
+        <path className="video-signal" d="M23 190h48" stroke="var(--brand-signal)" strokeWidth="5" strokeLinecap="round" />
+        <circle cx="73" cy="190" r="6" fill="var(--brand-signal)" />
         <g stroke="var(--brand-white)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
           <path d="m245 186-7 5h-5v8h5l7 5Zm6 3c4 3 4 9 0 12m5-16c7 6 7 14 0 20M278 190v-5h6m8 0h5v5m0 11v5h-5m-8 0h-6v-5" />
         </g>
@@ -71,15 +86,26 @@ export function StreamingIllustration() {
         </g>)}
       </g>
 
-      <g transform="matrix(1 .577 0 1 191 395)">
-        <rect width="290" height="116" rx="3" fill="url(#glass-ground)" stroke="var(--brand-white)" strokeWidth="2" />
-        {[0, 1, 2].map((i) => <g key={i}>
-          <Thumbnail x={10 + i * 94} y={10} width={84} height={63} variant={i % 2} />
-          <path d={`M${10 + i * 94} 85h73m-73 10h48`} stroke="var(--brand-line)" strokeWidth="3" />
-        </g>)}
+      <NetworkNode x={138} y={444} />
+      <NetworkNode x={315} y={550} />
+      <NetworkNode x={586} y={508} />
+      <g className="data-receiver" filter="url(#signal-glow)">
+        <circle cx="451" cy="523" r="7" stroke="var(--brand-signal)" strokeWidth="1.5" />
+        <circle cx="451" cy="523" r="3" fill="var(--brand-signal)" />
       </g>
     </svg>
   );
+}
+
+function NetworkNode({ x, y }: { x: number; y: number }) {
+  return <g className="network-node" transform={`translate(${x} ${y})`} stroke="var(--brand-signal)" strokeWidth="1.3" strokeLinejoin="round">
+    <path d="m0 15 26-15 26 15-26 15Z" fill="var(--brand-slate)" />
+    <path d="M0 15v36l26 15V30Z" fill="var(--brand-ink)" />
+    <path d="m26 30 26-15v36L26 66Z" fill="var(--brand-black)" />
+    <path d="m35 39 10-6m-10 18 10-6" strokeWidth="2" strokeLinecap="round" />
+    <path d="m8 31 11 12-11 2Z" fill="var(--brand-signal)" stroke="none" />
+    <circle cx="26" cy="66" r="2.5" fill="var(--brand-signal)" filter="url(#signal-glow)" />
+  </g>;
 }
 
 function Thumbnail({ x, y, width, height, variant = 0 }: { x: number; y: number; width: number; height: number; variant?: number }) {
