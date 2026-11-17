@@ -1,8 +1,8 @@
 {
   "$comment": "Derived by scripts/envelope-sync.mjs. Never edit by hand — run `npm run sync:envelope`, read the diff, then sweep the copy. `npm run check:envelope` re-derives this on every CI run and fails both when a count disagrees and when vidra-core publishes a newer release than the tag below.",
   "repo": "yegamble/vidra-core",
-  "tag": "v0.7.8",
-  "derivedAt": "2026-10-29",
+  "tag": "v0.7.25",
+  "derivedAt": "2026-11-17",
   "cites": {
     "openapiPaths": "vidra-core/api/openapi.yaml, top-level paths",
     "jobLoops": "vidra-core/cmd/api/main.go, `jobloop.Loop{` registrations",
@@ -11,10 +11,10 @@
     "migrations": "vidra-core/migrations/*.up.sql"
   },
   "counts": {
-    "openapiPaths": 307,
+    "openapiPaths": 308,
     "jobLoops": 30,
     "doctorChecks": 29,
-    "instanceSettings": 125,
-    "migrations": 182
+    "instanceSettings": 152,
+    "migrations": 189
   }
 }
