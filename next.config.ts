@@ -5,7 +5,7 @@ import type { NextConfig } from "next";
  * that the marketing site and the documentation share one hostname and one
  * cookie scope. Point DOCS_ORIGIN at a preview deployment to work against it.
  */
-const DOCS_ORIGIN = process.env.DOCS_ORIGIN ?? "https://vidra-docs.pages.dev";
+const DOCS_ORIGIN = process.env.DOCS_ORIGIN ?? "https://vidra-docs-public.pages.dev";
 
 const nextConfig: NextConfig = {
   // Retired marketing URLs keep working without preserving the old pages.
